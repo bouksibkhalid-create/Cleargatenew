@@ -6,6 +6,20 @@ import os
 from dotenv import load_dotenv
 from typing import Dict, Any, List, Tuple, Union
 
+import sys
+from pathlib import Path
+
+# Add the backend directory to sys.path so 'src' can be imported
+# This handles both local execution and Netlify's Lambda environment
+root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
+if root_path not in sys.path:
+    sys.path.insert(0, root_path)
+
+# Also try adding the current directory's parent just in case of flattened structure
+parent_path = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+if parent_path not in sys.path:
+    sys.path.append(parent_path)
+
 # Load environment variables
 load_dotenv()
 

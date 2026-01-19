@@ -14,7 +14,7 @@
 [functions]
   # python_runtime removed (detected automatically via environment)
   # Include src directory for imports
-  included_files = ["backend/src/**"]
+  included_files = ["../backend/src/**"]
 
 [[redirects]]
   from = "/api/*"

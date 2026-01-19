@@ -324,17 +324,17 @@ ON EACH [n.name, n.address, n.countries, n.jurisdiction_description]
 LOG_LEVEL=INFO
 
 # OpenSanctions
-OPENSANCTIONS_API_KEY=your_key_here
+OPENSANCTIONS_API_KEY=your_key_here_example
 OPENSANCTIONS_TIMEOUT=5.0
 
 # Sanctions.io
-SANCTIONS_IO_API_KEY=your_key_here
+SANCTIONS_IO_API_KEY=your_key_here_example
 SANCTIONS_IO_TIMEOUT=5.0
 
 # Neo4j
-NEO4J_URI=neo4j+ssc://622a551e.databases.neo4j.io
+NEO4J_URI=neo4j+s://example.databases.neo4j.io
 NEO4J_USER=neo4j
-NEO4J_PASSWORD=your_password_here
+NEO4J_PASSWORD=your_password_here_example
 
 # Fuzzy Matching
 DEFAULT_FUZZY_THRESHOLD=80

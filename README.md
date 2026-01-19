@@ -148,7 +148,7 @@ Set in Netlify Dashboard:
 - `OPENSANCTIONS_TIMEOUT`: `5.0`
 - `ENVIRONMENT`: `production` (or development)
 - `SANCTIONS_IO_API_KEY`: Your Sanctions.io API key
-- `NEO4J_URI`: `neo4j+s://xxxxx.databases.neo4j.io`
+- `NEO4J_URI`: `neo4j+s://example.databases.neo4j.io`
 - `NEO4J_USER`: `neo4j`
 - `NEO4J_PASSWORD`: Your Neo4j password
 

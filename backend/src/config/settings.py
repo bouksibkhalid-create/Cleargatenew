@@ -23,7 +23,7 @@ class Settings(BaseSettings):
     NEO4J_MAX_CONNECTION_POOL_SIZE: int = 50
     
     # Supabase Configuration
-    SUPABASE_URL: str = "https://hlbqnjptdyitdqzzeqqi.supabase.co"
+    SUPABASE_URL: str = ""
     SUPABASE_ANON_KEY: Optional[str] = None
     SUPABASE_SERVICE_KEY: Optional[str] = None
     

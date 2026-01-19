@@ -40,21 +40,14 @@ export interface GraphFilters {
     showLocation: boolean;
 }
 
-const defaultFilters: GraphFilters = {
-    showSanctioned: true,
-    showPEP: true,
-    showFamily: true,
-    showBusiness: true,
-    showCompany: true,
-    showLocation: true,
-};
+
 
 export default function GraphControls({
     onZoomIn,
     onZoomOut,
     onFitView,
     onLayoutChange,
-    onFilterChange,
+    // onFilterChange, // Unused
     onSearch,
     onExportImage,
     onCopyGraph,

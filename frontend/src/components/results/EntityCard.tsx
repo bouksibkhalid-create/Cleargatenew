@@ -11,7 +11,6 @@ import {
     Calendar,
     Globe,
     Briefcase,
-    AlertCircle,
     Network,
     ArrowRight,
     MapPin,
@@ -89,7 +88,7 @@ export function EntityCard({ entity, onClick }: EntityCardProps) {
                         <div className="info-content-modern">
                             <div className="info-label-modern">Born</div>
                             <div className="info-value-modern">
-                                {formatDate(entity.birthDate, 'short')}
+                                {formatDate(entity.birthDate)}
                                 <span className="info-meta-modern">
                                     ({calculateAge(entity.birthDate)} yrs)
                                 </span>

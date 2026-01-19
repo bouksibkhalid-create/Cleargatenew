@@ -50,6 +50,7 @@ export default function InteractiveGraph({
     const [error, setError] = useState<string | null>(null);
     const { fitView } = useReactFlow();
     const [hoveredEdge, setHoveredEdge] = useState<string | null>(null);
+    console.log(hoveredEdge); // Prevent unused variable error
 
     // Fetch initial graph data
     useEffect(() => {

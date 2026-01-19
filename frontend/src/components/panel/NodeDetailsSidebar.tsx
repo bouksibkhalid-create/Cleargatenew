@@ -4,7 +4,7 @@
  */
 
 import { motion } from 'framer-motion';
-import { X, ExternalLink, User, Building2, MapPin, Globe, Calendar, Network, Maximize2 } from 'lucide-react';
+import { X, ExternalLink, User, Building2, MapPin, Globe, Network, Maximize2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -196,28 +196,7 @@ function DetailsTab({ node }: { node: Node }) {
     );
 }
 
-function ConnectionsTab({ node }: { node: Node }) {
-    // In a real implementation, this would fetch actual connections
-    // For now, show a placeholder
-    return (
-        <div className="space-y-4">
-            <div className="text-sm text-gray-600">
-                <p className="font-medium mb-2">Connected Entities</p>
-                <p className="text-gray-500">
-                    This node has connections visible in the graph.
-                    Double-click the node to expand additional connections.
-                </p>
-            </div>
 
-            <div className="empty-state">
-                <Network className="w-8 h-8 text-gray-400 mb-2" />
-                <p className="text-sm text-gray-500">
-                    Connection details will be shown here in the full implementation.
-                </p>
-            </div>
-        </div>
-    );
-}
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
     return (

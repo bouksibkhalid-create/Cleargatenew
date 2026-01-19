@@ -1,6 +1,6 @@
 import type { Source } from '../../data/dataSourcesData';
 
-export function SourceItem({ flag, name, badge, description, features, link }: Source) {
+export function SourceItem({ flag, name, description, features }: Source) {
     return (
         <div className="flex flex-col gap-3 pb-6 mb-6 border-b border-gray-200 last:border-b-0 last:pb-0 last:mb-0">
             <div className="flex justify-between items-start">

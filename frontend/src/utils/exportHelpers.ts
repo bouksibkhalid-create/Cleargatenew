@@ -1,0 +1,163 @@
+
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
+import type { Entity, EnhancedEntity, OpenSanctionsEntity, SanctionsIoEntity, OffshoreEntity } from '../types/entity';
+import type { SearchResponse } from '../types/search';
+
+/**
+ * Flattens an entity into a structure suitable for CSV/Table rows
+ */
+const flattenEntity = (entity: Entity) => {
+    const base = {
+        name: entity.name,
+        source: entity.source,
+        score: Math.round(entity.match_score),
+    };
+
+    // Handle EnhancedEntity
+    if ('sanctions_reason' in entity) {
+        const enhanced = entity as EnhancedEntity;
+        return {
+            ...base,
+            type: enhanced.entity_type,
+            sanctioned: enhanced.is_sanctioned ? 'Yes' : 'No',
+            countries: enhanced.nationalities.join(', '),
+            details: enhanced.programmes.join('; '),
+        };
+    }
+
+    // Handle OpenSanctionsEntity
+    if ('schema' in entity) {
+        const os = entity as OpenSanctionsEntity;
+        return {
+            ...base,
+            type: os.schema,
+            sanctioned: os.is_sanctioned ? 'Yes' : 'No',
+            countries: os.countries.join(', '),
+            details: os.sanction_programs.map((p: any) => p.program).join('; '),
+        };
+    }
+
+    // Handle SanctionsIoEntity
+    if ('programs' in entity) {
+        const sio = entity as SanctionsIoEntity;
+        return {
+            ...base,
+            type: sio.entity_type,
+            sanctioned: sio.is_sanctioned ? 'Yes' : 'No',
+            countries: sio.nationalities.join(', '),
+            details: sio.programs.join('; '),
+        };
+    }
+
+    // Handle OffshoreEntity
+    if ('node_type' in entity) {
+        const off = entity as OffshoreEntity;
+        return {
+            ...base,
+            type: off.node_type,
+            sanctioned: 'N/A',
+            countries: off.countries.join(', '),
+            details: `${off.jurisdiction || ''} (${off.source_dataset})`,
+        };
+    }
+
+    return base;
+};
+
+/**
+ * Export results to CSV
+ */
+export const exportToCSV = (data: SearchResponse) => {
+    const headers = ['Name', 'Type', 'Source', 'Score', 'Sanctioned', 'Countries', 'Details'];
+    const rows = data.all_results.map(flattenEntity).map(e => [
+        `"${e.name || ''}"`,
+        `"${(e as any).type || ''}"`,
+        `"${e.source}"`,
+        `${e.score}`,
+        `"${(e as any).sanctioned || ''}"`,
+        `"${(e as any).countries || ''}"`,
+        `"${(e as any).details || ''}"`
+    ]);
+
+    const csvContent = [
+        headers.join(','),
+        ...rows.map(r => r.join(','))
+    ].join('\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+
+    link.setAttribute('href', url);
+    link.setAttribute('download', `due-diligence-results-${new Date().toISOString().split('T')[0]}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+};
+
+/**
+ * Export results to JSON
+ */
+export const exportToJSON = (data: SearchResponse) => {
+    const jsonStr = JSON.stringify(data, null, 2);
+    const blob = new Blob([jsonStr], { type: 'application/json' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+
+    link.setAttribute('href', url);
+    link.setAttribute('download', `due-diligence-results-${new Date().toISOString().split('T')[0]}.json`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+};
+
+/**
+ * Export results to PDF
+ */
+export const exportToPDF = (data: SearchResponse) => {
+    const doc = new jsPDF();
+
+    // Title
+    doc.setFontSize(18);
+    doc.text('Due Diligence Search Report', 14, 22);
+
+    // Meta-data
+    doc.setFontSize(11);
+    doc.setTextColor(100);
+    doc.text(`Search Query: ${data.query}`, 14, 32);
+    doc.text(`Date: ${new Date().toLocaleDateString()}`, 14, 38);
+    doc.text(`Total Results: ${data.total_results} (${data.total_sanctioned} sanctioned)`, 14, 44);
+
+    // Table
+    const headers = [['Name', 'Type', 'Source', 'Score', 'Sanctioned', 'Countries']];
+    const rows = data.all_results.map(flattenEntity).map(e => [
+        e.name,
+        (e as any).type || '-',
+        e.source === 'opensanctions' ? 'OpenSanctions' : e.source === 'sanctions_io' ? 'Sanctions.io' : 'Offshore',
+        `${e.score}%`,
+        (e as any).sanctioned,
+        (e as any).countries || '-'
+    ]);
+
+    autoTable(doc, {
+        head: headers,
+        body: rows,
+        startY: 50,
+        styles: { fontSize: 8 },
+        headStyles: { fillColor: [25, 118, 210] }, // MUI Primary Blue
+    });
+
+    // Footer
+    const pageCount = doc.getNumberOfPages();
+    for (let i = 1; i <= pageCount; i++) {
+        doc.setPage(i);
+        doc.setFontSize(8);
+        doc.setTextColor(150);
+        doc.text('Confidential - Generated by Due Diligence Platform', 14, doc.internal.pageSize.height - 10);
+    }
+
+    doc.save(`due-diligence-report-${new Date().toISOString().split('T')[0]}.pdf`);
+};

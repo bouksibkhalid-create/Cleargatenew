@@ -1,0 +1,19 @@
+
+fastapi
+uvicorn
+httpx
+pydantic
+pydantic-settings
+python-dotenv
+pandas
+requests
+neo4j==5.16.0
+tqdm==4.66.1
+sentry-sdk==1.40.0
+redis==5.0.1
+tenacity>=8.0.0
+pybreaker>=1.0.0
+supabase>=2.0.0
+rapidfuzz>=3.0.0
+# netlify-related
+awslambdaric

@@ -7,6 +7,8 @@
 [build.environment]
   PYTHON_VERSION = "3.11"
   NODE_VERSION = "20"
+  # Whitelist Supabase keys (public values) from secrets scanning
+  SECRETS_SCAN_OMIT_KEYS = "SUPABASE_ANON_KEY,SUPABASE_URL"
 
 [functions]
   # python_runtime removed (detected automatically via environment)

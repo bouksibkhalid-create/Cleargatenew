@@ -8,7 +8,7 @@ const MeshGradient = ({ className = '' }: MeshGradientProps) => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const mouseRef = useRef({ x: 0, y: 0 });
     const targetRef = useRef({ x: 0, y: 0 });
-    const animationFrameRef = useRef<number>();
+    const animationFrameRef = useRef<number | undefined>(undefined);
 
     useEffect(() => {
         const canvas = canvasRef.current;

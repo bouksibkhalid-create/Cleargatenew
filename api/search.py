@@ -21,13 +21,9 @@ try:
 except:
     pass
 
-# Lazy import function - imports only when called
-def lazy_import():
-    """Import all dependencies lazily to avoid initialization crashes"""
-    global SearchRequest, ErrorResponse, ValidationError
-    global OpenSanctionsService, SanctionsIoService, OffshoreLeaksService
-    global ResultAggregator, get_logger
-    
+# Import dependencies - but catch errors gracefully
+INIT_ERROR = None
+try:
     from src.models.requests import SearchRequest
     from src.models.responses import ErrorResponse
     from src.utils.logger import get_logger
@@ -36,13 +32,37 @@ def lazy_import():
     from src.services.sanctions_io_service import SanctionsIoService
     from src.services.offshore_service import OffshoreLeaksService
     from src.services.aggregator import ResultAggregator
-
-async def perform_search(request_data):
-    """Perform search with lazy imports"""
-    # Import dependencies here
-    lazy_import()
+    from src.utils.errors import APIError, APITimeoutError
     
-    request = SearchRequest(**request_data)
+    logger = get_logger(__name__)
+except Exception as e:
+    import traceback
+    INIT_ERROR = {
+        "error": str(e),
+        "traceback": traceback.format_exc(),
+        "type": type(e).__name__
+    }
+
+async def search_source(service, query, search_type, limit, source_name):
+    """Search a single source"""
+    try:
+        if source_name == "sanctions_io" and hasattr(service, 'search'):
+            results = await service.search(query=query, fuzzy=(search_type == "fuzzy"), limit=limit)
+        else:
+            results = await service.search(query=query, limit=limit)
+        return (results, None)
+    except APITimeoutError as e:
+        logger.warning(f"{source_name}_timeout", query=query, error=str(e))
+        return ([], "Request timed out")
+    except APIError as e:
+        logger.warning(f"{source_name}_error", query=query, error=str(e))
+        return ([], str(e.message) if hasattr(e, 'message') else str(e))
+    except Exception as e:
+        logger.error(f"{source_name}_unexpected_error", query=query, error=str(e))
+        return ([], f"Unexpected error: {str(e)}")
+
+async def perform_search(request):
+    """Perform search across all sources"""
     opensanctions_service = OpenSanctionsService()
     sanctions_io_service = SanctionsIoService()
     aggregator = ResultAggregator(fuzzy_threshold=request.fuzzy_threshold)
@@ -107,28 +127,6 @@ async def perform_search(request_data):
         if offshore_service:
             await offshore_service.client.close()
 
-async def search_source(service, query, search_type, limit, source_name):
-    """Search a single source"""
-    from src.utils.errors import APIError, APITimeoutError
-    from src.utils.logger import get_logger
-    logger = get_logger(__name__)
-    
-    try:
-        if source_name == "sanctions_io" and hasattr(service, 'search'):
-            results = await service.search(query=query, fuzzy=(search_type == "fuzzy"), limit=limit)
-        else:
-            results = await service.search(query=query, limit=limit)
-        return (results, None)
-    except APITimeoutError as e:
-        logger.warning(f"{source_name}_timeout", query=query, error=str(e))
-        return ([], "Request timed out")
-    except APIError as e:
-        logger.warning(f"{source_name}_error", query=query, error=str(e))
-        return ([], str(e.message) if hasattr(e, 'message') else str(e))
-    except Exception as e:
-        logger.error(f"{source_name}_unexpected_error", query=query, error=str(e))
-        return ([], f"Unexpected error: {str(e)}")
-
 class handler(BaseHTTPRequestHandler):
     def do_OPTIONS(self):
         self.send_response(200)
@@ -144,6 +142,19 @@ class handler(BaseHTTPRequestHandler):
         self.handle_request('GET')
 
     def handle_request(self, method):
+        # Check if initialization failed
+        if INIT_ERROR:
+            self.send_response(500)
+            self.send_header('Content-Type', 'application/json')
+            self.send_header('Access-Control-Allow-Origin', '*')
+            self.end_headers()
+            self.wfile.write(json.dumps({
+                "error": "InitializationError",
+                "message": "Failed to initialize backend modules",
+                "details": INIT_ERROR
+            }).encode('utf-8'))
+            return
+
         try:
             body = {}
             if method == 'POST':
@@ -156,7 +167,11 @@ class handler(BaseHTTPRequestHandler):
                 params = parse_qs(parsed.query)
                 body = {k: v[0] for k, v in params.items()}
 
-            response = asyncio.run(perform_search(body))
+            # Validate and create request
+            request = SearchRequest(**body)
+            
+            # Perform search
+            response = asyncio.run(perform_search(request))
             
             self.send_response(200)
             self.send_header('Content-Type', 'application/json')
@@ -164,6 +179,19 @@ class handler(BaseHTTPRequestHandler):
             self.end_headers()
             self.wfile.write(response.model_dump_json().encode('utf-8'))
 
+        except ValidationError as e:
+            import traceback
+            traceback.print_exc()
+            self.send_response(400)
+            self.send_header('Content-Type', 'application/json')
+            self.send_header('Access-Control-Allow-Origin', '*')
+            self.end_headers()
+            self.wfile.write(json.dumps({
+                "error": "ValidationError",
+                "message": "Invalid request parameters",
+                "details": e.errors()
+            }).encode('utf-8'))
+            
         except Exception as e:
             import traceback
             traceback_str = traceback.format_exc()

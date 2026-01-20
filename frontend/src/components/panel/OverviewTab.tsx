@@ -221,7 +221,7 @@ export default function OverviewTab({ entity, onChangeTab }: OverviewTabProps) {
                             </div>
                         )}
 
-                        {entity.nationalities && entity.nationalities.length > 0 && (
+                        {entity.nationalities && Array.isArray(entity.nationalities) && entity.nationalities.length > 0 && (
                             <div>
                                 <span className="text-xs text-gray-500">Nationalities</span>
                                 <div className="flex flex-wrap gap-1 mt-1">

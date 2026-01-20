@@ -850,3 +850,220 @@
   font-size: 0.75rem;
   color: #6b7280;
 }
+
+/* ========================================
+   LOCK SCREEN STYLES
+   ======================================== */
+
+/* Import Inter font */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+
+/* Lock Screen Container */
+.lock-screen {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #0a0a0f;
+  overflow: hidden;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+.lock-screen-content {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+  max-width: 480px;
+  width: 100%;
+  padding: 2rem;
+}
+
+/* Logo & Header */
+.lock-screen-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  animation: fadeInUp 0.8s ease-out 0s backwards;
+}
+
+.cleargate-logo {
+  font-size: 5rem;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  background: linear-gradient(135deg, #ffffff 0%, #a0b0ff 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: 0 0 80px rgba(160, 176, 255, 0.4);
+  margin: 0;
+  line-height: 1;
+}
+
+.lock-screen-subtitle {
+  font-size: 1.125rem;
+  font-weight: 300;
+  color: rgba(255, 255, 255, 0.6);
+  letter-spacing: 0.02em;
+  text-align: center;
+  margin: 0;
+  animation: fadeInUp 0.8s ease-out 0.1s backwards;
+}
+
+/* Password Form */
+.lock-screen-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  width: 100%;
+  animation: fadeInUp 0.8s ease-out 0.2s backwards;
+}
+
+.password-input-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.password-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.password-icon {
+  position: absolute;
+  left: 1rem;
+  color: rgba(255, 255, 255, 0.4);
+  pointer-events: none;
+}
+
+.password-input {
+  width: 100%;
+  padding: 1rem 1rem 1rem 3rem;
+  padding-right: 3.5rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  color: #ffffff;
+  font-size: 1rem;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+}
+
+.password-input::placeholder {
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.password-input:focus {
+  outline: none;
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(160, 176, 255, 0.5);
+  box-shadow: 0 0 0 3px rgba(160, 176, 255, 0.1),
+              0 8px 24px rgba(160, 176, 255, 0.15);
+}
+
+.password-toggle {
+  position: absolute;
+  right: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.4);
+  cursor: pointer;
+  transition: color 0.2s ease;
+  padding: 0.25rem;
+}
+
+.password-toggle:hover {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.error-message {
+  font-size: 0.875rem;
+  font-weight: 400;
+  color: #ff6b6b;
+  letter-spacing: 0.02em;
+  text-align: center;
+}
+
+.submit-button {
+  width: 100%;
+  padding: 1rem;
+  background: linear-gradient(135deg, #6b7cff 0%, #8b9bff 100%);
+  border: none;
+  border-radius: 12px;
+  color: #ffffff;
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 16px rgba(107, 124, 255, 0.3);
+}
+
+.submit-button:hover {
+  background: linear-gradient(135deg, #7b8cff 0%, #9babff 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 24px rgba(107, 124, 255, 0.4);
+}
+
+.submit-button:active {
+  transform: translateY(0);
+}
+
+/* Footer */
+.lock-screen-footer {
+  font-size: 0.875rem;
+  font-weight: 300;
+  color: rgba(255, 255, 255, 0.3);
+  letter-spacing: 0.05em;
+  text-align: center;
+  margin: 0;
+  animation: fadeInUp 0.8s ease-out 0.3s backwards;
+}
+
+/* Animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-8px); }
+  20%, 40%, 60%, 80% { transform: translateX(8px); }
+}
+
+.shake {
+  animation: shake 0.6s ease-in-out;
+}
+
+/* Mobile Responsive */
+@media (max-width: 640px) {
+  .cleargate-logo {
+    font-size: 3.5rem;
+  }
+  
+  .lock-screen-subtitle {
+    font-size: 1rem;
+  }
+  
+  .lock-screen-content {
+    padding: 1.5rem;
+  }
+}

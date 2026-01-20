@@ -13,11 +13,31 @@ import { UpdateStatus } from './components/home/UpdateStatus';
 import { DataSources } from './components/home/DataSources';
 import { OSINTLoader } from './components/search/OSINTLoader';
 import { useSearch } from './hooks/useSearch';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import LockScreen from './components/auth/LockScreen';
 
 function App() {
   const { data, isLoading, error, search, reset } = useSearch();
   const [currentQuery, setCurrentQuery] = useState('');
+  const [isUnlocked, setIsUnlocked] = useState(false);
+
+  // Check session storage on mount
+  useEffect(() => {
+    const unlocked = sessionStorage.getItem('cleargate_unlocked');
+    if (unlocked === 'true') {
+      setIsUnlocked(true);
+    }
+  }, []);
+
+  const handleUnlock = () => {
+    setIsUnlocked(true);
+    sessionStorage.setItem('cleargate_unlocked', 'true');
+  };
+
+  // Show lock screen if not unlocked
+  if (!isUnlocked) {
+    return <LockScreen onUnlock={handleUnlock} />;
+  }
 
   const handleSearch = (query: string) => {
     setCurrentQuery(query);

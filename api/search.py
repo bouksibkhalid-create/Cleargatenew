@@ -107,7 +107,7 @@ class handler(BaseHTTPRequestHandler):
                     # Simplified query - just get basic node info
                     cypher_query = """
                     MATCH (n)
-                    WHERE toLower(n.name) CONTAINS toLower($query)
+                    WHERE toLower(n.name) CONTAINS toLower($search_term)
                     RETURN 
                         id(n) as node_id,
                         n.name as name,
@@ -120,7 +120,7 @@ class handler(BaseHTTPRequestHandler):
                     """
                     
                     print(f"Running Neo4j query for: '{query}' with limit: {body.get('limit', 10)}")
-                    result = session.run(cypher_query, query=query, limit=body.get('limit', 10))
+                    result = session.run(cypher_query, search_term=query, limit=body.get('limit', 10))
                     
                     count = 0
                     for record in result:

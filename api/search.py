@@ -23,19 +23,14 @@ load_dotenv()
 
 # Import original logic (adapted imports)
 # We assume src is in backend/src, so 'from src...' works if backend is in path
+# Global error capture
+INIT_ERROR = None
+
 try:
     from src.models.requests import SearchRequest
     from src.models.responses import ErrorResponse
     from src.utils.logger import get_logger
     from pydantic import ValidationError
-    
-    # We need to import the search logic. 
-    # Since existing search.py had logic IN the file, we might need to duplicate it 
-    # OR import it if we moved the shared logic to src.
-    # The original search.py had perform_search and clean_query inside it.
-    # To avoid huge duplication, I will COPY the logic here for now, 
-    # as refactoring into src is safer but larger scope. 
-    # The original file is large, so I will copy the necessary parts.
     
     from src.services.opensanctions_service import OpenSanctionsService
     from src.services.sanctions_io_service import SanctionsIoService
@@ -45,12 +40,21 @@ try:
     from src.models.responses import SanctionProgram, OpenSanctionsEntity
     from src.utils.decorators import cached, rate_limit
     
-except ImportError as e:
-    print(f"Import Error: {e}")
-    # Fallback to simple error for debug
-    pass
+    logger = get_logger(__name__)
 
-logger = get_logger(__name__)
+except Exception as e:
+    import traceback
+    INIT_ERROR = {
+        "error": str(e),
+        "traceback": traceback.format_exc(),
+        "type": "ImportError"
+    }
+    # Define dummy logger to avoid NameError later if used in global scope (though we should avoid using it if INIT_ERROR)
+    class DummyLogger:
+        def info(self, *args, **kwargs): pass
+        def error(self, *args, **kwargs): pass
+        def warning(self, *args, **kwargs): pass
+    logger = DummyLogger()
 
 # --- Re-implementing helper functions from original search.py ---
 
@@ -233,6 +237,19 @@ class handler(BaseHTTPRequestHandler):
         self.handle_request('GET')
 
     def handle_request(self, method):
+        # Check for initialization errors first
+        if INIT_ERROR:
+            self.send_response(500)
+            self.send_header('Content-Type', 'application/json')
+            self.send_header('Access-Control-Allow-Origin', '*')
+            self.end_headers()
+            self.wfile.write(json.dumps({
+                "error": "InitializationError",
+                "message": "Function failed to initialize",
+                "details": INIT_ERROR
+            }).encode('utf-8'))
+            return
+
         try:
             body = {}
             if method == 'POST':

@@ -99,8 +99,12 @@ class handler(BaseHTTPRequestHandler):
                 print(f"Connecting to Neo4j: {neo4j_uri}")
                 driver = GraphDatabase.driver(neo4j_uri, auth=(neo4j_user, neo4j_password))
                 
+                # Verify connection
+                driver.verify_connectivity()
+                print("Neo4j connection verified")
+                
                 with driver.session() as session:
-                    # Search for nodes matching the query
+                    # Simplified query - just get basic node info
                     cypher_query = """
                     MATCH (n)
                     WHERE toLower(n.name) CONTAINS toLower($query)
@@ -108,39 +112,34 @@ class handler(BaseHTTPRequestHandler):
                         id(n) as node_id,
                         n.name as name,
                         labels(n)[0] as node_type,
-                        n.countries as countries,
+                        coalesce(n.countries, []) as countries,
                         n.jurisdiction as jurisdiction,
-                        n.jurisdiction_description as jurisdiction_description,
-                        n.incorporation_date as incorporation_date,
-                        n.service_provider as service_provider,
-                        n.company_type as company_type,
-                        n.status as status,
                         n.address as address,
-                        n.sourceID as source_dataset,
-                        size((n)--()) as connections_count
+                        coalesce(n.sourceID, 'Offshore Leaks') as source_dataset
                     LIMIT $limit
                     """
                     
-                    print(f"Running Neo4j query for: {query}")
+                    print(f"Running Neo4j query for: '{query}' with limit: {body.get('limit', 10)}")
                     result = session.run(cypher_query, query=query, limit=body.get('limit', 10))
                     
                     count = 0
                     for record in result:
                         count += 1
+                        node_type = record.get("node_type", "Entity")
                         offshore_results.append({
                             "node_id": record["node_id"],
-                            "name": record["name"] or "Unknown",
-                            "node_type": record["node_type"] or "Entity",
-                            "countries": record["countries"] or [],
-                            "jurisdiction": record["jurisdiction"],
-                            "jurisdiction_description": record["jurisdiction_description"],
-                            "incorporation_date": record["incorporation_date"],
-                            "service_provider": record["service_provider"],
-                            "company_type": record["company_type"],
-                            "status": record["status"],
-                            "address": record["address"],
-                            "source_dataset": record["source_dataset"] or "Offshore Leaks",
-                            "connections_count": record["connections_count"] or 0,
+                            "name": record.get("name") or "Unknown",
+                            "node_type": node_type,
+                            "countries": record.get("countries") or [],
+                            "jurisdiction": record.get("jurisdiction"),
+                            "jurisdiction_description": None,
+                            "incorporation_date": None,
+                            "service_provider": None,
+                            "company_type": None,
+                            "status": None,
+                            "address": record.get("address"),
+                            "source_dataset": record.get("source_dataset") or "Offshore Leaks",
+                            "connections_count": 0,
                             "connections": [],
                             "match_score": 75,
                             "source": "offshore_leaks"
@@ -149,12 +148,14 @@ class handler(BaseHTTPRequestHandler):
                     print(f"Neo4j returned {count} results")
                 
                 driver.close()
+                print("Neo4j connection closed")
                 
             except Exception as e:
                 import traceback
                 offshore_error = str(e)
+                error_trace = traceback.format_exc()
                 print(f"Neo4j Error: {str(e)}")
-                print(traceback.format_exc())
+                print(f"Traceback: {error_trace}")
             
             # Build response
             response_data = {

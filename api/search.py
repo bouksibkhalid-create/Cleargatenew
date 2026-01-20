@@ -1,5 +1,6 @@
 from http.server import BaseHTTPRequestHandler
 import json
+from datetime import datetime
 
 class handler(BaseHTTPRequestHandler):
     def do_OPTIONS(self):
@@ -18,37 +19,64 @@ class handler(BaseHTTPRequestHandler):
             
             query = body.get('query', 'Unknown')
             
-            # Ultra-simple mock response
+            # Mock entity matching the query
+            mock_entity = {
+                "id": "demo-1",
+                "name": query,
+                "schema": "Person",
+                "aliases": [f"{query} (Demo)"],
+                "birth_date": None,
+                "nationalities": ["Demo Country"],
+                "countries": ["Demo Country"],
+                "is_sanctioned": True,
+                "sanction_programs": [{
+                    "program": "Demo Sanctions Program",
+                    "authority": "Demo Authority",
+                    "start_date": "2024-01-01",
+                    "reason": "Demo purposes - This is mock data"
+                }],
+                "datasets": ["demo"],
+                "url": "https://demo.com",
+                "match_score": 100,
+                "source": "opensanctions"
+            }
+            
+            # Response matching frontend SearchResponse interface
             response = {
                 "query": query,
-                "search_type": "exact",
+                "search_type": body.get('search_type', 'exact'),
+                "results_by_source": {
+                    "opensanctions": {
+                        "found": True,
+                        "count": 1,
+                        "sanctioned_count": 1,
+                        "error": None,
+                        "results": [mock_entity]
+                    },
+                    "sanctions_io": {
+                        "found": False,
+                        "count": 0,
+                        "sanctioned_count": 0,
+                        "error": "Demo mode - API not configured",
+                        "results": []
+                    },
+                    "offshore_leaks": {
+                        "found": False,
+                        "count": 0,
+                        "sanctioned_count": 0,
+                        "error": "Demo mode - API not configured",
+                        "results": []
+                    }
+                },
+                "all_results": [mock_entity],
                 "total_results": 1,
-                "opensanctions_results": [{
-                    "id": "demo-1",
-                    "name": query,
-                    "schema": "Person",
-                    "aliases": [],
-                    "birth_date": None,
-                    "nationalities": ["Demo"],
-                    "countries": ["Demo"],
-                    "is_sanctioned": True,
-                    "sanction_programs": [{
-                        "program": "Demo Program",
-                        "authority": "Demo Authority",
-                        "start_date": "2024-01-01",
-                        "reason": "Demo purposes"
-                    }],
-                    "datasets": ["demo"],
-                    "url": "https://demo.com",
-                    "match_score": 100,
-                    "source": "demo"
-                }],
-                "sanctions_io_results": [],
-                "offshore_leaks_results": [],
-                "opensanctions_error": None,
-                "sanctions_io_error": None,
-                "offshore_leaks_error": None,
-                "sources_requested": ["opensanctions"]
+                "total_sanctioned": 1,
+                "offshore_connections_found": False,
+                "sources_searched": body.get('sources', ["opensanctions", "sanctions_io", "offshore_leaks"]),
+                "sources_succeeded": ["opensanctions"],
+                "sources_failed": ["sanctions_io", "offshore_leaks"],
+                "timestamp": datetime.utcnow().isoformat() + "Z",
+                "fuzzy_threshold": body.get('fuzzy_threshold', 80)
             }
             
             self.send_response(200)
@@ -61,7 +89,8 @@ class handler(BaseHTTPRequestHandler):
             error_response = {
                 "error": "InternalError",
                 "message": str(e),
-                "type": type(e).__name__
+                "details": str(type(e).__name__),
+                "timestamp": datetime.utcnow().isoformat() + "Z"
             }
             self.send_response(500)
             self.send_header('Content-Type', 'application/json')

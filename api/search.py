@@ -22,18 +22,15 @@ try:
 except:
     pass
 
-# Import dependencies - but catch errors gracefully
+# Import dependencies
 INIT_ERROR = None
 try:
     from src.models.requests import SearchRequest
-    from src.models.responses import ErrorResponse
+    from src.services.data_sources.supabase_search_service import get_supabase_search_service
+    from src.services.offshore_service import OffshoreLeaksService
+    from src.models.responses import SanctionProgram, OpenSanctionsEntity
     from src.utils.logger import get_logger
     from pydantic import ValidationError
-    from src.services.opensanctions_service import OpenSanctionsService
-    from src.services.sanctions_io_service import SanctionsIoService
-    from src.services.offshore_service import OffshoreLeaksService
-    from src.services.aggregator import ResultAggregator
-    from src.utils.errors import APIError, APITimeoutError
     
     logger = get_logger(__name__)
 except Exception as e:
@@ -44,89 +41,129 @@ except Exception as e:
         "type": type(e).__name__
     }
 
-async def search_source(service, query, search_type, limit, source_name):
-    """Search a single source"""
-    try:
-        if source_name == "sanctions_io" and hasattr(service, 'search'):
-            results = await service.search(query=query, fuzzy=(search_type == "fuzzy"), limit=limit)
-        else:
-            results = await service.search(query=query, limit=limit)
-        return (results, None)
-    except APITimeoutError as e:
-        logger.warning(f"{source_name}_timeout", query=query, error=str(e))
-        return ([], "Request timed out")
-    except APIError as e:
-        logger.warning(f"{source_name}_error", query=query, error=str(e))
-        return ([], str(e.message) if hasattr(e, 'message') else str(e))
-    except Exception as e:
-        logger.error(f"{source_name}_unexpected_error", query=query, error=str(e))
-        return ([], f"Unexpected error: {str(e)}")
+def convert_supabase_to_entity(result: dict) -> dict:
+    """Convert Supabase result to OpenSanctions entity format"""
+    sanction_programs = []
+    for prog in result.get('programs', []):
+        sanction_programs.append({
+            "program": prog,
+            "authority": result.get('source', 'Unknown'),
+            "start_date": result.get('date_added') or result.get('dateAdded'),
+            "reason": None
+        })
+    
+    entity_type = result.get('entity_type', result.get('type', 'person'))
+    schema_map = {
+        'person': 'Person',
+        'company': 'Company', 
+        'organization': 'Organization',
+        'vessel': 'Vessel',
+        'aircraft': 'Aircraft',
+    }
+    entity_schema = schema_map.get(entity_type, 'LegalEntity')
+    
+    birth_dates = result.get('birth_dates', result.get('birthDates', []))
+    birth_date = birth_dates[0] if birth_dates else None
+    
+    match_score = result.get('matchScore', result.get('match_score', 1.0))
+    if isinstance(match_score, float) and match_score <= 1.0:
+        match_score = int(match_score * 100)
+    
+    return {
+        "id": result.get('source_id', result.get('id', '')),
+        "name": result.get('name', 'Unknown'),
+        "schema": entity_schema,
+        "countries": result.get('nationalities', []),
+        "aliases": result.get('aliases', []),
+        "birth_date": birth_date,
+        "death_date": None,
+        "nationalities": result.get('nationalities', []),
+        "is_sanctioned": True,
+        "sanction_programs": sanction_programs,
+        "datasets": [result.get('source', 'Supabase')],
+        "properties": {
+            "description": f"Sanctioned entity from {result.get('source', 'database')}"
+        },
+        "first_seen": result.get('date_added'),
+        "last_seen": None,
+        "url": result.get('source_url', result.get('sourceUrl', 'https://supabase.co')),
+        "match_score": int(match_score),
+        "source": "opensanctions"
+    }
 
 async def perform_search(request):
-    """Perform search across all sources"""
-    opensanctions_service = OpenSanctionsService()
-    sanctions_io_service = SanctionsIoService()
-    aggregator = ResultAggregator(fuzzy_threshold=request.fuzzy_threshold)
+    """Perform search using Supabase and Neo4j only"""
+    
+    # Search Supabase for sanctions data
+    supabase_results = []
+    supabase_error = None
     
     try:
-        tasks = []
-        task_sources = []
+        supabase_service = get_supabase_search_service()
+        results = supabase_service.search(query=request.query, limit=request.limit)
         
-        if "opensanctions" in request.sources:
-            tasks.append(search_source(opensanctions_service, request.query, request.search_type, request.limit, "opensanctions"))
-            task_sources.append("opensanctions")
-        
-        if "sanctions_io" in request.sources:
-            tasks.append(search_source(sanctions_io_service, request.query, request.search_type, request.limit, "sanctions_io"))
-            task_sources.append("sanctions_io")
-            
-        offshore_service = None
-        offshore_leaks_results = []
-        offshore_leaks_error = None
-        
-        if "offshore_leaks" in request.sources:
-            try:
-                offshore_service = OffshoreLeaksService()
-                offshore_leaks_results = await offshore_service.search(query=request.query, limit=request.limit)
-                task_sources.append("offshore_leaks")
-            except Exception as e:
-                offshore_leaks_error = str(e)
-                task_sources.append("offshore_leaks")
-        
-        results = await asyncio.gather(*tasks)
-        
-        opensanctions_results = []
-        opensanctions_error = None
-        sanctions_io_results = []
-        sanctions_io_error = None
-        
-        for i, (task_results, error) in enumerate(results):
-            source = task_sources[i]
-            if source == "opensanctions":
-                opensanctions_results = task_results
-                opensanctions_error = error
-            elif source == "sanctions_io":
-                sanctions_io_results = task_results
-                sanctions_io_error = error
-        
-        response = aggregator.aggregate(
-            query=request.query,
-            search_type=request.search_type,
-            opensanctions_results=opensanctions_results,
-            sanctions_io_results=sanctions_io_results,
-            opensanctions_error=opensanctions_error,
-            sanctions_io_error=sanctions_io_error,
-            offshore_leaks_results=offshore_leaks_results,
-            offshore_leaks_error=offshore_leaks_error,
-            sources_requested=request.sources
-        )
-        return response
-        
-    finally:
-        await opensanctions_service.close()
-        await sanctions_io_service.close()
-        if offshore_service:
+        if results:
+            supabase_results = [convert_supabase_to_entity(r) for r in results]
+            logger.info("supabase_search_success", query=request.query, count=len(supabase_results))
+    except Exception as e:
+        supabase_error = f"Supabase search failed: {str(e)}"
+        logger.error("supabase_search_error", query=request.query, error=str(e))
+    
+    # Search Neo4j for offshore/intelligence data
+    offshore_results = []
+    offshore_error = None
+    
+    if "offshore_leaks" in request.sources:
+        try:
+            offshore_service = OffshoreLeaksService()
+            offshore_results = await offshore_service.search(query=request.query, limit=request.limit)
             await offshore_service.client.close()
+            logger.info("offshore_search_success", query=request.query, count=len(offshore_results))
+        except Exception as e:
+            offshore_error = f"Offshore search failed: {str(e)}"
+            logger.error("offshore_search_error", query=request.query, error=str(e))
+    
+    # Build response matching frontend expectations
+    total_sanctioned = len([r for r in supabase_results if r.get('is_sanctioned')])
+    
+    response = {
+        "query": request.query,
+        "search_type": request.search_type,
+        "results_by_source": {
+            "opensanctions": {
+                "found": len(supabase_results) > 0,
+                "count": len(supabase_results),
+                "sanctioned_count": total_sanctioned,
+                "error": supabase_error,
+                "results": supabase_results
+            },
+            "sanctions_io": {
+                "found": False,
+                "count": 0,
+                "sanctioned_count": 0,
+                "error": "Not configured - using Supabase instead",
+                "results": []
+            },
+            "offshore_leaks": {
+                "found": len(offshore_results) > 0,
+                "count": len(offshore_results),
+                "sanctioned_count": 0,
+                "error": offshore_error,
+                "results": offshore_results
+            }
+        },
+        "all_results": supabase_results + offshore_results,
+        "total_results": len(supabase_results) + len(offshore_results),
+        "total_sanctioned": total_sanctioned,
+        "offshore_connections_found": len(offshore_results) > 0,
+        "sources_searched": request.sources,
+        "sources_succeeded": [s for s in ["opensanctions", "offshore_leaks"] if (s == "opensanctions" and not supabase_error) or (s == "offshore_leaks" and not offshore_error)],
+        "sources_failed": [s for s in ["opensanctions", "offshore_leaks"] if (s == "opensanctions" and supabase_error) or (s == "offshore_leaks" and offshore_error)],
+        "timestamp": datetime.utcnow().isoformat() + "Z",
+        "fuzzy_threshold": request.fuzzy_threshold
+    }
+    
+    return response
 
 class handler(BaseHTTPRequestHandler):
     def do_OPTIONS(self):
@@ -179,7 +216,7 @@ class handler(BaseHTTPRequestHandler):
             self.send_header('Content-Type', 'application/json')
             self.send_header('Access-Control-Allow-Origin', '*')
             self.end_headers()
-            self.wfile.write(response.model_dump_json().encode('utf-8'))
+            self.wfile.write(json.dumps(response).encode('utf-8'))
 
         except ValidationError as e:
             import traceback

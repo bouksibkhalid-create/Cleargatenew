@@ -26,6 +26,7 @@ class handler(BaseHTTPRequestHandler):
                 "schema": "Person",
                 "aliases": [f"{query} (Demo)"],
                 "birth_date": None,
+                "death_date": None,
                 "nationalities": ["Demo Country"],
                 "countries": ["Demo Country"],
                 "is_sanctioned": True,
@@ -36,6 +37,11 @@ class handler(BaseHTTPRequestHandler):
                     "reason": "Demo purposes - This is mock data"
                 }],
                 "datasets": ["demo"],
+                "properties": {
+                    "description": f"Demo entity for {query}. This is mock data for testing purposes."
+                },
+                "first_seen": "2024-01-01",
+                "last_seen": "2024-01-20",
                 "url": "https://demo.com",
                 "match_score": 100,
                 "source": "opensanctions"

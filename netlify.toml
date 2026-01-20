@@ -23,6 +23,12 @@
   status = 200
   force = true
 
+# SPA fallback - must come after API redirect
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
 [[headers]]
   for = "/*"
   [headers.values]

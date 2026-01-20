@@ -91,9 +91,12 @@ class handler(BaseHTTPRequestHandler):
                 neo4j_user = os.getenv('NEO4J_USER')
                 neo4j_password = os.getenv('NEO4J_PASSWORD')
                 
-                if not all([neo4j_uri, neo4j_user, neo4j_password]):
-                    raise Exception("Neo4j not configured")
+                print(f"Neo4j Config - URI: {bool(neo4j_uri)}, User: {bool(neo4j_user)}, Pass: {bool(neo4j_password)}")
                 
+                if not all([neo4j_uri, neo4j_user, neo4j_password]):
+                    raise Exception(f"Neo4j not configured - URI: {bool(neo4j_uri)}, User: {bool(neo4j_user)}, Pass: {bool(neo4j_password)}")
+                
+                print(f"Connecting to Neo4j: {neo4j_uri}")
                 driver = GraphDatabase.driver(neo4j_uri, auth=(neo4j_user, neo4j_password))
                 
                 with driver.session() as session:
@@ -118,9 +121,12 @@ class handler(BaseHTTPRequestHandler):
                     LIMIT $limit
                     """
                     
+                    print(f"Running Neo4j query for: {query}")
                     result = session.run(cypher_query, query=query, limit=body.get('limit', 10))
                     
+                    count = 0
                     for record in result:
+                        count += 1
                         offshore_results.append({
                             "node_id": record["node_id"],
                             "name": record["name"] or "Unknown",
@@ -139,11 +145,16 @@ class handler(BaseHTTPRequestHandler):
                             "match_score": 75,
                             "source": "offshore_leaks"
                         })
+                    
+                    print(f"Neo4j returned {count} results")
                 
                 driver.close()
                 
             except Exception as e:
+                import traceback
                 offshore_error = str(e)
+                print(f"Neo4j Error: {str(e)}")
+                print(traceback.format_exc())
             
             # Build response
             response_data = {

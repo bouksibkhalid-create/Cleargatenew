@@ -97,7 +97,7 @@ export function EntityCard({ entity, onClick }: EntityCardProps) {
                     </div>
                 )}
 
-                {entity.nationalities && entity.nationalities.length > 0 && (
+                {entity.nationalities && Array.isArray(entity.nationalities) && entity.nationalities.length > 0 && (
                     <div className="info-cell-modern">
                         <div className="info-icon-modern">
                             <Globe className="w-4 h-4" />

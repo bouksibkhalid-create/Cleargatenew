@@ -6,7 +6,7 @@ interface LockScreenProps {
     onUnlock: () => void;
 }
 
-const CORRECT_PASSWORD = 'Kbtasjforce-presidence-1';
+const CORRECT_PASSWORD = 'KB-CS-Presidence-26';
 const ERROR_DISPLAY_DURATION = 600;
 
 const LockScreen: React.FC<LockScreenProps> = ({ onUnlock }) => {

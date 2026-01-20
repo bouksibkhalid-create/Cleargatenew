@@ -1,4 +1,0 @@
-httpx==0.25.2
-pydantic==2.5.0
-ne o4j==5.14.0
-python-dotenv==1.0.0

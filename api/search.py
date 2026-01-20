@@ -18,8 +18,11 @@ if backend_path not in sys.path:
 if root_path not in sys.path:
     sys.path.append(root_path)
 
-from dotenv import load_dotenv
-load_dotenv()
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    pass
 
 # Import original logic (adapted imports)
 # We assume src is in backend/src, so 'from src...' works if backend is in path

@@ -2,7 +2,9 @@
   base = "frontend"
   command = "npm ci --include=dev && npm run build"
   publish = "dist"
-  functions = "../backend/netlify/functions"
+
+[functions]
+  directory = "backend/netlify/functions"
 
 [build.environment]
   PYTHON_VERSION = "3.11"
@@ -14,9 +16,9 @@
   SECRETS_SCAN_ENABLED = "false"
 
 [functions]
-  # python_runtime removed (detected automatically via environment)
+  directory = "backend/netlify/functions"
   # Include src directory for imports
-  included_files = ["../backend/src/**"]
+  included_files = ["backend/src/**"]
 
 [[redirects]]
   from = "/api/*"

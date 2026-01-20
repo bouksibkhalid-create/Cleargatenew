@@ -36,6 +36,8 @@ export default function SearchBar({ onSearch, isLoading }: SearchBarProps) {
                     placeholder="Enter name or entity (e.g., Vladimir Putin, Mossack Fonseca)"
                     disabled={isLoading}
                     autoFocus
+                    id="search-input"
+                    name="query"
                     className="pl-10 pr-10 h-14 text-lg"
                 />
                 <div className="absolute right-3 top-1/2 transform -translate-y-1/2">

@@ -13,7 +13,7 @@
   SECRETS_SCAN_ENABLED = "false"
 
 [functions]
-  directory = "backend/netlify/functions"
+  directory = "netlify/functions"
   # Include src directory for imports
   included_files = ["backend/src/**"]
 

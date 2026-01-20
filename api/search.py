@@ -104,7 +104,7 @@ class handler(BaseHTTPRequestHandler):
                 print("Neo4j connection verified")
                 
                 with driver.session() as session:
-                    # Simplified query - just get basic node info
+                    # Query with connection count
                     cypher_query = """
                     MATCH (n)
                     WHERE toLower(n.name) CONTAINS toLower($search_term)
@@ -115,7 +115,8 @@ class handler(BaseHTTPRequestHandler):
                         coalesce(n.countries, []) as countries,
                         n.jurisdiction as jurisdiction,
                         n.address as address,
-                        coalesce(n.sourceID, 'Offshore Leaks') as source_dataset
+                        coalesce(n.sourceID, 'Offshore Leaks') as source_dataset,
+                        size((n)--()) as connections_count
                     LIMIT $limit
                     """
                     
@@ -139,7 +140,7 @@ class handler(BaseHTTPRequestHandler):
                             "status": None,
                             "address": record.get("address"),
                             "source_dataset": record.get("source_dataset") or "Offshore Leaks",
-                            "connections_count": 0,
+                            "connections_count": record.get("connections_count") or 0,
                             "connections": [],
                             "match_score": 75,
                             "source": "offshore_leaks"

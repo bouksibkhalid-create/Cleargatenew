@@ -1,6 +1,5 @@
 from http.server import BaseHTTPRequestHandler
 import json
-from urllib.parse import urlparse, parse_qs
 
 class handler(BaseHTTPRequestHandler):
     def do_OPTIONS(self):
@@ -11,86 +10,64 @@ class handler(BaseHTTPRequestHandler):
         self.end_headers()
 
     def do_POST(self):
-        self.handle_request('POST')
-
-    def do_GET(self):
-        self.handle_request('GET')
-
-    def handle_request(self, method):
         try:
-            body = {}
-            if method == 'POST':
-                content_length = int(self.headers.get('Content-Length', 0))
-                body_str = self.rfile.read(content_length).decode('utf-8')
-                if body_str:
-                    body = json.loads(body_str)
-            else:
-                parsed = urlparse(self.path)
-                params = parse_qs(parsed.query)
-                body = {k: v[0] for k, v in params.items()}
-
-            query = body.get('query', '')
+            # Read request body
+            content_length = int(self.headers.get('Content-Length', 0))
+            body_str = self.rfile.read(content_length).decode('utf-8') if content_length > 0 else '{}'
+            body = json.loads(body_str)
             
-            # Return mock data for demonstration
-            mock_response = {
+            query = body.get('query', 'Unknown')
+            
+            # Ultra-simple mock response
+            response = {
                 "query": query,
-                "search_type": body.get('search_type', 'exact'),
-                "total_results": 3,
-                "opensanctions_results": [
-                    {
-                        "id": "Q7747",
-                        "name": query if query else "Vladimir Putin",
-                        "schema": "Person",
-                        "aliases": ["Vladimir Vladimirovich Putin", "Владимир Путин"],
-                        "birth_date": "1952-10-07",
-                        "nationalities": ["Russia"],
-                        "countries": ["Russia"],
-                        "is_sanctioned": True,
-                        "sanction_programs": [
-                            {
-                                "program": "EU Sanctions",
-                                "authority": "European Union",
-                                "start_date": "2022-02-25",
-                                "reason": "Actions undermining Ukraine's sovereignty"
-                            },
-                            {
-                                "program": "US OFAC SDN",
-                                "authority": "United States",
-                                "start_date": "2022-02-24",
-                                "reason": "Russian aggression against Ukraine"
-                            }
-                        ],
-                        "datasets": ["eu_fsf", "us_ofac_sdn"],
-                        "url": "https://www.opensanctions.org/entities/Q7747/",
-                        "match_score": 100,
-                        "source": "opensanctions"
-                    }
-                ],
+                "search_type": "exact",
+                "total_results": 1,
+                "opensanctions_results": [{
+                    "id": "demo-1",
+                    "name": query,
+                    "schema": "Person",
+                    "aliases": [],
+                    "birth_date": None,
+                    "nationalities": ["Demo"],
+                    "countries": ["Demo"],
+                    "is_sanctioned": True,
+                    "sanction_programs": [{
+                        "program": "Demo Program",
+                        "authority": "Demo Authority",
+                        "start_date": "2024-01-01",
+                        "reason": "Demo purposes"
+                    }],
+                    "datasets": ["demo"],
+                    "url": "https://demo.com",
+                    "match_score": 100,
+                    "source": "demo"
+                }],
                 "sanctions_io_results": [],
                 "offshore_leaks_results": [],
                 "opensanctions_error": None,
-                "sanctions_io_error": "Demo mode - API not configured",
-                "offshore_leaks_error": "Demo mode - API not configured",
-                "sources_requested": body.get('sources', ["opensanctions", "sanctions_io", "offshore_leaks"])
+                "sanctions_io_error": None,
+                "offshore_leaks_error": None,
+                "sources_requested": ["opensanctions"]
             }
             
             self.send_response(200)
             self.send_header('Content-Type', 'application/json')
             self.send_header('Access-Control-Allow-Origin', '*')
             self.end_headers()
-            self.wfile.write(json.dumps(mock_response).encode('utf-8'))
-
-        except Exception as e:
-            import traceback
-            traceback_str = traceback.format_exc()
-            print(f"ERROR: {str(e)}\n{traceback_str}")
+            self.wfile.write(json.dumps(response).encode('utf-8'))
             
+        except Exception as e:
+            error_response = {
+                "error": "InternalError",
+                "message": str(e),
+                "type": type(e).__name__
+            }
             self.send_response(500)
             self.send_header('Content-Type', 'application/json')
             self.send_header('Access-Control-Allow-Origin', '*')
             self.end_headers()
-            self.wfile.write(json.dumps({
-                "error": "InternalError", 
-                "message": str(e),
-                "traceback": traceback_str
-            }).encode('utf-8'))
+            self.wfile.write(json.dumps(error_response).encode('utf-8'))
+
+    def do_GET(self):
+        self.do_POST()

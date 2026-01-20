@@ -257,14 +257,25 @@ class handler(BaseHTTPRequestHandler):
             self.wfile.write(response.model_dump_json().encode('utf-8'))
 
         except ValidationError as e:
+            import traceback
+            traceback.print_exc()
             self.send_response(400)
             self.send_header('Content-Type', 'application/json')
             self.send_header('Access-Control-Allow-Origin', '*')
             self.end_headers()
             self.wfile.write(ErrorResponse(error="ValidationError", message="Invalid request", details=json.dumps(e.errors())).model_dump_json().encode('utf-8'))
         except Exception as e:
+            import traceback
+            traceback_str = traceback.format_exc()
+            print(f"ERROR: {str(e)}\n{traceback_str}")
+            
             self.send_response(500)
             self.send_header('Content-Type', 'application/json')
             self.send_header('Access-Control-Allow-Origin', '*')
             self.end_headers()
-            self.wfile.write(ErrorResponse(error="InternalError", message=str(e)).model_dump_json().encode('utf-8'))
+            # Return the traceback in the response for easier debugging
+            self.wfile.write(json.dumps({
+                "error": "InternalError", 
+                "message": str(e),
+                "traceback": traceback_str
+            }).encode('utf-8'))

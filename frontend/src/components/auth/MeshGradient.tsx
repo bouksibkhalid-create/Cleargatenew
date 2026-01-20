@@ -4,7 +4,7 @@ interface MeshGradientProps {
     className?: string;
 }
 
-const MeshGradient: React.FC<MeshGradientProps> = ({ className = '' }) => {
+const MeshGradient = ({ className = '' }: MeshGradientProps) => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const mouseRef = useRef({ x: 0, y: 0 });
     const targetRef = useRef({ x: 0, y: 0 });

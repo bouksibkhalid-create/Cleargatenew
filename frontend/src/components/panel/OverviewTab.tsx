@@ -108,13 +108,13 @@ export default function OverviewTab({ entity, onChangeTab }: OverviewTabProps) {
                                     strokeWidth="12"
                                     fill="transparent"
                                     strokeDasharray={351.86}
-                                    strokeDashoffset={351.86 - (351.86 * entity.riskScore) / 100}
-                                    className={entity.riskScore > 75 ? "text-red-500" : entity.riskScore > 30 ? "text-amber-500" : "text-teal-500"}
+                                    strokeDashoffset={351.86 - (351.86 * (entity.riskScore || 0)) / 100}
+                                    className={(entity.riskScore || 0) > 75 ? "text-red-500" : (entity.riskScore || 0) > 30 ? "text-amber-500" : "text-teal-500"}
                                     strokeLinecap="round"
                                 />
                             </svg>
                             <div className="absolute inset-0 flex flex-col items-center justify-center">
-                                <span className="text-3xl font-bold text-gray-900">{entity.riskScore}</span>
+                                <span className="text-3xl font-bold text-gray-900">{entity.riskScore || 0}</span>
                                 <span className="text-xs text-gray-500 uppercase font-medium">Risk Score</span>
                             </div>
                         </div>

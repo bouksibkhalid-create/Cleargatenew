@@ -81,11 +81,11 @@ export default function IntelligencePanel({ isOpen, onClose, entity }: Intellige
                             <div className="flex items-center gap-4">
                                 <div className={cn(
                                     "w-12 h-12 rounded-full flex items-center justify-center text-lg font-bold border-2",
-                                    entity.riskScore > 75 ? "bg-red-50 border-red-200 text-red-700" :
-                                        entity.riskScore > 30 ? "bg-amber-50 border-amber-200 text-amber-700" :
+                                    (entity.riskScore || 0) > 75 ? "bg-red-50 border-red-200 text-red-700" :
+                                        (entity.riskScore || 0) > 30 ? "bg-amber-50 border-amber-200 text-amber-700" :
                                             "bg-teal-50 border-teal-200 text-teal-700"
                                 )}>
-                                    {entity.riskScore}
+                                    {entity.riskScore || 0}
                                 </div>
                                 <div>
                                     <h2 className="text-xl font-bold text-gray-900 line-clamp-1">{entity.name}</h2>

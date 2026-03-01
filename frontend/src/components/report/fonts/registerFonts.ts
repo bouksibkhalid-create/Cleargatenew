@@ -2,10 +2,8 @@ import { Font } from '@react-pdf/renderer';
 
 let fontsRegistered = false;
 
-function fontUrl(path: string): string {
-  const base = typeof window !== 'undefined' ? window.location.origin : '';
-  return `${base}${path}`;
-}
+// Fontsource CDN — serves verified .ttf files (required by @react-pdf/renderer)
+const FS = 'https://cdn.jsdelivr.net/fontsource/fonts';
 
 export function registerFonts() {
   if (fontsRegistered) return;
@@ -14,33 +12,17 @@ export function registerFonts() {
     Font.register({
       family: 'Inter',
       fonts: [
-        { src: fontUrl('/fonts/Inter-Regular.ttf'), fontWeight: 'normal' },
-        { src: fontUrl('/fonts/Inter-Medium.ttf'), fontWeight: 500 },
-        { src: fontUrl('/fonts/Inter-SemiBold.ttf'), fontWeight: 600 },
-        { src: fontUrl('/fonts/Inter-Bold.ttf'), fontWeight: 'bold' },
+        { src: `${FS}/inter@latest/latin-400-normal.ttf`, fontWeight: 'normal' },
+        { src: `${FS}/inter@latest/latin-500-normal.ttf`, fontWeight: 500 },
+        { src: `${FS}/inter@latest/latin-600-normal.ttf`, fontWeight: 600 },
+        { src: `${FS}/inter@latest/latin-700-normal.ttf`, fontWeight: 'bold' },
       ],
     });
 
     Font.register({
       family: 'RobotoMono',
       fonts: [
-        { src: fontUrl('/fonts/RobotoMono-Regular.ttf'), fontWeight: 'normal' },
-      ],
-    });
-
-    Font.register({
-      family: 'Montserrat',
-      fonts: [
-        { src: fontUrl('/fonts/Montserrat-Regular.ttf'), fontWeight: 'normal' },
-        { src: fontUrl('/fonts/Montserrat-Bold.ttf'), fontWeight: 'bold' },
-      ],
-    });
-
-    Font.register({
-      family: 'OpenSans',
-      fonts: [
-        { src: fontUrl('/fonts/OpenSans-Regular.ttf'), fontWeight: 'normal' },
-        { src: fontUrl('/fonts/OpenSans-SemiBold.ttf'), fontWeight: 600 },
+        { src: `${FS}/roboto-mono@latest/latin-400-normal.ttf`, fontWeight: 'normal' },
       ],
     });
   } catch (err) {

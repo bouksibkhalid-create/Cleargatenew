@@ -1,5 +1,6 @@
 """Application settings"""
 
+import os
 from pydantic_settings import BaseSettings
 from typing import Optional
 
@@ -77,6 +78,20 @@ class Settings(BaseSettings):
         "env_file": ".env",
         "case_sensitive": True
     }
+
+    def model_post_init(self, __context: object) -> None:
+        """Fallback: check common alternate env var names from Vercel."""
+        _ALIASES = {
+            "SERPER_API_KEY": ["Serp_Api_Key", "SERP_API_KEY", "serper_api_key"],
+            "ANTHROPIC_API_KEY": ["Anthropic_Api_Key", "ANTHROPIC_API_KEY", "anthropic_api_key"],
+        }
+        for field, alt_names in _ALIASES.items():
+            if getattr(self, field) is None:
+                for alt in alt_names:
+                    val = os.getenv(alt)
+                    if val:
+                        object.__setattr__(self, field, val)
+                        break
 
 
 settings = Settings()

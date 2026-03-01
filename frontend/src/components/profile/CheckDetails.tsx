@@ -5,7 +5,6 @@ interface CheckDetailsProps {
   country: string | null;
   createdAt: string;
   status: string;
-  durationMs: number;
   sourcesFailed: string[];
 }
 
@@ -14,7 +13,6 @@ export default function CheckDetails({
   country,
   createdAt,
   status,
-  durationMs,
   sourcesFailed,
 }: CheckDetailsProps) {
   const statusColor =

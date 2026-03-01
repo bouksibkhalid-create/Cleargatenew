@@ -5,7 +5,6 @@ import type { EntityInfo } from '../../types/profile';
 interface ProfileHeaderProps {
   entity: EntityInfo;
   riskLevel: string;
-  riskColor: string;
   onBack: () => void;
   onDownloadReport: () => void;
   reportButton?: ReactNode;
@@ -28,7 +27,6 @@ const AVATAR_STYLES: Record<string, { bg: string; text: string }> = {
 export default function ProfileHeader({
   entity,
   riskLevel,
-  riskColor,
   onBack,
   onDownloadReport,
   reportButton,

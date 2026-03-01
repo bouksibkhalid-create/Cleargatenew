@@ -90,7 +90,6 @@ export default function EntityProfilePage({
         <ProfileHeader
           entity={profile.entity}
           riskLevel={profile.risk_level}
-          riskColor={profile.risk_color}
           onBack={onBack}
           onDownloadReport={() => {}}
           reportButton={
@@ -103,7 +102,6 @@ export default function EntityProfilePage({
           <div className="lg:col-span-1">
             <RiskScoreGauge
               score={profile.risk_score}
-              riskLevel={profile.risk_level}
               riskColor={profile.risk_color}
             />
           </div>
@@ -134,7 +132,6 @@ export default function EntityProfilePage({
           country={profile.entity.country}
           createdAt={profile.check_created_at}
           status={profile.check_status}
-          durationMs={profile.check_duration_ms}
           sourcesFailed={profile.sources_failed}
         />
       </div>

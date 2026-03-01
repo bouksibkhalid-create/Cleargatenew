@@ -1,10 +1,9 @@
 interface RiskScoreGaugeProps {
   score: number;
-  riskLevel: string;
   riskColor: string;
 }
 
-export default function RiskScoreGauge({ score, riskLevel, riskColor }: RiskScoreGaugeProps) {
+export default function RiskScoreGauge({ score, riskColor }: RiskScoreGaugeProps) {
   const radius = 52;
   const circumference = 2 * Math.PI * radius;
   const arcFraction = 0.75;

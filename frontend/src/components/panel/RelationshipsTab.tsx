@@ -41,7 +41,7 @@ interface RelationshipsTabProps {
 // Node type definitions
 const RELATIONSHIP_TYPES = [
     { type: 'family', label: 'Family Member', icon: User, color: '#ec4899' },
-    { type: 'associate', label: 'Business Associate', icon: Building2, color: '#14b8a6' },
+    { type: 'associate', label: 'Business Associate', icon: Building2, color: '#2563EB' },
     { type: 'company', label: 'Company Director', icon: Building2, color: '#6366f1' },
     { type: 'location', label: 'Shared Address', icon: MapPin, color: '#6b7280' },
     { type: 'transaction', label: 'Financial Link', icon: DollarSign, color: '#f59e0b' },
@@ -490,7 +490,7 @@ function RelationshipsTabInner({ entity }: RelationshipsTabProps) {
                         <Button
                             onClick={() => setIsFullScreenModalOpen(true)}
                             size="sm"
-                            className="bg-teal-600 hover:bg-teal-700 text-white shrink-0"
+                            className="bg-blue-600 hover:bg-blue-700 text-white shrink-0"
                         >
                             <Network className="w-4 h-4 mr-2" />
                             Full Screen
@@ -530,7 +530,7 @@ function RelationshipsTabInner({ entity }: RelationshipsTabProps) {
                     <Controls />
                     <MiniMap
                         nodeColor={(node) => {
-                            if (node.data.isCentral) return '#14b8a6';
+                            if (node.data.isCentral) return '#2563EB';
                             if (node.data.isSanctioned) return '#ef4444';
                             return '#94a3b8';
                         }}
@@ -557,7 +557,7 @@ function RelationshipsTabInner({ entity }: RelationshipsTabProps) {
                 <h4 className="text-sm font-semibold text-gray-900 mb-3">Legend</h4>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-xs">
                     <div className="flex items-center gap-2">
-                        <div className="w-3 h-3 rounded-full bg-teal-500 border-2 border-teal-600"></div>
+                        <div className="w-3 h-3 rounded-full bg-blue-500 border-2 border-blue-600"></div>
                         <span className="text-gray-600">Central Entity</span>
                     </div>
                     <div className="flex items-center gap-2">

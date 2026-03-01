@@ -25,9 +25,10 @@ import { calculateAge, formatDate } from '@/types/entity';
 interface EntityCardProps {
     entity: UnifiedEntity;
     onClick: () => void;
+    onViewProfile?: () => void;
 }
 
-export function EntityCard({ entity, onClick }: EntityCardProps) {
+export function EntityCard({ entity, onClick, onViewProfile }: EntityCardProps) {
     const [showAliases, setShowAliases] = useState(false);
 
     return (
@@ -216,11 +217,27 @@ export function EntityCard({ entity, onClick }: EntityCardProps) {
                 </div>
             </div>
 
-            {/* Action Button */}
-            <button className="view-intelligence-btn-modern">
-                <span>View Full Intelligence Report</span>
-                <ArrowRight className="w-5 h-5" />
-            </button>
+            {/* Action Buttons */}
+            <div className="flex items-center justify-between px-4 pb-3">
+                {onViewProfile ? (
+                    <button
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            onViewProfile();
+                        }}
+                        className="text-sm text-blue-600 hover:text-blue-700 hover:underline font-medium flex items-center gap-1"
+                    >
+                        View Profile
+                        <ArrowRight className="w-4 h-4" />
+                    </button>
+                ) : (
+                    <div />
+                )}
+                <button className="view-intelligence-btn-modern">
+                    <span>View Full Intelligence Report</span>
+                    <ArrowRight className="w-5 h-5" />
+                </button>
+            </div>
         </motion.div>
     );
 }

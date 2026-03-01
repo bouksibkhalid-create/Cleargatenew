@@ -1,6 +1,5 @@
 import { useState, type FormEvent } from 'react';
-import { Lock, Eye, EyeOff } from 'lucide-react';
-import MeshGradient from './MeshGradient';
+import { Shield, Lock, Eye, EyeOff, ArrowRight } from 'lucide-react';
 
 interface LockScreenProps {
     onUnlock: () => void;
@@ -25,7 +24,7 @@ const LockScreen: React.FC<LockScreenProps> = ({ onUnlock }) => {
         if (password === CORRECT_PASSWORD) {
             onUnlock();
         } else {
-            setError('Mot de passe incorrect');
+            setError('Incorrect password');
             setIsShaking(true);
 
             setTimeout(() => {
@@ -36,63 +35,70 @@ const LockScreen: React.FC<LockScreenProps> = ({ onUnlock }) => {
     };
 
     return (
-        <div className="lock-screen">
-            <MeshGradient />
-
-            <div className="lock-screen-content">
+        <div className="lock-screen-v2">
+            <div className="lock-screen-v2-content">
                 {/* Logo */}
-                <div className="lock-screen-header">
-                    <h1 className="cleargate-logo">Cleargate</h1>
-                    <p className="lock-screen-subtitle">
-                        Demo CS de son excellence le président Tshisekedi
+                <div className="flex flex-col items-center gap-3 mb-2">
+                    <div className="w-14 h-14 rounded-2xl bg-blue-600 flex items-center justify-center">
+                        <Shield className="w-7 h-7 text-white" />
+                    </div>
+                    <h1 className="text-2xl font-bold tracking-tight text-gray-900 uppercase">
+                        ClearGate
+                    </h1>
+                    <p className="text-sm text-gray-500 text-center">
+                        Enter the demo password to access the platform
                     </p>
                 </div>
 
                 {/* Password Form */}
                 <form
                     onSubmit={handleSubmit}
-                    className={`lock-screen-form ${isShaking ? 'shake' : ''}`}
+                    className={`w-full max-w-sm flex flex-col gap-4 ${isShaking ? 'shake' : ''}`}
                 >
-                    <div className="password-input-container">
-                        <div className="password-input-wrapper">
-                            <Lock className="password-icon" size={20} />
+                    <div className="flex flex-col gap-2">
+                        <div className="relative">
+                            <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
                             <input
                                 id="password-input"
                                 type={showPassword ? 'text' : 'password'}
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
-                                placeholder="Entrez le mot de passe"
-                                className="password-input"
+                                placeholder="Enter password"
+                                className="w-full pl-11 pr-11 py-3 text-base border border-gray-200 rounded-xl bg-white text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                                 autoFocus
                                 autoComplete="off"
-                                aria-label="Mot de passe"
+                                aria-label="Password"
                                 aria-describedby="error-message"
                                 aria-invalid={error ? 'true' : 'false'}
                             />
                             <button
                                 type="button"
                                 onClick={() => setShowPassword(!showPassword)}
-                                className="password-toggle"
-                                aria-label={showPassword ? 'Masquer le mot de passe' : 'Afficher le mot de passe'}
+                                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors p-0.5"
+                                aria-label={showPassword ? 'Hide password' : 'Show password'}
                             >
-                                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                             </button>
                         </div>
                         {error && (
-                            <div id="error-message" className="error-message" role="alert">
+                            <p id="error-message" className="text-sm text-red-500 text-center" role="alert">
                                 {error}
-                            </div>
+                            </p>
                         )}
                     </div>
 
-                    <button type="submit" className="submit-button">
-                        Accéder
+                    <button
+                        type="submit"
+                        className="w-full inline-flex items-center justify-center gap-2 py-3 bg-blue-600 text-white font-semibold rounded-full hover:bg-blue-700 transition-colors"
+                    >
+                        Access Platform
+                        <ArrowRight className="w-4 h-4" />
                     </button>
                 </form>
 
                 {/* Footer */}
-                <p className="lock-screen-footer">
-                    Accès restreint · Cleargate Intelligence Platform
+                <p className="text-xs text-gray-400 mt-4">
+                    Restricted Access &middot; ClearGate Intelligence Platform
                 </p>
             </div>
         </div>

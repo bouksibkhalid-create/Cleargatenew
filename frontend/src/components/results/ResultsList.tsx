@@ -14,9 +14,10 @@ import IntelligencePanel from '../panel/IntelligencePanel';
 
 interface ResultsListProps {
     data: SearchResponse;
+    onViewProfile?: (entity: { name: string; entityType: string; country?: string }) => void;
 }
 
-export default function ResultsList({ data }: ResultsListProps) {
+export default function ResultsList({ data, onViewProfile }: ResultsListProps) {
     const [activeTab, setActiveTab] = useState<'sanctions' | 'intelligence_graph'>('sanctions');
 
     // Intelligence Panel State
@@ -105,11 +106,17 @@ export default function ResultsList({ data }: ResultsListProps) {
                             'node_id' in entity ? `node-${(entity as any).node_id}` :
                                 Math.random().toString();
 
+                        const unified = toUnifiedEntity(entity);
                         return (
                             <EntityCard
                                 key={key}
-                                entity={toUnifiedEntity(entity)}
+                                entity={unified}
                                 onClick={() => handleEntityClick(entity)}
+                                onViewProfile={onViewProfile ? () => onViewProfile({
+                                    name: unified.name,
+                                    entityType: unified.type === 'person' ? 'individual' : 'organization',
+                                    country: unified.nationalities?.[0],
+                                }) : undefined}
                             />
                         );
                     })}

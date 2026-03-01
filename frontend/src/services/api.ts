@@ -5,6 +5,7 @@
 import axios, { type AxiosInstance, AxiosError } from 'axios';
 import type { SearchRequest, SearchResponse, ErrorResponse } from '../types/search';
 import type { ConnectionRequest, ConnectionResponse } from '../types/graph';
+import type { EntityProfileRequest, EntityProfile } from '../types/profile';
 
 class APIClient {
     private client: AxiosInstance;
@@ -60,6 +61,15 @@ class APIClient {
         const response = await this.client.post<ConnectionResponse>(
             '/connections',
             request
+        );
+        return response.data;
+    }
+
+    async generateProfile(request: EntityProfileRequest): Promise<EntityProfile> {
+        const response = await this.client.post<EntityProfile>(
+            '/profile',
+            request,
+            { timeout: 60000 }  // 60s — full pipeline can take 10–20s
         );
         return response.data;
     }

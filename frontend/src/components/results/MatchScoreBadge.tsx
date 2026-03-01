@@ -28,7 +28,7 @@ export default function MatchScoreBadge({ score }: MatchScoreBadgeProps) {
             className={cn(
                 "font-semibold",
                 score === 100 && "bg-green-100 text-green-800 hover:bg-green-100",
-                score >= 90 && score < 100 && "bg-blue-100 text-blue-800 hover:bg-blue-100",
+                score >= 90 && score < 100 && "bg-blue-50 text-blue-700 hover:bg-blue-50",
                 score >= 80 && score < 90 && "bg-amber-100 text-amber-800 hover:bg-amber-100"
             )}
         >

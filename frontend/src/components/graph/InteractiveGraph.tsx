@@ -96,9 +96,9 @@ export default function InteractiveGraph({
                             properties: node.properties,
                         },
                         style: {
-                            background: isCentral ? '#10b981' : '#64748b',
+                            background: isCentral ? '#2563EB' : '#64748b',
                             color: '#ffffff',
-                            border: isCentral ? '3px solid #059669' : '2px solid #475569',
+                            border: isCentral ? '3px solid #1E40AF' : '2px solid #475569',
                             borderRadius: '8px',
                             padding: '12px 16px',
                             fontSize: '14px',
@@ -204,7 +204,7 @@ export default function InteractiveGraph({
         return (
             <div className="flex items-center justify-center w-full h-full">
                 <div className="text-center">
-                    <div className="w-16 h-16 border-4 border-teal-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+                    <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
                     <p className="text-slate-600 font-medium">Loading relationship graph...</p>
                     <p className="text-slate-500 text-sm mt-1">{initialEntityName}</p>
                 </div>
@@ -223,7 +223,7 @@ export default function InteractiveGraph({
                     <p className="text-slate-600 mb-4">{error}</p>
                     <button
                         onClick={() => window.location.reload()}
-                        className="px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition"
+                        className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
                     >
                         Retry
                     </button>
@@ -275,7 +275,7 @@ export default function InteractiveGraph({
             <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-white px-6 py-3 rounded-lg shadow-lg border border-slate-200 z-10">
                 <div className="flex items-center gap-6 text-sm">
                     <div className="flex items-center gap-2">
-                        <div className="w-4 h-4 rounded bg-emerald-500 border-2 border-emerald-600" />
+                        <div className="w-4 h-4 rounded bg-blue-500 border-2 border-blue-600" />
                         <span className="text-slate-700">Central Entity</span>
                     </div>
                     <div className="flex items-center gap-2">

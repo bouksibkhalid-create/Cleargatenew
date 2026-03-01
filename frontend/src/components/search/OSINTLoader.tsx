@@ -80,9 +80,9 @@ export function OSINTLoader({ query, searchType = 'fuzzy', threshold = 80 }: OSI
                 {/* Header */}
                 <div className="bg-gradient-to-br from-gray-900 to-gray-700 text-white p-6">
                     <div className="flex items-center gap-2 mb-4">
-                        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-teal-500/10 border border-teal-500/30">
-                            <Radar className="w-4 h-4 text-teal-400 animate-spin" style={{ animationDuration: '3s' }} />
-                            <span className="text-sm font-semibold text-teal-400 uppercase tracking-wide">
+                        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-500/10 border border-blue-500/30">
+                            <Radar className="w-4 h-4 text-blue-400 animate-spin" style={{ animationDuration: '3s' }} />
+                            <span className="text-sm font-semibold text-blue-400 uppercase tracking-wide">
                                 Intelligence Gathering
                             </span>
                         </div>
@@ -99,7 +99,7 @@ export function OSINTLoader({ query, searchType = 'fuzzy', threshold = 80 }: OSI
                 <div className="flex items-center gap-4 p-6 bg-white border-b border-gray-200">
                     <div className="flex-1 h-3 bg-gray-200 rounded-full overflow-hidden relative">
                         <motion.div
-                            className="h-full bg-gradient-to-r from-teal-500 to-teal-600 rounded-full relative"
+                            className="h-full bg-gradient-to-r from-blue-500 to-blue-600 rounded-full relative"
                             initial={{ width: 0 }}
                             animate={{ width: `${overallProgress}%` }}
                             transition={{ duration: 0.3 }}
@@ -107,7 +107,7 @@ export function OSINTLoader({ query, searchType = 'fuzzy', threshold = 80 }: OSI
                             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-shimmer" />
                         </motion.div>
                     </div>
-                    <span className="text-xl font-bold text-teal-600 min-w-[4rem] text-right">
+                    <span className="text-xl font-bold text-blue-600 min-w-[4rem] text-right">
                         {overallProgress}%
                     </span>
                 </div>
@@ -122,30 +122,30 @@ export function OSINTLoader({ query, searchType = 'fuzzy', threshold = 80 }: OSI
                 {/* Intelligence Summary */}
                 <div className="p-6 bg-white border-t border-gray-200">
                     <h3 className="flex items-center gap-2 text-base font-bold text-gray-900 mb-4">
-                        <BarChart3 className="w-5 h-5 text-teal-600" />
+                        <BarChart3 className="w-5 h-5 text-blue-600" />
                         Intelligence Summary
                     </h3>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                         <div className="flex items-center gap-2 text-sm text-gray-600">
-                            <Database className="w-4 h-4 text-teal-600 flex-shrink-0" />
+                            <Database className="w-4 h-4 text-blue-600 flex-shrink-0" />
                             <span>Cross-referencing {sources.length} international databases</span>
                         </div>
 
                         <div className="flex items-center gap-2 text-sm text-gray-600">
-                            <Users className="w-4 h-4 text-teal-600 flex-shrink-0" />
+                            <Users className="w-4 h-4 text-blue-600 flex-shrink-0" />
                             <span>Analyzing 2,100,000 entity records</span>
                         </div>
 
                         {searchType === 'fuzzy' && (
                             <div className="flex items-center gap-2 text-sm text-gray-600">
-                                <Sparkles className="w-4 h-4 text-teal-600 flex-shrink-0" />
+                                <Sparkles className="w-4 h-4 text-blue-600 flex-shrink-0" />
                                 <span>Fuzzy matching enabled ({threshold}% threshold)</span>
                             </div>
                         )}
 
                         <div className="flex items-center gap-2 text-sm text-gray-600">
-                            <Shield className="w-4 h-4 text-teal-600 flex-shrink-0" />
+                            <Shield className="w-4 h-4 text-blue-600 flex-shrink-0" />
                             <span>Compliance check in progress</span>
                         </div>
                     </div>

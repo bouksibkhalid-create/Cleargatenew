@@ -37,6 +37,21 @@ class Settings(BaseSettings):
     DEFAULT_GRAPH_DEPTH: int = 2
     DEFAULT_GRAPH_NODES: int = 50
     
+    # AI Analysis (Anthropic Claude)
+    ANTHROPIC_API_KEY: Optional[str] = None
+    AI_ANALYSIS_MODEL: str = "claude-sonnet-4-20250514"
+    AI_ANALYSIS_MAX_TOKENS: int = 1024
+    AI_ANALYSIS_TIMEOUT: float = 30.0
+    
+    # Adverse Media
+    SERPER_API_KEY: Optional[str] = None
+    GOOGLE_CSE_API_KEY: Optional[str] = None
+    GOOGLE_CSE_ENGINE_ID: Optional[str] = None
+    ADVERSE_MEDIA_PROVIDER: str = "serper"
+    ADVERSE_MEDIA_MAX_QUERIES: int = 5
+    ADVERSE_MEDIA_QUERY_DELAY: float = 0.2
+    ADVERSE_MEDIA_DEDUP_THRESHOLD: int = 85
+    
     # Logging
     LOG_LEVEL: str = "INFO"
 

@@ -17,8 +17,8 @@ export function StatsCards() {
 
                     <StatsCard
                         icon={<Users className="w-6 h-6" />}
-                        iconBg="bg-teal-100"
-                        iconColor="text-teal-600"
+                        iconBg="bg-blue-100"
+                        iconColor="text-blue-600"
                         number={statsData.sanctioned_individuals}
                         label="Sanctioned individuals"
                     />

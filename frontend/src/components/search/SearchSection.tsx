@@ -33,7 +33,7 @@ export default function SearchSection({ onSearch, isLoading }: SearchSectionProp
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
                     placeholder="Enter a name, organization, or vessel..."
-                    className="w-full pl-12 pr-12 py-3 text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+                    className="w-full pl-12 pr-12 py-3 text-base border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     autoFocus
                     disabled={isLoading}
                 />
@@ -51,7 +51,7 @@ export default function SearchSection({ onSearch, isLoading }: SearchSectionProp
             <button
                 type="submit"
                 disabled={!query.trim() || isLoading}
-                className="mt-4 w-full sm:w-auto px-8 py-3 bg-teal-600 text-white font-semibold rounded-lg hover:bg-teal-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
+                className="mt-4 w-full sm:w-auto px-8 py-3 bg-blue-600 text-white font-semibold rounded-full hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
             >
                 {isLoading ? (
                     <>

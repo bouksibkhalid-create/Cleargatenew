@@ -1,0 +1,23 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "frontend",
+      "runtimeExecutable": "/Users/oberrahal/.nvm/versions/node/v24.13.0/bin/node",
+      "runtimeArgs": ["frontend/node_modules/.bin/vite", "--port", "3000"],
+      "port": 3000
+    },
+    {
+      "name": "backend-flask",
+      "runtimeExecutable": "/bin/bash",
+      "runtimeArgs": ["-c", "cd /Users/oberrahal/Documents/Cleargatenew-main && /usr/bin/python3 dev_server.py"],
+      "port": 8888
+    },
+    {
+      "name": "backend-simple",
+      "runtimeExecutable": "/bin/bash",
+      "runtimeArgs": ["-c", "cd /Users/oberrahal/Documents/Cleargatenew-main && /usr/bin/python3 backend/dev_server.py"],
+      "port": 8889
+    }
+  ]
+}

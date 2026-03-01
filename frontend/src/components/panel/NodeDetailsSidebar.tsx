@@ -64,7 +64,7 @@ export default function NodeDetailsSidebar({
             {(data.isSanctioned || data.isPEP || isCentral) && (
                 <div className="sidebar-badges">
                     {isCentral && (
-                        <Badge className="bg-teal-100 text-teal-800 border-teal-200">
+                        <Badge className="bg-blue-100 text-blue-800 border-blue-200">
                             <Network className="w-3 h-3" />
                             Central Entity
                         </Badge>

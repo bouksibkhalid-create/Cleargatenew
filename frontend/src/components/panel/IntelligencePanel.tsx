@@ -83,7 +83,7 @@ export default function IntelligencePanel({ isOpen, onClose, entity }: Intellige
                                     "w-12 h-12 rounded-full flex items-center justify-center text-lg font-bold border-2",
                                     (entity.riskScore || 0) > 75 ? "bg-red-50 border-red-200 text-red-700" :
                                         (entity.riskScore || 0) > 30 ? "bg-amber-50 border-amber-200 text-amber-700" :
-                                            "bg-teal-50 border-teal-200 text-teal-700"
+                                            "bg-blue-50 border-blue-200 text-blue-700"
                                 )}>
                                     {entity.riskScore || 0}
                                 </div>
@@ -199,16 +199,16 @@ function TabButton({
             className={cn(
                 "flex items-center gap-2 py-4 border-b-2 text-sm font-medium transition-colors relative",
                 active
-                    ? "border-teal-600 text-teal-700"
+                    ? "border-blue-600 text-blue-700"
                     : "border-transparent text-gray-500 hover:text-gray-900 hover:border-gray-200"
             )}
         >
-            <Icon className={cn("w-4 h-4", active ? "text-teal-600" : "text-gray-400")} />
+            <Icon className={cn("w-4 h-4", active ? "text-blue-600" : "text-gray-400")} />
             {label}
             {count !== undefined && count > 0 && (
                 <span className={cn(
                     "px-2 py-0.5 rounded-full text-xs",
-                    active ? "bg-teal-100 text-teal-700" : "bg-gray-200 text-gray-600"
+                    active ? "bg-blue-100 text-blue-700" : "bg-gray-200 text-gray-600"
                 )}>
                     {count}
                 </span>

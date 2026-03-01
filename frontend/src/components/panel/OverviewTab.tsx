@@ -79,10 +79,10 @@ export default function OverviewTab({ entity, onChangeTab }: OverviewTabProps) {
             )}
 
             {/* Risk Assessment Card */}
-            <Card className="overflow-hidden border-l-4 border-l-teal-500">
+            <Card className="overflow-hidden border-l-4 border-l-blue-500">
                 <CardHeader className="bg-gray-50/50 pb-4">
                     <CardTitle className="text-base font-semibold text-gray-700 flex items-center gap-2">
-                        <ShieldCheck className="w-5 h-5 text-teal-600" />
+                        <ShieldCheck className="w-5 h-5 text-blue-600" />
                         Risk Assessment
                     </CardTitle>
                 </CardHeader>
@@ -109,7 +109,7 @@ export default function OverviewTab({ entity, onChangeTab }: OverviewTabProps) {
                                     fill="transparent"
                                     strokeDasharray={351.86}
                                     strokeDashoffset={351.86 - (351.86 * (entity.riskScore || 0)) / 100}
-                                    className={(entity.riskScore || 0) > 75 ? "text-red-500" : (entity.riskScore || 0) > 30 ? "text-amber-500" : "text-teal-500"}
+                                    className={(entity.riskScore || 0) > 75 ? "text-red-500" : (entity.riskScore || 0) > 30 ? "text-amber-500" : "text-blue-500"}
                                     strokeLinecap="round"
                                 />
                             </svg>
@@ -290,7 +290,7 @@ export default function OverviewTab({ entity, onChangeTab }: OverviewTabProps) {
                                     <div className="mt-2 space-y-1">
                                         {enhanced.positions.map((pos, idx) => (
                                             <div key={idx} className="text-sm text-gray-700 flex items-start gap-2">
-                                                <div className="w-1.5 h-1.5 rounded-full bg-teal-500 mt-1.5" />
+                                                <div className="w-1.5 h-1.5 rounded-full bg-blue-500 mt-1.5" />
                                                 {pos}
                                             </div>
                                         ))}
@@ -385,7 +385,7 @@ export default function OverviewTab({ entity, onChangeTab }: OverviewTabProps) {
                                 <div className="flex items-center gap-2 mt-1">
                                     <div className="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden">
                                         <div
-                                            className="h-full bg-teal-500 rounded-full"
+                                            className="h-full bg-blue-500 rounded-full"
                                             style={{ width: `${enhanced.data_completeness_score}%` }}
                                         />
                                     </div>
@@ -419,7 +419,7 @@ export default function OverviewTab({ entity, onChangeTab }: OverviewTabProps) {
                         href={entity.sourceUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-sm text-teal-600 hover:text-teal-700 flex items-center gap-1"
+                        className="text-sm text-blue-600 hover:text-blue-700 flex items-center gap-1"
                     >
                         View Source Data
                         <ExternalLink className="w-3 h-3" />

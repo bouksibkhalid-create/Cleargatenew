@@ -2,7 +2,7 @@
  * Main application component (Phase 2: Custom Styling + OSINT Loader + Simplified Search)
  */
 
-import { Search } from 'lucide-react';
+import { Shield } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import SearchSection from './components/search/SearchSection';
 import ResultsList from './components/results/ResultsList';
@@ -15,24 +15,43 @@ import { OSINTLoader } from './components/search/OSINTLoader';
 import { useSearch } from './hooks/useSearch';
 import { useState, useEffect } from 'react';
 import LockScreen from './components/auth/LockScreen';
+import LandingPage from './components/landing/LandingPage';
+import EntityProfilePage from './components/profile/EntityProfilePage';
 
 function App() {
   const { data, isLoading, error, search, reset } = useSearch();
   const [currentQuery, setCurrentQuery] = useState('');
   const [isUnlocked, setIsUnlocked] = useState(false);
+  const [showLanding, setShowLanding] = useState(true);
+  const [currentView, setCurrentView] = useState<'home' | 'results' | 'profile'>('home');
+  const [profileTarget, setProfileTarget] = useState<{
+    name: string;
+    entityType: string;
+    country?: string;
+  } | null>(null);
 
   // Check session storage on mount
   useEffect(() => {
     const unlocked = sessionStorage.getItem('cleargate_unlocked');
     if (unlocked === 'true') {
       setIsUnlocked(true);
+      setShowLanding(false);
     }
   }, []);
+
+  const handleAccessDemo = () => {
+    setShowLanding(false);
+  };
 
   const handleUnlock = () => {
     setIsUnlocked(true);
     sessionStorage.setItem('cleargate_unlocked', 'true');
   };
+
+  // Show landing page first
+  if (showLanding && !isUnlocked) {
+    return <LandingPage onAccessDemo={handleAccessDemo} />;
+  }
 
   // Show lock screen if not unlocked
   if (!isUnlocked) {
@@ -41,9 +60,33 @@ function App() {
 
   const handleSearch = (query: string) => {
     setCurrentQuery(query);
+    setCurrentView('results');
     // Auto-enable fuzzy matching and all sources
     search(query);
   };
+
+  const handleViewProfile = (entity: { name: string; entityType: string; country?: string }) => {
+    setProfileTarget(entity);
+    setCurrentView('profile');
+  };
+
+  const handleBackFromProfile = () => {
+    setCurrentView('results');
+  };
+
+  // Profile view — full-page, no header/footer chrome
+  if (currentView === 'profile' && profileTarget) {
+    return (
+      <ToastProvider>
+        <EntityProfilePage
+          entityName={profileTarget.name}
+          entityType={profileTarget.entityType}
+          country={profileTarget.country}
+          onBack={handleBackFromProfile}
+        />
+      </ToastProvider>
+    );
+  }
 
   return (
     <ToastProvider>
@@ -53,11 +96,11 @@ function App() {
           <div className="container mx-auto px-4">
             <div className="flex items-center h-16">
               <button
-                onClick={reset}
+                onClick={() => { reset(); setCurrentView('home'); }}
                 className="flex items-center hover:opacity-70 transition-opacity cursor-pointer"
                 aria-label="Return to home"
               >
-                <Search className="mr-3 h-6 w-6 text-teal-600" />
+                <Shield className="mr-3 h-6 w-6 text-blue-600" />
                 <h1 className="text-xl font-semibold text-gray-900">ClearGate</h1>
               </button>
             </div>
@@ -148,7 +191,7 @@ function App() {
           {/* Results */}
           {data && !error && !isLoading && (
             <div className="container mx-auto px-4 pb-8">
-              <ResultsList data={data} />
+              <ResultsList data={data} onViewProfile={handleViewProfile} />
             </div>
           )}
         </main>

@@ -10,6 +10,25 @@ from src.models.responses import (
     SearchResponse,
     ErrorResponse,
 )
+from src.models.adverse_media import (
+    AdverseMediaRequest,
+    AdverseMediaHit,
+    AdverseMediaResponse,
+)
+from src.models.risk_scoring import (
+    RiskScoringInput,
+    RiskAssessment,
+)
+from src.models.ai_analysis import (
+    AIAnalysisInput,
+    AIAnalysisResult,
+)
+from src.models.entity_profile import (
+    EntityProfileRequest,
+    EntityProfile,
+    EntityInfo,
+    SourceItem,
+)
 from src.models.graph_models import (
     GraphNode,
     GraphEdge,
@@ -29,6 +48,17 @@ __all__ = [
     "AggregatedResults",
     "SearchResponse",
     "ErrorResponse",
+    "AdverseMediaRequest",
+    "AdverseMediaHit",
+    "AdverseMediaResponse",
+    "RiskScoringInput",
+    "RiskAssessment",
+    "AIAnalysisInput",
+    "AIAnalysisResult",
+    "EntityProfileRequest",
+    "EntityProfile",
+    "EntityInfo",
+    "SourceItem",
     "GraphNode",
     "GraphEdge",
     "ConnectionGraph",

@@ -15,7 +15,7 @@ export function SourceItem({ flag, name, description, features }: Source) {
             <ul className="flex flex-col gap-2">
                 {features.map((feature, idx) => (
                     <li key={idx} className="text-sm text-gray-600 pl-6 relative">
-                        <span className="absolute left-2 text-teal-500">•</span>
+                        <span className="absolute left-2 text-blue-500">•</span>
                         {feature}
                     </li>
                 ))}

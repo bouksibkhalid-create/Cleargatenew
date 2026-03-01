@@ -54,13 +54,29 @@ neo4j_breaker = CircuitBreaker(
     listeners=[_on_state_change]
 )
 
+adverse_media_breaker = CircuitBreaker(
+    name="adverse_media",
+    fail_max=FAIL_MAX,
+    reset_timeout=RESET_TIMEOUT,
+    listeners=[_on_state_change]
+)
+
+ai_analysis_breaker = CircuitBreaker(
+    name="ai_analysis",
+    fail_max=3,
+    reset_timeout=60,
+    listeners=[_on_state_change]
+)
+
 
 def get_breaker(service_name: str) -> CircuitBreaker:
     """Get circuit breaker for a service"""
     breakers = {
         "opensanctions": opensanctions_breaker,
         "sanctions_io": sanctions_io_breaker,
-        "neo4j": neo4j_breaker
+        "neo4j": neo4j_breaker,
+        "adverse_media": adverse_media_breaker,
+        "ai_analysis": ai_analysis_breaker,
     }
     return breakers.get(service_name, opensanctions_breaker)
 
@@ -77,6 +93,8 @@ __all__ = [
     "opensanctions_breaker",
     "sanctions_io_breaker", 
     "neo4j_breaker",
+    "adverse_media_breaker",
+    "ai_analysis_breaker",
     "get_breaker",
     "is_circuit_open"
 ]

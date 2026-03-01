@@ -68,21 +68,32 @@ export async function generateReport(
   theme: ReportTheme = clearGateTheme
 ): Promise<void> {
   // 1. Register fonts
+  console.log('[Report] Step 1: Registering fonts…');
   registerFonts();
 
   // 2. Transform data
+  console.log('[Report] Step 2: Transforming profile data…');
   const reportData = transformToReportData(profile, theme);
 
   // 3. Compute graph layout if graph data exists
   if (profile.graph && profile.graph.nodes.length > 0) {
+    console.log('[Report] Step 3: Computing graph layout…');
     reportData.computed.graph_layout = computeGraphLayout(profile.graph);
   }
 
   // 4. Build document and generate blob
-  const doc = React.createElement(ReportDocument, { data: reportData, theme }) as any;
-  const blob = await pdf(doc).toBlob();
+  console.log('[Report] Step 4: Rendering PDF document…');
+  let blob: Blob;
+  try {
+    const doc = React.createElement(ReportDocument, { data: reportData, theme }) as any;
+    blob = await pdf(doc).toBlob();
+  } catch (renderErr) {
+    console.error('[Report] PDF render failed:', renderErr);
+    throw renderErr;
+  }
 
   // 5. Trigger browser download
+  console.log('[Report] Step 5: Triggering download…');
   const url = URL.createObjectURL(blob);
   const link = globalThis.document.createElement('a');
   link.href = url;
@@ -91,4 +102,5 @@ export async function generateReport(
   }.pdf`;
   link.click();
   URL.revokeObjectURL(url);
+  console.log('[Report] Done — download triggered.');
 }

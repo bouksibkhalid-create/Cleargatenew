@@ -7,7 +7,7 @@ import ProfileLoadingState from './ProfileLoadingState';
 import ReportDownloadButton from '../report/ReportDownloadButton';
 import { adaptProfileForReport } from '../report/utils/profileAdapter';
 import ProfileTabs, { type ProfileTabId } from './tabs/ProfileTabs';
-import { AlertTriangle, RotateCcw } from 'lucide-react';
+import { AlertTriangle, RotateCcw, Info } from 'lucide-react';
 
 interface EntityProfilePageProps {
   entityName: string;
@@ -134,6 +134,27 @@ function EntityProfileContent({
             />
           </div>
         </div>
+
+        {/* Data source warning if any source failed */}
+        {profile.sources_failed.length > 0 && (
+          <div className="bg-amber-50 border border-amber-200 rounded-lg px-4 py-3 flex items-start gap-3">
+            <Info className="w-4 h-4 text-amber-600 mt-0.5 flex-shrink-0" />
+            <div className="text-sm">
+              <p className="font-medium text-amber-800">
+                {profile.check_status === 'partial' ? 'Partial Results' : 'Data Source Issues'}
+              </p>
+              <p className="text-amber-700 mt-0.5">
+                The following data sources could not be reached:{' '}
+                {profile.sources_failed.map((s) =>
+                  s === 'adverse_media' ? 'Adverse Media' :
+                  s === 'sanctions' ? 'Sanctions' :
+                  s === 'offshore' ? 'Offshore Leaks' : s
+                ).join(', ')}.
+                Results may be incomplete.
+              </p>
+            </div>
+          </div>
+        )}
 
         {/* Zone B + C: Tab System */}
         <ProfileTabs

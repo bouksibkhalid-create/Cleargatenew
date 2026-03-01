@@ -22,12 +22,13 @@ export default function ReportDownloadButton({
     try {
       setGenerating(true);
       await generateReport(profile, theme);
-    } catch (error) {
+    } catch (error: any) {
+      console.error('Report generation error:', error);
       if (error instanceof RangeError) {
         alert('Report too large to generate. Try reducing graph depth.');
       } else {
-        alert('Failed to generate report. Please try again.');
-        console.error('Report generation error:', error);
+        const msg = error?.message || String(error);
+        alert(`Failed to generate report: ${msg}`);
       }
     } finally {
       setGenerating(false);

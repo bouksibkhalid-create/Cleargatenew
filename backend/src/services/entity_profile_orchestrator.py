@@ -129,6 +129,11 @@ class EntityProfileOrchestrator:
             if error:
                 errors[name] = error
 
+        # Detect graceful failures (e.g., missing API key returns empty response with error field)
+        media_result = results.get("adverse_media")
+        if media_result and hasattr(media_result, "error") and media_result.error:
+            errors.setdefault("adverse_media", media_result.error)
+
         return CollectionResults(
             sanctions=results.get("sanctions"),
             offshore=results.get("offshore"),

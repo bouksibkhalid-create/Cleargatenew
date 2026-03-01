@@ -219,21 +219,25 @@ export function EntityCard({ entity, onClick, onViewProfile }: EntityCardProps) 
 
             {/* Action Buttons */}
             <div className="flex items-center justify-between px-4 pb-3">
-                {onViewProfile ? (
-                    <button
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            onViewProfile();
-                        }}
-                        className="text-sm text-blue-600 hover:text-blue-700 hover:underline font-medium flex items-center gap-1"
-                    >
-                        View Profile
-                        <ArrowRight className="w-4 h-4" />
-                    </button>
-                ) : (
-                    <div />
-                )}
-                <button className="view-intelligence-btn-modern">
+                <button
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        if (onViewProfile) onViewProfile();
+                        else onClick();
+                    }}
+                    className="text-sm text-blue-600 hover:text-blue-700 hover:underline font-medium flex items-center gap-1"
+                >
+                    View Profile
+                    <ArrowRight className="w-4 h-4" />
+                </button>
+                <button
+                    className="view-intelligence-btn-modern"
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        if (onViewProfile) onViewProfile();
+                        else onClick();
+                    }}
+                >
                     <span>View Full Intelligence Report</span>
                     <ArrowRight className="w-5 h-5" />
                 </button>

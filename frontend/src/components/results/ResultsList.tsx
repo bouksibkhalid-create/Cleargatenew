@@ -4,13 +4,12 @@
 
 import { useState } from 'react';
 import type { SearchResponse } from '../../types/search';
-import type { Entity, UnifiedEntity } from '../../types/entity';
+import type { Entity } from '../../types/entity';
 import { toUnifiedEntity } from '../../types/entity';
 import { EntityCard } from './EntityCard';
 import ResultsTabs from './ResultsTabs';
 import EmptyState from './EmptyState';
 import ExportButton from '../../components/export/ExportButton';
-import IntelligencePanel from '../panel/IntelligencePanel';
 
 interface ResultsListProps {
     data: SearchResponse;
@@ -19,10 +18,6 @@ interface ResultsListProps {
 
 export default function ResultsList({ data, onViewProfile }: ResultsListProps) {
     const [activeTab, setActiveTab] = useState<'sanctions' | 'intelligence_graph'>('sanctions');
-
-    // Intelligence Panel State
-    const [panelOpen, setPanelOpen] = useState(false);
-    const [selectedEntity, setSelectedEntity] = useState<UnifiedEntity | null>(null);
 
     if (data.total_results === 0 && data.sources_failed.length === 0 && !data.offshore_connections_found) {
         return <EmptyState query={data.query} />;
@@ -57,9 +52,13 @@ export default function ResultsList({ data, onViewProfile }: ResultsListProps) {
     }
 
     const handleEntityClick = (entity: Entity) => {
+        if (!onViewProfile) return;
         const unified = toUnifiedEntity(entity);
-        setSelectedEntity(unified);
-        setPanelOpen(true);
+        onViewProfile({
+            name: unified.name,
+            entityType: unified.type === 'person' ? 'individual' : 'organization',
+            country: unified.nationalities?.[0],
+        });
     };
 
     return (
@@ -123,12 +122,6 @@ export default function ResultsList({ data, onViewProfile }: ResultsListProps) {
                 </div>
             )}
 
-            {/* Intelligence Panel */}
-            <IntelligencePanel
-                isOpen={panelOpen}
-                onClose={() => setPanelOpen(false)}
-                entity={selectedEntity}
-            />
         </div>
     );
 }

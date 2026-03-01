@@ -1,14 +1,12 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useProfile } from '../../hooks/useProfile';
 import ProfileHeader from './ProfileHeader';
 import RiskScoreGauge from './RiskScoreGauge';
 import HitSummaryCards from './HitSummaryCards';
-import AISummarySection from './AISummarySection';
-import SourcesList from './SourcesList';
-import CheckDetails from './CheckDetails';
 import ProfileLoadingState from './ProfileLoadingState';
 import ReportDownloadButton from '../report/ReportDownloadButton';
 import { adaptProfileForReport } from '../report/utils/profileAdapter';
+import ProfileTabs, { type ProfileTabId } from './tabs/ProfileTabs';
 import { AlertTriangle, RotateCcw } from 'lucide-react';
 
 interface EntityProfilePageProps {
@@ -84,9 +82,29 @@ export default function EntityProfilePage({
   const reportProfile = adaptProfileForReport(profile);
 
   return (
+    <EntityProfileContent
+      profile={profile}
+      reportProfile={reportProfile}
+      onBack={onBack}
+    />
+  );
+}
+
+function EntityProfileContent({
+  profile,
+  reportProfile,
+  onBack,
+}: {
+  profile: import('../../types/profile').EntityProfile;
+  reportProfile: any;
+  onBack: () => void;
+}) {
+  const [activeTab, setActiveTab] = useState<ProfileTabId>('overview');
+
+  return (
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-5xl mx-auto px-6 py-8 space-y-8">
-        {/* Header */}
+        {/* Zone A: Fixed Header */}
         <ProfileHeader
           entity={profile.entity}
           riskLevel={profile.risk_level}
@@ -110,29 +128,18 @@ export default function EntityProfilePage({
               sanctionsHits={profile.sanctions_hits}
               pepHits={profile.pep_hits}
               adverseNewsCount={profile.adverse_news_count}
+              onSanctionsClick={() => setActiveTab('sanctions')}
+              onPepClick={() => setActiveTab('pep')}
+              onAdverseClick={() => setActiveTab('adverse-media')}
             />
           </div>
         </div>
 
-        {/* AI Summary */}
-        <AISummarySection
-          summary={profile.ai_summary}
-          keyFindings={profile.ai_key_findings}
-          recommendation={profile.ai_recommendation}
-          modelUsed={profile.ai_model_used}
-          generationTimeMs={profile.ai_generation_time_ms}
-        />
-
-        {/* Sources & References */}
-        <SourcesList sources={profile.sources} />
-
-        {/* Check Details */}
-        <CheckDetails
-          entityType={profile.entity.entity_type}
-          country={profile.entity.country}
-          createdAt={profile.check_created_at}
-          status={profile.check_status}
-          sourcesFailed={profile.sources_failed}
+        {/* Zone B + C: Tab System */}
+        <ProfileTabs
+          profile={profile}
+          activeTab={activeTab}
+          onTabChange={setActiveTab}
         />
       </div>
     </div>

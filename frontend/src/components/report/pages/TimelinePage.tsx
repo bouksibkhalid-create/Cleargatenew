@@ -74,7 +74,7 @@ export default function TimelinePage({ data, theme }: TimelinePageProps) {
                 {event.description}
               </Text>
               {event.source && (
-                <Text style={{ fontFamily: theme.fonts.body, fontSize: 6, color: theme.colors.textLight, marginTop: 2, fontStyle: 'italic' }}>
+                <Text style={{ fontFamily: theme.fonts.body, fontSize: 6, color: theme.colors.textLight, marginTop: 2 }}>
                   Source: {event.source}
                 </Text>
               )}

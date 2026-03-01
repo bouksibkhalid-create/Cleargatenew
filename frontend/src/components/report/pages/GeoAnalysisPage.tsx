@@ -68,7 +68,7 @@ export default function GeoAnalysisPage({ data, theme }: GeoAnalysisPageProps) {
         })}
         {countries.length === 0 && (
           <View style={s.tableRow}>
-            <Text style={[s.tableCell, { width: '100%', textAlign: 'center', fontStyle: 'italic' }]}>
+            <Text style={[s.tableCell, { width: '100%', textAlign: 'center' }]}>
               No countries identified
             </Text>
           </View>

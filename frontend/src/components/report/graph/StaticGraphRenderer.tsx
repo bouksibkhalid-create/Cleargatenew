@@ -62,7 +62,7 @@ export default function StaticGraphRenderer({ layout, theme, totalNodeCount, lan
       </View>
 
       {hasMore && (
-        <Text style={{ fontFamily: theme.fonts.body, fontSize: 7, color: theme.colors.textLight, fontStyle: 'italic', textAlign: 'center', marginTop: 8 }}>
+        <Text style={{ fontFamily: theme.fonts.body, fontSize: 7, color: theme.colors.textLight, textAlign: 'center', marginTop: 8 }}>
           {labels.additionalConnections}
         </Text>
       )}

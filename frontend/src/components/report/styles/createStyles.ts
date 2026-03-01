@@ -402,7 +402,6 @@ export function createStyles(theme: ReportTheme) {
       fontSize: 9,
       color: theme.colors.textLight,
       lineHeight: 1.5,
-      fontStyle: 'italic',
     },
     caption: {
       fontFamily: theme.fonts.body,

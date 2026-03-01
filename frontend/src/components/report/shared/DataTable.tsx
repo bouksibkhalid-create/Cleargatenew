@@ -38,7 +38,7 @@ export default function DataTable({ columns, rows, theme }: DataTableProps) {
       ))}
       {rows.length === 0 && (
         <View style={s.tableRow}>
-          <Text style={[s.tableCell, { width: '100%', textAlign: 'center', fontStyle: 'italic' }]}>
+          <Text style={[s.tableCell, { width: '100%', textAlign: 'center' }]}>
             No data available
           </Text>
         </View>

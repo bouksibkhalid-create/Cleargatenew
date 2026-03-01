@@ -71,7 +71,7 @@ export default function AdverseMediaPage({ data, theme }: AdverseMediaPageProps)
                 {finding.snippet}
               </Text>
               {finding.related_entity && (
-                <Text style={{ fontFamily: theme.fonts.body, fontSize: 7, color: theme.colors.textLight, marginTop: 3, fontStyle: 'italic' }}>
+                <Text style={{ fontFamily: theme.fonts.body, fontSize: 7, color: theme.colors.textLight, marginTop: 3 }}>
                   Related: {finding.related_entity}
                 </Text>
               )}

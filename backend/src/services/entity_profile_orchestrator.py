@@ -157,6 +157,7 @@ class EntityProfileOrchestrator:
             result = await coro
             return (name, result, None)
         except Exception as exc:
+            print(f"[PIPELINE ERROR] {name}: {exc}")
             logger.error(
                 "data_collection_failed",
                 source=name,

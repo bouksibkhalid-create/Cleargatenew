@@ -48,6 +48,14 @@ class handler(BaseHTTPRequestHandler):
             finally:
                 loop.close()
 
+            # Debug: surface pipeline errors in Vercel logs
+            print(f"[PROFILE] check_status={profile.check_status}")
+            print(f"[PROFILE] sources_succeeded={profile.sources_succeeded}")
+            print(f"[PROFILE] sources_failed={profile.sources_failed}")
+            print(f"[PROFILE] adverse_news_count={profile.adverse_news_count}")
+            print(f"[PROFILE] adverse_media_hits_len={len(profile.adverse_media_hits)}")
+            print(f"[PROFILE] SERPER_API_KEY set={bool(settings.SERPER_API_KEY)}")
+
             # Return response
             self.send_response(200)
             self.send_header('Content-Type', 'application/json')

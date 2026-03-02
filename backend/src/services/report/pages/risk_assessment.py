@@ -1,4 +1,4 @@
-"""Page 10 — Risk Assessment by Domain: horizontal rows with risk level badges."""
+"""Page 10 — Risk Assessment by Domain: horizontal bar chart rows with colored fills."""
 
 from typing import List
 
@@ -24,16 +24,20 @@ DOMAIN_KEYS = [
 ]
 
 
-class DomainRiskRow(Flowable):
-    """Single row: domain label on left, risk-level badge on right."""
+class DomainRiskBar(Flowable):
+    """Horizontal bar: domain label left, colored bar proportional to risk, risk label right."""
 
-    ROW_H = 36
+    ROW_H = 32
+    LABEL_W = 160
+    BAR_GAP = 10
+    BADGE_W = 90
 
-    def __init__(self, domain_label: str, risk_label: str, risk_color: str):
+    def __init__(self, domain_label: str, risk_label: str, risk_color: str, risk_pct: float):
         super().__init__()
         self.domain_label = domain_label
         self.risk_label = risk_label
         self.risk_color = risk_color
+        self.risk_pct = risk_pct  # 0.0 - 1.0
         self.width = Layout.CONTENT_WIDTH
         self.height = self.ROW_H
 
@@ -41,27 +45,38 @@ class DomainRiskRow(Flowable):
         c = self.canv
         W = self.width
         H = self.height
-
-        # Light background
-        c.setFillColor(HexColor(Colors.GRAY_100))
-        c.roundRect(0, 0, W, H, 4, fill=1, stroke=0)
+        LW = self.LABEL_W
+        BW = self.BADGE_W
 
         # Domain label
-        c.setFont(Fonts.SEMIBOLD, FontSizes.BODY)
+        c.setFont(Fonts.SEMIBOLD, 9)
         c.setFillColor(HexColor(Colors.GRAY_700))
-        c.drawString(14, H / 2 - 4, self.domain_label)
+        c.drawString(0, H / 2 - 3, self.domain_label)
 
-        # Badge
-        badge_w = 100
-        badge_h = 22
-        badge_x = W - badge_w - 14
+        # Bar track (gray background)
+        bar_x = LW
+        bar_w = W - LW - BW - self.BAR_GAP * 2
+        bar_h = 14
+        bar_y = (H - bar_h) / 2
+
+        c.setFillColor(HexColor(Colors.GRAY_200))
+        c.roundRect(bar_x, bar_y, bar_w, bar_h, 3, fill=1, stroke=0)
+
+        # Colored fill
+        fill_w = max(bar_w * self.risk_pct, 10)
+        c.setFillColor(HexColor(self.risk_color))
+        c.roundRect(bar_x, bar_y, fill_w, bar_h, 3, fill=1, stroke=0)
+
+        # Risk label badge
+        badge_x = W - BW
+        badge_h = 20
         badge_y = (H - badge_h) / 2
         c.setFillColor(HexColor(self.risk_color))
-        c.roundRect(badge_x, badge_y, badge_w, badge_h, 4, fill=1, stroke=0)
+        c.roundRect(badge_x, badge_y, BW, badge_h, 4, fill=1, stroke=0)
 
-        c.setFont(Fonts.BOLD, FontSizes.BADGE)
+        c.setFont(Fonts.BOLD, 8)
         c.setFillColor(HexColor(Colors.WHITE))
-        c.drawCentredString(badge_x + badge_w / 2, badge_y + 6, self.risk_label)
+        c.drawCentredString(badge_x + BW / 2, badge_y + 6, self.risk_label.upper())
 
 
 def _risk_to_color(risk_level: str) -> str:
@@ -69,10 +84,21 @@ def _risk_to_color(risk_level: str) -> str:
     if r in ("high", "élevé"):
         return Colors.RED
     if r in ("medium-high", "moyen-élevé"):
-        return "#E97B1A"
-    if r in ("medium", "moyen"):
         return Colors.ORANGE
+    if r in ("medium", "moyen"):
+        return "#F59E0B"
     return Colors.GREEN
+
+
+def _risk_to_pct(risk_level: str) -> float:
+    r = risk_level.lower()
+    if r in ("high", "élevé"):
+        return 0.95
+    if r in ("medium-high", "moyen-élevé"):
+        return 0.75
+    if r in ("medium", "moyen"):
+        return 0.50
+    return 0.25
 
 
 def build_risk_assessment_flowables(data: ReportData) -> List:
@@ -80,15 +106,32 @@ def build_risk_assessment_flowables(data: ReportData) -> List:
     elements: List = []
 
     elements.append(SectionHeader(t("risk_assessment_title", lang)))
-    elements.append(Spacer(1, 16))
+    elements.append(Spacer(1, 12))
+
+    # Intro
+    intro_style = ParagraphStyle(
+        "RAIntro",
+        fontName=Fonts.REGULAR,
+        fontSize=FontSizes.BODY,
+        textColor=HexColor(Colors.GRAY_700),
+        leading=14,
+        spaceAfter=16,
+    )
+    intro = (
+        "Chaque axe est évalué sur la base des données collectées et croisées automatiquement par Cleargate."
+        if lang == "fr" else
+        "Each axis is assessed based on data automatically collected and cross-referenced by ClearGate."
+    )
+    elements.append(Paragraph(intro, intro_style))
 
     for key in DOMAIN_KEYS:
         domain_label = t(key, lang)
         risk_level = data.risk_by_domain.get(key, "low")
         risk_label = t(f"risk_{risk_level.lower().replace('-', '_')}", lang)
         color = _risk_to_color(risk_level)
+        pct = _risk_to_pct(risk_level)
 
-        elements.append(DomainRiskRow(domain_label, risk_label, color))
-        elements.append(Spacer(1, 6))
+        elements.append(DomainRiskBar(domain_label, risk_label, color, pct))
+        elements.append(Spacer(1, 4))
 
     return elements

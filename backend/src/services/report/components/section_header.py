@@ -1,4 +1,4 @@
-"""Section header component — full-width colored bar with white/accent text."""
+"""Section header component — purple title text with short accent underline."""
 
 from reportlab.platypus import Flowable
 from reportlab.lib.colors import HexColor
@@ -7,21 +7,23 @@ from ..styles import Colors, Fonts, FontSizes, Layout
 
 
 class SectionHeader(Flowable):
-    """Full-width section header bar."""
+    """Section header: large purple title with a short accent underline beneath."""
 
-    def __init__(self, title: str, bg_color: str = Colors.NAVY, text_color: str = Colors.WHITE):
+    def __init__(self, title: str, text_color: str = Colors.ACCENT, **_kw):
         super().__init__()
         self.title = title
-        self.bg_color = bg_color
         self.text_color = text_color
         self.width = Layout.CONTENT_WIDTH
-        self.height = 32
+        self.height = 44
 
     def draw(self):
         c = self.canv
-        c.setFillColor(HexColor(self.bg_color))
-        c.roundRect(0, 0, self.width, self.height, 4, fill=1, stroke=0)
-
+        # Title text — bold purple
         c.setFont(Fonts.BOLD, FontSizes.SECTION_TITLE)
         c.setFillColor(HexColor(self.text_color))
-        c.drawString(14, 8, self.title)
+        c.drawString(0, 14, self.title)
+
+        # Short accent underline
+        c.setStrokeColor(HexColor(Colors.ACCENT))
+        c.setLineWidth(3)
+        c.line(0, 8, 60, 8)

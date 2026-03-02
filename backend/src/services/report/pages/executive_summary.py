@@ -1,8 +1,8 @@
-"""Page 3 — Executive Summary: risk verdict badge, narrative, comparison table."""
+"""Page 3 — Executive Summary: narrative, risk badge with subtitle, comparison table."""
 
 from typing import List
 
-from reportlab.platypus import Paragraph, Spacer
+from reportlab.platypus import Paragraph, Spacer, Table, TableStyle
 from reportlab.lib.styles import ParagraphStyle
 from reportlab.lib.colors import HexColor
 
@@ -10,17 +10,40 @@ from ..styles import Colors, Fonts, FontSizes, Layout, t
 from ..report_data import ReportData
 from ..components.section_header import SectionHeader
 from ..components.risk_badge import RiskBadge
-from ..components.table_builder import build_table
 
 
 def _verdict_text(data: ReportData) -> str:
     lang = data.language
     level = data.overall_risk_level.upper()
     if level == "RED":
-        return t("risk_verdict_red", lang)
+        return "RED — Due diligence approfondie requise" if lang == "fr" else t("risk_verdict_red", lang)
     if level == "ORANGE":
-        return t("risk_verdict_orange", lang)
-    return t("risk_verdict_green", lang)
+        return "ORANGE — Vigilance renforcée" if lang == "fr" else t("risk_verdict_orange", lang)
+    return "GREEN — Profil conforme" if lang == "fr" else t("risk_verdict_green", lang)
+
+
+def _verdict_subtitle(data: ReportData) -> str:
+    lang = data.language
+    level = data.overall_risk_level.upper()
+    if level == "RED":
+        return "Engagement non recommandé sans analyse complémentaire" if lang == "fr" else "Engagement not recommended without further analysis"
+    if level == "ORANGE":
+        return "Collaboration possible avec garde-fous contractuels et opérationnels stricts" if lang == "fr" else "Collaboration possible with strict contractual safeguards"
+    return "Profil globalement conforme — monitoring standard" if lang == "fr" else "Generally compliant profile — standard monitoring"
+
+
+def _color_value(value: str) -> str:
+    """Wrap certain known status values in color tags."""
+    v = value.upper()
+    if v in ("NOT FOUND", "NON TROUVÉ", "NONE", "AUCUNE MENTION", "AUCUNE IDENTIFIÉE", "NOT PEP", "NON PEP"):
+        return f'<font color="{Colors.GREEN}">{value}</font>'
+    if v in ("FOUND", "IDENTIFIÉ", "PEP", "MENTION"):
+        return f'<font color="{Colors.RED}">{value}</font>'
+    if "SIGNAL" in v or "ORANGE" in v:
+        return f'<font color="{Colors.ORANGE}">{value}</font>'
+    if "RED" in v or "CRITICAL" in v or "HIGH" in v:
+        return f'<font color="{Colors.RED}">{value}</font>'
+    return value
 
 
 def build_executive_summary_flowables(data: ReportData) -> List:
@@ -28,7 +51,7 @@ def build_executive_summary_flowables(data: ReportData) -> List:
     elements: List = []
 
     elements.append(SectionHeader(t("exec_summary_title", lang)))
-    elements.append(Spacer(1, 16))
+    elements.append(Spacer(1, 12))
 
     # Narrative
     if data.investigation_context:
@@ -42,58 +65,62 @@ def build_executive_summary_flowables(data: ReportData) -> List:
         )
         elements.append(Paragraph(data.investigation_context, body_style))
 
-    # Risk verdict badge
-    elements.append(RiskBadge(data.overall_risk_level, _verdict_text(data)))
+    # Risk verdict badge with subtitle
+    elements.append(RiskBadge(
+        data.overall_risk_level,
+        _verdict_text(data),
+        subtitle=_verdict_subtitle(data),
+    ))
     elements.append(Spacer(1, 16))
 
-    # Recommendation
-    if data.risk_recommendation:
-        rec_style = ParagraphStyle(
-            "ExecRec",
-            fontName=Fonts.REGULAR,
-            fontSize=FontSizes.BODY,
-            textColor=HexColor(Colors.GRAY_700),
-            leading=14,
-            spaceAfter=16,
-        )
-        elements.append(Paragraph(data.risk_recommendation, rec_style))
-
-    # Comparison table
+    # Comparison table with color-coded values
     if data.subject_summary:
         s = data.subject_summary
+
+        cell_style = ParagraphStyle("ESCell", fontName=Fonts.REGULAR, fontSize=FontSizes.TABLE_CELL, textColor=HexColor(Colors.GRAY_700), leading=12)
+        bold_style = ParagraphStyle("ESBold", fontName=Fonts.BOLD, fontSize=FontSizes.TABLE_CELL, textColor=HexColor(Colors.GRAY_700), leading=12)
+        color_style = ParagraphStyle("ESColor", fontName=Fonts.SEMIBOLD, fontSize=FontSizes.TABLE_CELL, leading=12)
+
         header = [t("criterion", lang), t("subject", lang)]
-        rows = [
-            header,
-            ["Status", s.status],
-            ["Location", s.location],
-            ["Sanctions OFAC/EU/UN", s.sanctions],
-            ["PEP Status", s.pep_status],
-            ["Panama/Pandora/FinCEN", s.offshore_mentions],
-            ["Offshore Structures", s.offshore_structures],
-            ["Litigation", s.litigation],
-            ["Red Flags", str(s.red_flags_count)],
-            ["Overall Risk", s.overall_risk],
+        raw_rows = [
+            ["Statut", s.status],
+            ["Localisation", s.location],
+            ["Sanctions OFAC/UE/ONU", s.sanctions],
+            ["Statut PEP", s.pep_status],
+            ["Panama / Pandora / FinCEN", s.offshore_mentions],
+            ["Structures offshore", s.offshore_structures],
+            ["Contentieux judiciaire", s.litigation],
+            ["Red flags", f"{s.red_flags_count} SIGNAUX" if s.red_flags_count else "—"],
+            ["Risque global", s.overall_risk],
         ]
-        if data.entity_summary:
-            e = data.entity_summary
-            header.append(t("entity_org", lang))
-            rows[1].append(e.status)
-            rows[2].append(e.location)
-            rows[3].append(e.sanctions)
-            rows[4].append(e.pep_status)
-            rows[5].append(e.offshore_mentions)
-            rows[6].append(e.offshore_structures)
-            rows[7].append(e.litigation)
-            rows[8].append(str(e.red_flags_count))
-            rows[9].append(e.overall_risk)
 
         n_cols = len(header)
-        col_w = [Layout.CONTENT_WIDTH / n_cols] * n_cols
-        col_w[0] = Layout.CONTENT_WIDTH * 0.35
+        col_w = [Layout.CONTENT_WIDTH * 0.30]
         remaining = Layout.CONTENT_WIDTH - col_w[0]
-        for i in range(1, n_cols):
-            col_w[i] = remaining / (n_cols - 1)
+        col_w.extend([remaining / (n_cols - 1)] * (n_cols - 1))
 
-        elements.append(build_table(rows, col_widths=col_w))
+        # Build table data with Paragraphs for word-wrapping and color
+        table_data = [header]
+        for row in raw_rows:
+            table_data.append([
+                Paragraph(f"<b>{row[0]}</b>", bold_style),
+                Paragraph(_color_value(row[1]), color_style),
+            ])
+
+        tbl = Table(table_data, colWidths=col_w)
+        style_cmds = [
+            ("FONTNAME", (0, 0), (-1, 0), Fonts.BOLD),
+            ("FONTSIZE", (0, 0), (-1, 0), FontSizes.TABLE_HEADER),
+            ("BACKGROUND", (0, 0), (-1, 0), HexColor(Colors.ACCENT)),
+            ("TEXTCOLOR", (0, 0), (-1, 0), HexColor(Colors.WHITE)),
+            ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+            ("LEFTPADDING", (0, 0), (-1, -1), 8),
+            ("RIGHTPADDING", (0, 0), (-1, -1), 8),
+            ("TOPPADDING", (0, 0), (-1, -1), 5),
+            ("BOTTOMPADDING", (0, 0), (-1, -1), 5),
+            ("LINEBELOW", (0, 0), (-1, -1), 0.5, HexColor(Colors.GRAY_200)),
+        ]
+        tbl.setStyle(TableStyle(style_cmds))
+        elements.append(tbl)
 
     return elements

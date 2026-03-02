@@ -12,17 +12,27 @@ from typing import Dict
 # ---------------------------------------------------------------------------
 
 class Colors:
-    DARK = "#0F1419"
+    # Primary branding (reference: purple accent on white)
+    DARK = "#1A1A1A"
     NAVY = "#1A1F2E"
-    ACCENT = "#00D4AA"
-    ACCENT_DIM = "#0A3D2E"
+    ACCENT = "#7C3AED"          # Purple — headers, branding, links
+    ACCENT_LIGHT = "#EDE9FE"   # Light purple for backgrounds
     WHITE = "#FFFFFF"
-    GRAY_100 = "#F7F8FA"
+    GRAY_50 = "#F9FAFB"
+    GRAY_100 = "#F3F4F6"
+    GRAY_200 = "#E5E7EB"
     GRAY_400 = "#9CA3AF"
+    GRAY_500 = "#6B7280"
     GRAY_700 = "#374151"
+    GRAY_900 = "#111827"
+    # Traffic light system
     RED = "#EF4444"
-    ORANGE = "#F59E0B"
-    GREEN = "#10B981"
+    RED_BG = "#FEE2E2"         # Light red for matrix cells
+    RED_MID = "#FECACA"        # Medium red
+    ORANGE = "#F97316"
+    ORANGE_BG = "#FEF3C7"      # Light yellow/amber
+    GREEN = "#22C55E"
+    GREEN_BG = "#DCFCE7"       # Light green
     BLUE = "#3B82F6"
 
     # Convenience helpers

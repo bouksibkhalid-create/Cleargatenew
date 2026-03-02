@@ -82,7 +82,7 @@ def build_synthesis_flowables(data: ReportData) -> List:
         # Global
         ("FONTNAME", (0, 0), (-1, 0), Fonts.BOLD),
         ("FONTSIZE", (0, 0), (-1, 0), FontSizes.TABLE_HEADER),
-        ("BACKGROUND", (0, 0), (-1, 0), HexColor(Colors.NAVY)),
+        ("BACKGROUND", (0, 0), (-1, 0), HexColor(Colors.ACCENT)),
         ("TEXTCOLOR", (0, 0), (-1, 0), HexColor(Colors.WHITE)),
         ("VALIGN", (0, 0), (-1, -1), "TOP"),
         ("LEFTPADDING", (0, 0), (-1, -1), 8),

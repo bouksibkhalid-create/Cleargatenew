@@ -1,4 +1,4 @@
-"""Page 1 — Cover Page: dark background, branding, subject, stat cards."""
+"""Page 1 — Cover Page: white background, purple branding, large title, stat cards."""
 
 from reportlab.platypus import Flowable
 from reportlab.lib.colors import HexColor
@@ -8,7 +8,7 @@ from ..report_data import ReportData
 
 
 class CoverPage(Flowable):
-    """Full-page cover drawn directly on the canvas."""
+    """Full-page cover drawn directly on the canvas — white/purple theme."""
 
     def __init__(self, data: ReportData):
         super().__init__()
@@ -22,103 +22,87 @@ class CoverPage(Flowable):
         c = self.canv
         W = self.width
         H = self.height
+        LM = 50  # left margin for cover content
 
-        # --- Full dark background ---
-        c.setFillColor(HexColor(Colors.DARK))
-        c.rect(0, 0, W, H, fill=1, stroke=0)
+        # --- White background (implicit) ---
 
-        # --- Top branding bar ---
-        y = H - 60
-        c.setFont(Fonts.BOLD, 12)
-        c.setFillColor(HexColor(Colors.ACCENT))
-        c.drawCentredString(W / 2, y, t("branding_top", lang))
-        y -= 18
-        c.setFont(Fonts.REGULAR, 9)
-        c.setFillColor(HexColor(Colors.GRAY_400))
-        c.drawCentredString(W / 2, y, t("branding_sub", lang))
-
-        # --- Accent line ---
-        y -= 20
-        line_w = 80
-        c.setStrokeColor(HexColor(Colors.ACCENT))
-        c.setLineWidth(2)
-        c.line(W / 2 - line_w / 2, y, W / 2 + line_w / 2, y)
-
-        # --- Report type ---
-        y -= 40
+        # --- Top branding: "Taskforce × CLEARGATE" ---
+        y = H - 55
+        # "Taskforce" in italic purple
         c.setFont(Fonts.SEMIBOLD, 14)
         c.setFillColor(HexColor(Colors.ACCENT))
-        c.drawCentredString(W / 2, y, t("report_type", lang))
+        c.drawString(LM, y, "Taskforce")
+        # " × CLEARGATE" in bold black
+        tw = c.stringWidth("Taskforce", Fonts.SEMIBOLD, 14)
+        c.setFont(Fonts.BOLD, 14)
+        c.setFillColor(HexColor(Colors.GRAY_900))
+        c.drawString(LM + tw + 4, y, "× CLEARGATE")
 
-        # --- Subject name ---
-        y -= 50
-        c.setFont(Fonts.BOLD, FontSizes.REPORT_TITLE)
-        c.setFillColor(HexColor(Colors.WHITE))
-        # Truncate long names on cover
+        # Subtitle
+        y -= 18
+        c.setFont(Fonts.REGULAR, 9)
+        c.setFillColor(HexColor(Colors.GRAY_500))
+        c.drawString(LM, y, t("branding_sub", lang))
+
+        # --- Large report title ---
+        y -= 70
+        c.setFont(Fonts.BOLD, 36)
+        c.setFillColor(HexColor(Colors.GRAY_900))
+        c.drawString(LM, y, "Rapport de")
+        y -= 42
+        c.drawString(LM, y, "Due Diligence")
+
+        # --- Purple accent line ---
+        y -= 20
+        c.setStrokeColor(HexColor(Colors.ACCENT))
+        c.setLineWidth(3)
+        c.line(LM, y, LM + 60, y)
+
+        # --- Entity details ---
+        y -= 30
+        c.setFont(Fonts.REGULAR, 11)
+        c.setFillColor(HexColor(Colors.GRAY_700))
         name = d.subject_name
-        if len(name) > 40:
-            name = name[:37] + "..."
-        c.drawCentredString(W / 2, y, name)
-
-        # --- Entity + location ---
         if d.entity_name:
-            y -= 24
-            c.setFont(Fonts.REGULAR, 12)
-            c.setFillColor(HexColor(Colors.GRAY_400))
-            c.drawCentredString(W / 2, y, d.entity_name)
+            c.drawString(LM, y, f"{name} — {d.entity_name}")
+        else:
+            c.drawString(LM, y, name)
 
         if d.location:
-            y -= 20
-            c.setFont(Fonts.REGULAR, 11)
-            c.setFillColor(HexColor(Colors.GRAY_400))
-            c.drawCentredString(W / 2, y, d.location)
+            y -= 18
+            c.drawString(LM, y, d.location)
 
-        # --- Screening summary ---
         if d.screening_summary:
-            y -= 30
+            y -= 18
             c.setFont(Fonts.REGULAR, 9)
-            c.setFillColor(HexColor(Colors.GRAY_400))
-            c.drawCentredString(W / 2, y, d.screening_summary)
+            c.setFillColor(HexColor(Colors.GRAY_500))
+            c.drawString(LM, y, d.screening_summary)
 
-        # --- Stat cards (2x2 grid) ---
-        card_w = 200
-        card_h = 70
-        gap = 20
-        grid_w = card_w * 2 + gap
-        x_start = (W - grid_w) / 2
-        y_card_top = y - 40
-
+        # --- 4-stat row ---
+        y -= 70
         stats = [
-            (str(d.stats.red_flags_count), "Red Flags"),
-            (str(d.stats.entities_analyzed), "Entities Analyzed"),
-            (str(d.stats.risk_axes), "Risk Axes"),
-            (d.stats.coverage_label, "Coverage"),
+            (str(d.stats.red_flags_count), "Red Flags identifiés"),
+            (f"{d.stats.entities_analyzed}+", "Entités analysées"),
+            (str(d.stats.risk_axes), "Axes de risque"),
+            ("360°", "Couverture OSINT"),
         ]
-
-        for idx, (value, label) in enumerate(stats):
-            col = idx % 2
-            row = idx // 2
-            x = x_start + col * (card_w + gap)
-            y_pos = y_card_top - row * (card_h + gap)
-
-            # Card background
-            c.setFillColor(HexColor(Colors.NAVY))
-            c.roundRect(x, y_pos, card_w, card_h, 6, fill=1, stroke=0)
-
-            # Value
+        stat_spacing = (W - 2 * LM) / 4
+        for i, (value, label) in enumerate(stats):
+            x = LM + i * stat_spacing
             c.setFont(Fonts.BOLD, 28)
             c.setFillColor(HexColor(Colors.ACCENT))
-            c.drawCentredString(x + card_w / 2, y_pos + card_h - 38, value)
+            c.drawString(x, y, value)
+            c.setFont(Fonts.REGULAR, 7)
+            c.setFillColor(HexColor(Colors.GRAY_500))
+            c.drawString(x, y - 14, label)
 
-            # Label
-            c.setFont(Fonts.REGULAR, 9)
-            c.setFillColor(HexColor(Colors.GRAY_400))
-            c.drawCentredString(x + card_w / 2, y_pos + 10, label)
-
-        # --- Footer bar ---
-        footer_y = 50
+        # --- Footer reference line ---
+        footer_y = 60
         c.setFont(Fonts.REGULAR, 8)
         c.setFillColor(HexColor(Colors.GRAY_400))
-        parts = [d.report_date, d.reference_number, d.classification]
-        footer_text = "  |  ".join(p for p in parts if p)
-        c.drawCentredString(W / 2, footer_y, footer_text)
+        client_str = f"Produit pour {d.client_name}" if d.client_name else ""
+        parts = [d.report_date, f"Réf: {d.reference_number}", d.classification]
+        if client_str:
+            parts.append(client_str)
+        footer_text = " | ".join(p for p in parts if p)
+        c.drawString(LM, footer_y, footer_text)

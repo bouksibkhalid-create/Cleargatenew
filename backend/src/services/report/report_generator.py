@@ -97,24 +97,35 @@ def _safe_register_fonts():
 # ---------------------------------------------------------------------------
 
 def _on_content_page(canvas, doc):
-    """Called for every content page — draws the page number in the footer area."""
+    """Called for every content page — draws footer with ref, classification, page number."""
     canvas.saveState()
     try:
         canvas.setFont(Fonts.REGULAR, FontSizes.FOOTER)
     except KeyError:
         canvas.setFont("Helvetica", FontSizes.FOOTER)
-    canvas.setFillColor(HexColor(Colors.GRAY_400))
 
     page_num = doc.page
+
+    # Light top border line above footer
+    canvas.setStrokeColor(HexColor(Colors.GRAY_200))
+    canvas.setLineWidth(0.5)
+    canvas.line(Layout.MARGIN_LEFT, 32, Layout.PAGE_WIDTH - Layout.MARGIN_RIGHT, 32)
+
+    # Footer text in gray
+    canvas.setFillColor(HexColor(Colors.GRAY_400))
     ref = getattr(doc, "_cg_reference", "")
     classification = getattr(doc, "_cg_classification", "")
 
-    # Left
+    # Left: reference
     canvas.drawString(Layout.MARGIN_LEFT, 20, ref)
-    # Center
+    # Center: classification
     canvas.drawCentredString(Layout.PAGE_WIDTH / 2, 20, classification)
-    # Right
+    # Right: page number
     canvas.drawRightString(Layout.PAGE_WIDTH - Layout.MARGIN_RIGHT, 20, f"Page {page_num}")
+
+    # Purple accent dot next to "ClearGate" on left
+    canvas.setFillColor(HexColor(Colors.ACCENT))
+    canvas.circle(Layout.MARGIN_LEFT - 6, 23, 2, fill=1, stroke=0)
 
     canvas.restoreState()
 

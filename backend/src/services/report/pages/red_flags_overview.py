@@ -1,4 +1,4 @@
-"""Page 7 — Red Flags Overview: count + risk matrix (Impact × Probability grid)."""
+"""Page 7 — Red Flags Overview: count summary + 3×3 risk matrix (Impact × Probabilité)."""
 
 from typing import List
 
@@ -12,18 +12,30 @@ from ..components.section_header import SectionHeader
 
 
 class RiskMatrix(Flowable):
-    """3×3 Impact × Probability grid with numbered circles placed by severity."""
+    """3×3 Impact × Probabilité grid with numbered severity circles.
 
-    CELL = 80
-    LABEL_W = 60
+    Reference colors:
+      Row 0 (Faible impact):  green-bg | yellow-bg | pink-light
+      Row 1 (Moyen impact):   yellow-bg | pink-light | pink-mid
+      Row 2 (Élevé impact):   yellow-bg | pink-mid   | pink-dark
+    """
+
+    CELL = 90
+    LABEL_W = 70
+
+    # Pastel gradient per (col, row) — col=probability, row=impact
+    CELL_BG = {
+        (0, 0): "#DCFCE7", (1, 0): "#FEF9C3", (2, 0): "#FECACA",
+        (0, 1): "#FEF9C3", (1, 1): "#FECACA", (2, 1): "#FCA5A5",
+        (0, 2): "#FEF9C3", (1, 2): "#FCA5A5", (2, 2): "#F87171",
+    }
 
     def __init__(self, red_flags, lang: str = "fr"):
         super().__init__()
         self.flags = red_flags
         self.lang = lang
-        cols = 3
-        self.width = self.LABEL_W + self.CELL * cols + 10
-        self.height = self.LABEL_W + self.CELL * cols + 30
+        self.width = self.LABEL_W + self.CELL * 3 + 20
+        self.height = self.LABEL_W + self.CELL * 3 + 40
 
     @staticmethod
     def _level_idx(level: str) -> int:
@@ -38,64 +50,75 @@ class RiskMatrix(Flowable):
         c = self.canv
         CELL = self.CELL
         LW = self.LABEL_W
-        levels = ["LOW", "MEDIUM", "HIGH"]
+        y_labels = ["Faible", "Moyen", "Élevé"] if self.lang == "fr" else ["Low", "Medium", "High"]
+        x_labels = ["Faible", "Moyenne", "Élevée"] if self.lang == "fr" else ["Low", "Medium", "High"]
 
-        # Color grid cells
-        cell_colors = {
-            (0, 0): Colors.GREEN, (1, 0): Colors.GREEN, (2, 0): Colors.ORANGE,
-            (0, 1): Colors.GREEN, (1, 1): Colors.ORANGE, (2, 1): Colors.ORANGE,
-            (0, 2): Colors.ORANGE, (1, 2): Colors.RED, (2, 2): Colors.RED,
-        }
+        # Border box
+        grid_w = CELL * 3
+        grid_h = CELL * 3
+        grid_x = LW
+        grid_y = 30
+        c.setStrokeColor(HexColor(Colors.GRAY_200))
+        c.setLineWidth(1)
+        c.rect(grid_x, grid_y, grid_w, grid_h, fill=0, stroke=1)
 
-        # Draw grid
+        # Draw cells
         for row in range(3):
             for col in range(3):
-                x = LW + col * CELL
-                y = 20 + row * CELL
-                color = cell_colors.get((col, row), Colors.GRAY_100)
-                c.setFillColor(HexColor(color))
+                x = grid_x + col * CELL
+                y = grid_y + row * CELL
+                bg = self.CELL_BG.get((col, row), Colors.GRAY_100)
+                c.setFillColor(HexColor(bg))
+                c.rect(x, y, CELL, CELL, fill=1, stroke=0)
+                # White grid lines
                 c.setStrokeColor(HexColor(Colors.WHITE))
                 c.setLineWidth(2)
-                c.rect(x, y, CELL, CELL, fill=1, stroke=1)
-                # Subtle opacity overlay
-                c.setFillColor(HexColor(Colors.WHITE))
-                c.setFillAlpha(0.7)
-                c.rect(x, y, CELL, CELL, fill=1, stroke=0)
-                c.setFillAlpha(1.0)
+                c.rect(x, y, CELL, CELL, fill=0, stroke=1)
 
-        # Axis labels
-        c.setFont(Fonts.SEMIBOLD, 8)
-        c.setFillColor(HexColor(Colors.GRAY_700))
-        for i, label in enumerate(levels):
-            # X axis (Probability)
-            c.drawCentredString(LW + i * CELL + CELL / 2, 6, label)
-            # Y axis (Impact)
-            c.saveState()
-            c.translate(LW - 8, 20 + i * CELL + CELL / 2)
-            c.rotate(90)
-            c.drawCentredString(0, 0, label)
-            c.restoreState()
+        # Y-axis labels (Impact)
+        c.setFont(Fonts.REGULAR, 8)
+        c.setFillColor(HexColor(Colors.GRAY_500))
+        for i, label in enumerate(y_labels):
+            c.drawRightString(grid_x - 6, grid_y + i * CELL + CELL / 2 - 3, label)
+
+        # X-axis labels (Probabilité)
+        for i, label in enumerate(x_labels):
+            c.drawCentredString(grid_x + i * CELL + CELL / 2, grid_y - 14, label)
 
         # Axis titles
         c.setFont(Fonts.BOLD, 9)
-        c.drawCentredString(LW + 1.5 * CELL, -6, "Probability →")
+        c.setFillColor(HexColor(Colors.GRAY_700))
+        prob_label = "PROBABILITÉ" if self.lang == "fr" else "PROBABILITY"
+        c.drawCentredString(grid_x + grid_w / 2, grid_y - 28, prob_label)
+
+        # Vertical IMPACT label
         c.saveState()
-        c.translate(8, 20 + 1.5 * CELL)
+        impact_label = "IMPACT" if self.lang == "fr" else "IMPACT"
+        c.translate(12, grid_y + grid_h / 2)
         c.rotate(90)
-        c.drawCentredString(0, 0, "Impact →")
+        c.drawCentredString(0, 0, impact_label)
         c.restoreState()
 
-        # Place numbered circles for each red flag
+        # Place numbered circles — offset duplicates slightly
+        placed = {}  # (col, row) -> count for offset
         for flag in self.flags:
             prob_idx = self._level_idx(flag.probability)
             impact_idx = self._level_idx(flag.impact)
-            cx = LW + prob_idx * CELL + CELL / 2
-            cy = 20 + impact_idx * CELL + CELL / 2
+            key = (prob_idx, impact_idx)
+            count = placed.get(key, 0)
+            placed[key] = count + 1
 
-            # Circle
+            # Offset for overlapping circles
+            offset_x = (count % 3) * 18 - 12
+            offset_y = (count // 3) * 18 - 6
+
+            cx = grid_x + prob_idx * CELL + CELL / 2 + offset_x
+            cy = grid_y + impact_idx * CELL + CELL / 2 + offset_y
+
+            # Circle color by severity
             sev_color = Colors.RED if flag.severity == "HIGH" else (Colors.ORANGE if flag.severity == "MEDIUM" else Colors.GREEN)
             c.setFillColor(HexColor(sev_color))
-            c.circle(cx, cy, 12, fill=1, stroke=0)
+            c.circle(cx, cy, 13, fill=1, stroke=0)
 
             # Number
             c.setFont(Fonts.BOLD, 9)
@@ -107,8 +130,12 @@ def build_red_flags_overview_flowables(data: ReportData) -> List:
     lang = data.language
     elements: List = []
 
-    elements.append(SectionHeader(t("red_flags_title", lang)))
-    elements.append(Spacer(1, 16))
+    # Red title for this page (reference uses red, not purple)
+    elements.append(SectionHeader(
+        t("red_flags_title", lang),
+        text_color=Colors.RED,
+    ))
+    elements.append(Spacer(1, 12))
 
     if not data.red_flags:
         empty_style = ParagraphStyle(
@@ -121,23 +148,53 @@ def build_red_flags_overview_flowables(data: ReportData) -> List:
         elements.append(Paragraph(t("no_red_flags", lang), empty_style))
         return elements
 
-    # Count summary
-    count_style = ParagraphStyle(
-        "RFCount",
-        fontName=Fonts.BOLD,
-        fontSize=FontSizes.SUBSECTION,
+    # Intro text
+    intro_style = ParagraphStyle(
+        "RFIntro",
+        fontName=Fonts.REGULAR,
+        fontSize=FontSizes.BODY,
         textColor=HexColor(Colors.GRAY_700),
+        leading=14,
         spaceAfter=16,
     )
     high = sum(1 for f in data.red_flags if f.severity == "HIGH")
     med = sum(1 for f in data.red_flags if f.severity == "MEDIUM")
     low = sum(1 for f in data.red_flags if f.severity == "LOW")
+    intro = (
+        f"L'analyse croisée Cleargate identifie <b>{len(data.red_flags)} signaux d'alerte</b> "
+        f"classés par gravité."
+        if lang == "fr" else
+        f"ClearGate cross-analysis identified <b>{len(data.red_flags)} alert signals</b> "
+        f"classified by severity."
+    )
+    elements.append(Paragraph(intro, intro_style))
+
+    # Count badge
+    count_style = ParagraphStyle(
+        "RFCount",
+        fontName=Fonts.BOLD,
+        fontSize=12,
+        textColor=HexColor(Colors.GRAY_700),
+        spaceAfter=16,
+    )
     elements.append(Paragraph(
-        f"{len(data.red_flags)} Red Flags Identified — "
-        f"<font color='{Colors.RED}'>{high} High</font>, "
-        f"<font color='{Colors.ORANGE}'>{med} Medium</font>, "
-        f"<font color='{Colors.GREEN}'>{low} Low</font>",
+        f"<font color='{Colors.RED}'>{high} high</font> · "
+        f"<font color='{Colors.ORANGE}'>{med} medium</font> · "
+        f"<font color='{Colors.GREEN}'>{low} low</font>",
         count_style,
+    ))
+
+    # Matrix header
+    matrix_title = ParagraphStyle(
+        "RFMatrixTitle",
+        fontName=Fonts.BOLD,
+        fontSize=10,
+        textColor=HexColor(Colors.GRAY_900),
+        spaceAfter=8,
+    )
+    elements.append(Paragraph(
+        "MATRICE DE RISQUE — IMPACT × PROBABILITÉ" if lang == "fr" else "RISK MATRIX — IMPACT × PROBABILITY",
+        matrix_title,
     ))
 
     # Risk matrix

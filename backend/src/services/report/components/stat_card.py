@@ -19,7 +19,7 @@ class StatCard(Flowable):
     def draw(self):
         c = self.canv
         # Background
-        c.setFillColor(HexColor(Colors.NAVY))
+        c.setFillColor(HexColor(Colors.GRAY_100))
         c.roundRect(0, 0, self.width, self.height, 6, fill=1, stroke=0)
 
         # Value

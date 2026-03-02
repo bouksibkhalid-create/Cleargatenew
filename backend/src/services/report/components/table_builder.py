@@ -45,7 +45,7 @@ def build_table(
 
     if has_header and len(data) > 0:
         style_commands.extend([
-            ("BACKGROUND", (0, 0), (-1, 0), HexColor(Colors.NAVY)),
+            ("BACKGROUND", (0, 0), (-1, 0), HexColor(Colors.ACCENT)),
             ("TEXTCOLOR", (0, 0), (-1, 0), HexColor(Colors.WHITE)),
             ("FONTNAME", (0, 0), (-1, 0), Fonts.BOLD),
             ("FONTSIZE", (0, 0), (-1, 0), FontSizes.TABLE_HEADER),

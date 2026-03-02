@@ -5,7 +5,7 @@ import RiskScoreGauge from './RiskScoreGauge';
 import HitSummaryCards from './HitSummaryCards';
 import ProfileLoadingState from './ProfileLoadingState';
 import ReportDownloadButton from '../report/ReportDownloadButton';
-import { adaptProfileForReport } from '../report/utils/profileAdapter';
+import MonitorToggle from '../monitor/MonitorToggle';
 import ProfileTabs, { type ProfileTabId } from './tabs/ProfileTabs';
 import { AlertTriangle, RotateCcw, Info } from 'lucide-react';
 
@@ -79,12 +79,9 @@ export default function EntityProfilePage({
   // No profile yet (shouldn't happen but guard)
   if (!profile) return null;
 
-  const reportProfile = adaptProfileForReport(profile);
-
   return (
     <EntityProfileContent
       profile={profile}
-      reportProfile={reportProfile}
       onBack={onBack}
     />
   );
@@ -92,11 +89,9 @@ export default function EntityProfilePage({
 
 function EntityProfileContent({
   profile,
-  reportProfile,
   onBack,
 }: {
   profile: import('../../types/profile').EntityProfile;
-  reportProfile: any;
   onBack: () => void;
 }) {
   const [activeTab, setActiveTab] = useState<ProfileTabId>('overview');
@@ -111,7 +106,10 @@ function EntityProfileContent({
           onBack={onBack}
           onDownloadReport={() => {}}
           reportButton={
-            <ReportDownloadButton profile={reportProfile} variant="secondary" />
+            <div className="flex items-center gap-2">
+              <MonitorToggle entityName={profile.entity.name} entityData={profile.entity as any} />
+              <ReportDownloadButton profile={profile as any} variant="secondary" />
+            </div>
           }
         />
 

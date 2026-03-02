@@ -1,19 +1,18 @@
 import { useState } from 'react';
 import { Download, Loader2 } from 'lucide-react';
-import { generateReport } from './ReportGenerator';
-import type { ReportEntityProfile } from './types/reportData';
-import type { ReportTheme } from './types/theme';
-import { clearGateTheme } from './themes/cleargate';
 
 interface ReportDownloadButtonProps {
-  profile: ReportEntityProfile;
-  theme?: ReportTheme;
+  /** The full M5 EntityProfile object (or the reportProfile adapter output). */
+  profile: Record<string, any>;
+  language?: 'fr' | 'en';
   variant?: 'primary' | 'secondary';
 }
 
+const API_BASE = import.meta.env.VITE_API_URL ?? '';
+
 export default function ReportDownloadButton({
   profile,
-  theme = clearGateTheme,
+  language = 'fr',
   variant = 'primary',
 }: ReportDownloadButtonProps) {
   const [generating, setGenerating] = useState(false);
@@ -21,15 +20,43 @@ export default function ReportDownloadButton({
   const handleGenerate = async () => {
     try {
       setGenerating(true);
-      await generateReport(profile, theme);
+      console.log('[Report] Requesting server-side PDF generation…');
+
+      const res = await fetch(`${API_BASE}/api/report`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          profile,
+          language,
+          classification: 'CONFIDENTIEL',
+        }),
+      });
+
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({ message: res.statusText }));
+        throw new Error(err.message || `Server error ${res.status}`);
+      }
+
+      // Extract filename from Content-Disposition or generate one
+      const disposition = res.headers.get('Content-Disposition') || '';
+      const filenameMatch = disposition.match(/filename="?([^"]+)"?/);
+      const filename = filenameMatch
+        ? filenameMatch[1]
+        : `ClearGate_Report_${new Date().toISOString().split('T')[0]}.pdf`;
+
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = filename;
+      link.click();
+      URL.revokeObjectURL(url);
+
+      console.log('[Report] Download triggered:', filename);
     } catch (error: any) {
       console.error('Report generation error:', error);
-      if (error instanceof RangeError) {
-        alert('Report too large to generate. Try reducing graph depth.');
-      } else {
-        const msg = error?.message || String(error);
-        alert(`Failed to generate report: ${msg}`);
-      }
+      const msg = error?.message || String(error);
+      alert(`Failed to generate report: ${msg}`);
     } finally {
       setGenerating(false);
     }

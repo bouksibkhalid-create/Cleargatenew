@@ -103,8 +103,18 @@ class EntityProfile(BaseModel):
     sources_succeeded: List[str] = Field(default_factory=list)
     sources_failed: List[str] = Field(default_factory=list)
 
+    # === DORKING RESULTS (F1) ===
+    dorking_results: List[Dict] = Field(default_factory=list)
+    dorking_flagged_count: int = 0
+
+    # === OSINT DATA (F2) ===
+    osint_corporate: List[Dict] = Field(default_factory=list)
+    osint_court_records: List[Dict] = Field(default_factory=list)
+    osint_gov_filings: List[Dict] = Field(default_factory=list)
+    osint_social_profiles: List[Dict] = Field(default_factory=list)
+
     # === PIPELINE METADATA ===
-    pipeline_version: str = "1.0"
+    pipeline_version: str = "2.0"
 
 
 class CollectionResults:
@@ -115,9 +125,13 @@ class CollectionResults:
         sanctions=None,
         offshore=None,
         adverse_media=None,
+        dorking=None,
+        osint=None,
         errors=None,
     ):
         self.sanctions = sanctions           # dict from _search_sanctions
         self.offshore = offshore             # dict from _search_offshore
         self.adverse_media = adverse_media   # AdverseMediaResponse from M2
+        self.dorking = dorking               # DorkingReport from F1
+        self.osint = osint                   # OSINTReport from F2
         self.errors = errors or {}           # {source_name: error_message}

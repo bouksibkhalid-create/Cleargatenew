@@ -9,6 +9,12 @@
             "destination": "/frontend/dist/index.html"
         }
     ],
+    "crons": [
+        {
+            "path": "/api/cron/daily-monitor",
+            "schedule": "0 6 * * *"
+        }
+    ],
     "framework": "vite",
     "buildCommand": "cd frontend && npm ci --include=dev && npm run build",
     "outputDirectory": "frontend/dist"

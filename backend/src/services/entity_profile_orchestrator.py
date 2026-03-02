@@ -55,6 +55,10 @@ class EntityProfileOrchestrator:
         self._supabase_service = None
         self._offshore_service = None
 
+        # F1/F2: Dorking + OSINT (lazy to avoid import issues)
+        self._dorking_service = None
+        self._osint_service = None
+
     # ------------------------------------------------------------------
     # Public API
     # ------------------------------------------------------------------
@@ -110,6 +114,8 @@ class EntityProfileOrchestrator:
         tasks: Dict[str, Any] = {
             "sanctions": self._search_sanctions(request),
             "offshore": self._search_offshore(request),
+            "dorking": self._run_dorking(request),
+            "osint": self._run_osint(request),
         }
         if request.include_adverse_media:
             tasks["adverse_media"] = self._search_adverse_media(request)
@@ -138,6 +144,8 @@ class EntityProfileOrchestrator:
             sanctions=results.get("sanctions"),
             offshore=results.get("offshore"),
             adverse_media=results.get("adverse_media"),
+            dorking=results.get("dorking"),
+            osint=results.get("osint"),
             errors=errors,
         )
 
@@ -314,6 +322,44 @@ class EntityProfileOrchestrator:
             max_results=request.max_adverse_media,
         )
         return await self.adverse_media_service.search(media_request)
+
+    async def _run_dorking(self, request: EntityProfileRequest):
+        """F1: Run Google dorking queries via Serper.dev."""
+        try:
+            if self._dorking_service is None:
+                from src.services.dorking_service import DorkingService
+                self._dorking_service = DorkingService(self.settings)
+
+            entity_data = {
+                "entity_type": request.entity_type,
+                "country": request.country,
+                "aliases": request.aliases,
+            }
+            return await self._dorking_service.execute(
+                request.name, entity_data
+            )
+        except Exception as exc:
+            logger.warning("dorking_failed", error=str(exc))
+            return None
+
+    async def _run_osint(self, request: EntityProfileRequest):
+        """F2: Run OSINT collectors in parallel."""
+        try:
+            if self._osint_service is None:
+                from src.services.osint.osint_collector import OSINTCollectorService
+                self._osint_service = OSINTCollectorService(self.settings)
+
+            entity_data = {
+                "entity_type": request.entity_type,
+                "country": request.country,
+                "aliases": request.aliases,
+            }
+            return await self._osint_service.collect_all(
+                request.name, entity_data
+            )
+        except Exception as exc:
+            logger.warning("osint_failed", error=str(exc))
+            return None
 
     # ------------------------------------------------------------------
     # Step 2: Signal extraction
@@ -612,6 +658,30 @@ class EntityProfileOrchestrator:
             offshore_is_officer=offshore_data.get("is_officer", False),
             offshore_is_beneficiary=offshore_data.get(
                 "is_beneficiary", False
+            ),
+            # Dorking results (F1)
+            dorking_results=(
+                collection.dorking.all_results_dicts()
+                if collection.dorking and hasattr(collection.dorking, "all_results_dicts")
+                else []
+            ),
+            dorking_flagged_count=(
+                collection.dorking.flagged_count
+                if collection.dorking and hasattr(collection.dorking, "flagged_count")
+                else 0
+            ),
+            # OSINT data (F2)
+            osint_corporate=(
+                collection.osint.corporate if collection.osint else []
+            ),
+            osint_court_records=(
+                collection.osint.court_records if collection.osint else []
+            ),
+            osint_gov_filings=(
+                collection.osint.gov_filings if collection.osint else []
+            ),
+            osint_social_profiles=(
+                collection.osint.social_profiles if collection.osint else []
             ),
             # Check metadata
             check_id=check_id,

@@ -13,3 +13,4 @@ pybreaker>=1.0.0
 supabase>=2.0.0
 rapidfuzz>=3.0.0
 structlog
+reportlab>=4.1

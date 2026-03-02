@@ -44,6 +44,9 @@ class Settings(BaseSettings):
     AI_ANALYSIS_MAX_TOKENS: int = 1024
     AI_ANALYSIS_TIMEOUT: float = 30.0
     
+    # OSINT / OpenCorporates (F2)
+    OPENCORPORATES_API_KEY: Optional[str] = None
+
     # Adverse Media
     SERPER_API_KEY: Optional[str] = None
     GOOGLE_CSE_API_KEY: Optional[str] = None

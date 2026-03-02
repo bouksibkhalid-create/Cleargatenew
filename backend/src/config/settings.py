@@ -93,8 +93,15 @@ class Settings(BaseSettings):
                 for alt in alt_names:
                     val = os.getenv(alt)
                     if val:
-                        object.__setattr__(self, field, val)
+                        object.__setattr__(self, field, val.strip())
                         break
+
+        # Defensive strip: remove hidden whitespace from API keys
+        # (Vercel env vars sometimes include trailing spaces/newlines)
+        for key_field in ("SERPER_API_KEY", "ANTHROPIC_API_KEY"):
+            val = getattr(self, key_field, None)
+            if val:
+                object.__setattr__(self, key_field, val.strip())
 
 
 settings = Settings()

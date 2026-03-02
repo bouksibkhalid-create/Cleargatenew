@@ -26,9 +26,9 @@ export default function SourceItemRow({ source }: SourceItemProps) {
 
       {/* Content */}
       <div className="flex-1 min-w-0">
-        <p className="text-sm font-medium text-gray-900">{source.title}</p>
+        <p className="text-sm font-medium text-gray-200">{source.title}</p>
         {source.snippet && (
-          <p className="text-xs text-gray-500 mt-1 line-clamp-2">{source.snippet}</p>
+          <p className="text-xs text-gray-400 mt-1 line-clamp-2">{source.snippet}</p>
         )}
       </div>
 

@@ -74,18 +74,19 @@ class handler(BaseHTTPRequestHandler):
         # Use settings key if available
         test_key = settings_key or raw_key
 
-        # 3. Make a minimal test request to Serper
+        # 3. Make a minimal test request to SerpApi
         serper_result = {}
         if httpx and test_key:
             try:
                 with httpx.Client(timeout=10.0) as client:
-                    resp = client.post(
-                        "https://google.serper.dev/search",
-                        headers={
-                            "X-API-KEY": test_key,
-                            "Content-Type": "application/json",
+                    resp = client.get(
+                        "https://serpapi.com/search",
+                        params={
+                            "api_key": test_key,
+                            "engine": "google",
+                            "q": "test",
+                            "num": 1,
                         },
-                        json={"q": "test", "num": 1},
                     )
                     serper_result = {
                         "status_code": resp.status_code,

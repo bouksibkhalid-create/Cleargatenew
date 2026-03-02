@@ -247,24 +247,27 @@ class AdverseMediaService:
     )
     async def _call_serper(self, query: str) -> List[Dict[str, Any]]:
         """
-        POST https://google.serper.dev/search
-        Headers: X-API-KEY: {key}
-        Body: { "q": query, "num": 10 }
+        GET https://serpapi.com/search
+        Params: api_key, engine, q, num
         """
         if not self.serper_api_key:
             raise APIError("SERPER_API_KEY not configured")
 
         async with httpx.AsyncClient(timeout=self.timeout) as client:
-            response = await client.post(
-                "https://google.serper.dev/search",
-                headers={"X-API-KEY": self.serper_api_key, "Content-Type": "application/json"},
-                json={"q": query, "num": 10},
+            response = await client.get(
+                "https://serpapi.com/search",
+                params={
+                    "api_key": self.serper_api_key,
+                    "engine": "google",
+                    "q": query,
+                    "num": 10,
+                },
             )
             response.raise_for_status()
             data = response.json()
 
-            # Normalize Serper response to common shape
-            raw = data.get("organic", [])
+            # Normalize SerpApi response to common shape
+            raw = data.get("organic_results", [])
             return [
                 {
                     "title": item.get("title", ""),

@@ -10,7 +10,7 @@ from src.utils.logger import get_logger
 
 logger = get_logger(__name__)
 
-SERPER_URL = "https://google.serper.dev/search"
+SERPAPI_URL = "https://serpapi.com/search"
 
 
 class CourtRecord:
@@ -67,7 +67,7 @@ class CourtRecordCollector:
         for q in queries:
             try:
                 raw = await self._serper_search(q)
-                for item in raw.get("organic", []):
+                for item in raw.get("organic_results", []):
                     results.append(CourtRecord(
                         entity_name=entity_name,
                         case_title=item.get("title", ""),
@@ -85,10 +85,14 @@ class CourtRecordCollector:
 
     async def _serper_search(self, query: str) -> Dict:
         async with httpx.AsyncClient(timeout=15.0) as client:
-            resp = await client.post(
-                SERPER_URL,
-                headers={"X-API-KEY": self.api_key, "Content-Type": "application/json"},
-                json={"q": query, "num": 10},
+            resp = await client.get(
+                SERPAPI_URL,
+                params={
+                    "api_key": self.api_key,
+                    "engine": "google",
+                    "q": query,
+                    "num": 10,
+                },
             )
             resp.raise_for_status()
             return resp.json()

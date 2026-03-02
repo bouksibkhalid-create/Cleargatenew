@@ -19,7 +19,7 @@ from src.utils.logger import get_logger
 
 logger = get_logger(__name__)
 
-SERPER_URL = "https://google.serper.dev/search"
+SERPAPI_URL = "https://serpapi.com/search"
 CACHE_TTL_DAYS = 90
 
 
@@ -255,15 +255,16 @@ class DorkingService:
     # ------------------------------------------------------------------
 
     async def _call_serper(self, query: DorkQuery) -> Dict:
-        """Execute a single Serper.dev search."""
+        """Execute a single SerpApi search."""
         async with httpx.AsyncClient(timeout=15.0) as client:
-            resp = await client.post(
-                SERPER_URL,
-                headers={
-                    "X-API-KEY": self.api_key,
-                    "Content-Type": "application/json",
+            resp = await client.get(
+                SERPAPI_URL,
+                params={
+                    "api_key": self.api_key,
+                    "engine": "google",
+                    "q": query.query_string,
+                    "num": 10,
                 },
-                json={"q": query.query_string, "num": 10},
             )
             resp.raise_for_status()
             return resp.json()
@@ -276,7 +277,7 @@ class DorkingService:
         """Parse Serper.dev response into DorkResult objects."""
         results: List[DorkResult] = []
 
-        for item in raw.get("organic", []):
+        for item in raw.get("organic_results", []):
             url = item.get("link", "")
             if not url:
                 continue

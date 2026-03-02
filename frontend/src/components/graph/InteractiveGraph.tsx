@@ -96,9 +96,9 @@ export default function InteractiveGraph({
                             properties: node.properties,
                         },
                         style: {
-                            background: isCentral ? '#2563EB' : '#64748b',
+                            background: isCentral ? '#1A1F2E' : '#2A3040',
                             color: '#ffffff',
-                            border: isCentral ? '3px solid #1E40AF' : '2px solid #475569',
+                            border: isCentral ? '2px solid #00D4AA' : '1px solid rgba(255,255,255,0.2)',
                             borderRadius: '8px',
                             padding: '12px 16px',
                             fontSize: '14px',
@@ -133,12 +133,12 @@ export default function InteractiveGraph({
                         },
                         labelStyle: {
                             fontSize: 12,
-                            fill: '#1e293b',
+                            fill: '#9CA3AF',
                             fontWeight: 600,
                             fontFamily: 'Inter, system-ui, sans-serif',
                         },
                         labelBgStyle: {
-                            fill: '#ffffff',
+                            fill: '#1A1F2E',
                             fillOpacity: 0.95,
                             rx: 6,
                             ry: 6,
@@ -202,11 +202,11 @@ export default function InteractiveGraph({
 
     if (isLoading) {
         return (
-            <div className="flex items-center justify-center w-full h-full">
+            <div className="flex items-center justify-center w-full h-full bg-[#0F1419]">
                 <div className="text-center">
-                    <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-                    <p className="text-slate-600 font-medium">Loading relationship graph...</p>
-                    <p className="text-slate-500 text-sm mt-1">{initialEntityName}</p>
+                    <div className="w-16 h-16 border-4 border-[#00D4AA] border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+                    <p className="text-gray-400 font-medium">Loading relationship graph...</p>
+                    <p className="text-gray-500 text-sm mt-1">{initialEntityName}</p>
                 </div>
             </div>
         );
@@ -214,16 +214,16 @@ export default function InteractiveGraph({
 
     if (error) {
         return (
-            <div className="flex items-center justify-center w-full h-full">
+            <div className="flex items-center justify-center w-full h-full bg-[#0F1419]">
                 <div className="text-center max-w-md">
-                    <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <div className="w-16 h-16 bg-red-500/10 rounded-full flex items-center justify-center mx-auto mb-4">
                         <span className="text-3xl">⚠️</span>
                     </div>
-                    <h3 className="text-lg font-semibold text-slate-900 mb-2">Failed to Load Graph</h3>
-                    <p className="text-slate-600 mb-4">{error}</p>
+                    <h3 className="text-lg font-semibold text-white mb-2">Failed to Load Graph</h3>
+                    <p className="text-gray-400 mb-4">{error}</p>
                     <button
                         onClick={() => window.location.reload()}
-                        className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+                        className="px-4 py-2 bg-white/10 text-white border border-white/20 rounded-lg hover:bg-white/20 transition"
                     >
                         Retry
                     </button>
@@ -233,7 +233,7 @@ export default function InteractiveGraph({
     }
 
     return (
-        <div className="w-full h-full graph-canvas">
+        <div className="w-full h-full graph-canvas bg-[#0F1419]">
             {/* Graph Control Panel */}
             <GraphControlPanel
                 onRestart={restartSimulation}
@@ -257,36 +257,36 @@ export default function InteractiveGraph({
                 panOnDrag={true}
                 zoomOnScroll={true}
                 selectionOnDrag={false}
-                className="bg-slate-50"
+                className="bg-[#0F1419]"
             >
                 <Background
                     variant={BackgroundVariant.Dots}
                     gap={16}
                     size={1}
-                    color="#cbd5e1"
+                    color="rgba(255, 255, 255, 0.1)"
                 />
                 <Controls
-                    className="bg-white border border-slate-200 rounded-lg shadow-lg"
+                    className="bg-[#1A1F2E] border border-white/10 rounded-lg shadow-lg fill-white"
                     showInteractive={false}
                 />
             </ReactFlow>
 
             {/* Graph Legend */}
-            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-white px-6 py-3 rounded-lg shadow-lg border border-slate-200 z-10">
+            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-[#1A1F2E] px-6 py-3 rounded-lg shadow-lg border border-white/10 z-10">
                 <div className="flex items-center gap-6 text-sm">
                     <div className="flex items-center gap-2">
-                        <div className="w-4 h-4 rounded bg-blue-500 border-2 border-blue-600" />
-                        <span className="text-slate-700">Central Entity</span>
+                        <div className="w-4 h-4 rounded bg-[#1A1F2E] border-2 border-[#00D4AA]" />
+                        <span className="text-gray-300">Central Entity</span>
                     </div>
                     <div className="flex items-center gap-2">
-                        <div className="w-4 h-4 rounded bg-slate-500 border-2 border-slate-600" />
-                        <span className="text-slate-700">Connected Entity</span>
+                        <div className="w-4 h-4 rounded bg-[#2A3040] border-2 border-white/20" />
+                        <span className="text-gray-300">Connected Entity</span>
                     </div>
                     <div className="flex items-center gap-2">
-                        <span className="text-slate-600">→</span>
-                        <span className="text-slate-700">Relationship Direction</span>
+                        <span className="text-gray-500">→</span>
+                        <span className="text-gray-300">Relationship Direction</span>
                     </div>
-                    <div className="text-slate-500 italic">
+                    <div className="text-gray-500 italic">
                         Double-click to explore connections
                     </div>
                 </div>

@@ -48,15 +48,15 @@ export default function SanctionsTab({ profile }: SanctionsTabProps) {
 
       {/* Sanctions Lists Matrix */}
       {listsMatched.length > 0 && (
-        <div className="bg-white rounded-xl border border-gray-200 p-6">
-          <p className="text-xs font-medium uppercase tracking-wider text-gray-400 mb-4">
+        <div className="bg-[#1A1F2E] rounded-xl border border-white/10 p-6">
+          <p className="text-xs font-medium uppercase tracking-wider text-gray-500 mb-4">
             Sanctions Lists Matched
           </p>
           <div className="space-y-2">
             {listsMatched.map((list, idx) => (
               <div key={idx} className="flex items-center gap-2 text-sm">
                 <AlertTriangle className="w-4 h-4 text-red-500 shrink-0" />
-                <span className="text-gray-800">{list}</span>
+                <span className="text-gray-300">{list}</span>
               </div>
             ))}
           </div>
@@ -75,8 +75,8 @@ function DesignationCard({ result, index }: { result: Record<string, any>; index
   const topics = props.topics || result.topics || [];
 
   return (
-    <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
-      <div className="border-b border-gray-100 bg-gray-50 px-6 py-3">
+    <div className="bg-[#1A1F2E] rounded-xl border border-white/10 overflow-hidden">
+      <div className="border-b border-white/10 bg-white/5 px-6 py-3">
         <p className="text-xs font-semibold uppercase tracking-wider text-gray-500">
           Designation #{index}
         </p>
@@ -96,10 +96,10 @@ function DesignationCard({ result, index }: { result: Record<string, any>; index
 
         {reason && (
           <div>
-            <p className="text-xs text-gray-400 uppercase tracking-wider mb-1">
+            <p className="text-xs text-gray-500 uppercase tracking-wider mb-1">
               Designation Reasoning
             </p>
-            <p className="text-sm text-gray-700 bg-gray-50 rounded-lg p-3 italic">
+            <p className="text-sm text-gray-300 bg-white/5 rounded-lg p-3 italic">
               "{reason}"
             </p>
           </div>
@@ -110,7 +110,7 @@ function DesignationCard({ result, index }: { result: Record<string, any>; index
             href={source}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1 text-sm text-blue-600 hover:text-blue-700 hover:underline"
+            className="inline-flex items-center gap-1 text-sm text-[#00D4AA] hover:text-[#00E4BA] hover:underline"
           >
             View Source <ExternalLink className="w-3.5 h-3.5" />
           </a>
@@ -123,8 +123,8 @@ function DesignationCard({ result, index }: { result: Record<string, any>; index
 function InfoRow({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <p className="text-xs text-gray-400">{label}</p>
-      <p className="text-sm text-gray-800 font-medium">{value}</p>
+      <p className="text-xs text-gray-500">{label}</p>
+      <p className="text-sm text-white font-medium">{value}</p>
     </div>
   );
 }

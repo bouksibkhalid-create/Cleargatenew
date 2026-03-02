@@ -6,7 +6,7 @@ interface ProfileLoadingStateProps {
 
 export default function ProfileLoadingState({ entityName }: ProfileLoadingStateProps) {
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center px-4 py-16">
+    <div className="min-h-screen bg-gradient-to-b from-[#0F1419] to-[#1A1F2E] flex flex-col items-center justify-center px-4 py-16">
       <OSINTLoader query={entityName} searchType="fuzzy" />
     </div>
   );

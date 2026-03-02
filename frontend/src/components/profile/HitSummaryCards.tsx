@@ -43,17 +43,17 @@ export default function HitSummaryCards({ sanctionsHits, pepHits, adverseNewsCou
           role={card.onClick ? 'button' : undefined}
           tabIndex={card.onClick ? 0 : undefined}
           onKeyDown={card.onClick ? (e) => { if (e.key === 'Enter') card.onClick?.(); } : undefined}
-          className={`bg-white rounded-xl border border-gray-200 p-6 text-center flex flex-col items-center justify-center${card.onClick ? ' cursor-pointer hover:border-gray-300 hover:shadow-sm transition-all' : ''}`}
+          className={`bg-white/5 rounded-xl border border-white/10 p-6 text-center flex flex-col items-center justify-center${card.onClick ? ' cursor-pointer hover:border-white/20 hover:bg-white/10 transition-all' : ''}`}
         >
-          <card.icon className="w-6 h-6 text-gray-400 mb-3" />
+          <card.icon className="w-6 h-6 text-gray-500 mb-3" />
           <span
             className={`text-3xl font-bold ${
-              card.count > 0 ? card.activeColor : 'text-gray-900'
+              card.count > 0 ? card.activeColor : 'text-white'
             }`}
           >
             {card.count}
           </span>
-          <span className="text-xs text-gray-500 mt-1">{card.label}</span>
+          <span className="text-xs text-gray-400 mt-1">{card.label}</span>
         </div>
       ))}
     </div>

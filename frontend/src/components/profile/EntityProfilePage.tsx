@@ -40,21 +40,21 @@ export default function EntityProfilePage({
   // Error state
   if (error) {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-[#0F1419]">
         <div className="max-w-5xl mx-auto px-6 py-8">
           <button
             onClick={onBack}
-            className="flex items-center gap-1 text-sm text-gray-500 hover:text-gray-700 cursor-pointer mb-8"
+            className="flex items-center gap-1 text-sm text-gray-400 hover:text-white cursor-pointer mb-8 transition-colors"
           >
             ← Back to Dashboard
           </button>
 
-          <div className="bg-white rounded-xl border border-red-200 p-8 text-center">
+          <div className="bg-[#1A1F2E] rounded-xl border border-red-500/30 p-8 text-center">
             <AlertTriangle className="w-10 h-10 text-red-500 mx-auto mb-4" />
-            <h2 className="text-lg font-semibold text-gray-900 mb-2">
+            <h2 className="text-lg font-semibold text-white mb-2">
               Failed to Generate Profile
             </h2>
-            <p className="text-sm text-gray-500 mb-6 max-w-md mx-auto">
+            <p className="text-sm text-gray-400 mb-6 max-w-md mx-auto">
               {error}
             </p>
             <button
@@ -65,7 +65,7 @@ export default function EntityProfilePage({
                   country,
                 })
               }
-              className="inline-flex items-center gap-2 bg-blue-600 text-white rounded-full px-6 py-2 text-sm font-medium hover:bg-blue-700 transition-colors"
+              className="inline-flex items-center gap-2 bg-white/10 text-white rounded-full px-6 py-2 text-sm font-medium hover:bg-white/20 border border-white/20 transition-colors"
             >
               <RotateCcw className="w-4 h-4" />
               Try Again
@@ -97,7 +97,7 @@ function EntityProfileContent({
   const [activeTab, setActiveTab] = useState<ProfileTabId>('overview');
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-b from-[#0F1419] to-[#1A1F2E]">
       <div className="max-w-5xl mx-auto px-6 py-8 space-y-8">
         {/* Zone A: Fixed Header */}
         <ProfileHeader
@@ -135,13 +135,13 @@ function EntityProfileContent({
 
         {/* Data source warning if any source failed */}
         {profile.sources_failed.length > 0 && (
-          <div className="bg-amber-50 border border-amber-200 rounded-lg px-4 py-3 flex items-start gap-3">
-            <Info className="w-4 h-4 text-amber-600 mt-0.5 flex-shrink-0" />
+          <div className="bg-amber-500/10 border border-amber-500/30 rounded-xl px-4 py-3 flex items-start gap-3">
+            <Info className="w-4 h-4 text-amber-500 mt-0.5 flex-shrink-0" />
             <div className="text-sm">
-              <p className="font-medium text-amber-800">
+              <p className="font-medium text-amber-400">
                 {profile.check_status === 'partial' ? 'Partial Results' : 'Data Source Issues'}
               </p>
-              <p className="text-amber-700 mt-0.5">
+              <p className="text-amber-400/80 mt-0.5">
                 The following data sources could not be reached:{' '}
                 {profile.sources_failed.map((s) =>
                   s === 'adverse_media' ? 'Adverse Media' :

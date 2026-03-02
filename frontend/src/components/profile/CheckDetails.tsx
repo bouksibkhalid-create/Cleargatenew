@@ -30,16 +30,16 @@ export default function CheckDetails({
   ];
 
   return (
-    <div className="bg-white rounded-xl border border-gray-200 p-6">
-      <p className="text-xs font-medium uppercase tracking-wider text-gray-400 mb-4">
+    <div className="bg-[#1A1F2E] rounded-xl border border-white/10 p-6">
+      <p className="text-xs font-medium uppercase tracking-wider text-gray-500 mb-4">
         Check Details
       </p>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
         {fields.map((field) => (
           <div key={field.label}>
-            <p className="text-xs text-gray-400 mb-1">{field.label}</p>
-            <p className={`text-sm font-medium ${field.color || 'text-gray-900'}`}>
+            <p className="text-xs text-gray-500 mb-1">{field.label}</p>
+            <p className={`text-sm font-medium ${field.color || 'text-white'}`}>
               {field.value}
             </p>
           </div>

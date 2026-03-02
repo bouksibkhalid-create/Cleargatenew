@@ -31,14 +31,14 @@ export default function TimelineTab({ profile }: TimelineTabProps) {
   }
 
   return (
-    <div className="bg-white rounded-xl border border-gray-200 p-6">
-      <p className="text-xs font-medium uppercase tracking-wider text-gray-400 mb-6">
+    <div className="bg-[#1A1F2E] rounded-xl border border-white/10 p-6">
+      <p className="text-xs font-medium uppercase tracking-wider text-gray-500 mb-6">
         Timeline
       </p>
 
       <div className="relative">
         {/* Vertical line */}
-        <div className="absolute left-4 top-0 bottom-0 w-px bg-gray-200" />
+        <div className="absolute left-4 top-0 bottom-0 w-px bg-white/10" />
 
         <div className="space-y-6">
           {events.map((event, idx) => (
@@ -63,13 +63,13 @@ function TimelineEventRow({ event }: { event: TimelineEvent }) {
 
       {/* Content */}
       <div className="flex-1 min-w-0 -mt-0.5">
-        <p className="text-xs text-gray-400 mb-0.5">{formatDate(event.date)}</p>
-        <p className="text-xs font-semibold uppercase tracking-wider text-gray-500 mb-0.5">
+        <p className="text-xs text-gray-500 mb-0.5">{formatDate(event.date)}</p>
+        <p className="text-xs font-semibold uppercase tracking-wider text-gray-400 mb-0.5">
           {event.title}
         </p>
-        <p className="text-sm text-gray-700">{event.description}</p>
+        <p className="text-sm text-gray-300">{event.description}</p>
         {event.source && (
-          <p className="text-xs text-gray-400 mt-0.5">Source: {event.source}</p>
+          <p className="text-xs text-gray-500 mt-0.5">Source: {event.source}</p>
         )}
       </div>
     </div>

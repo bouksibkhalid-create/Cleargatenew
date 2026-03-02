@@ -64,16 +64,16 @@ export default function ResultsList({ data, onViewProfile }: ResultsListProps) {
     return (
         <div>
             {/* Summary */}
-            <div className="bg-card border rounded-lg shadow-sm p-4 mb-6">
-                <h2 className="text-xl font-semibold mb-2">
+            <div className="bg-[#1A1F2E] border border-white/10 rounded-xl p-4 mb-6">
+                <h2 className="text-xl font-semibold text-white mb-2">
                     Search Results for "{data.query}"
                 </h2>
-                <p className="text-sm text-muted-foreground">
-                    found <strong>{data.total_results}</strong>{' '}
+                <p className="text-sm text-gray-400">
+                    found <strong className="text-white">{data.total_results}</strong>{' '}
                     {data.total_results === 1 ? 'result' : 'results'}
                     {data.total_sanctioned > 0 && (
                         <>
-                            {' '}• <span className="text-red-600 font-semibold">
+                            {' '}• <span className="text-red-400 font-semibold">
                                 {data.total_sanctioned} sanctioned
                             </span>
                         </>
@@ -92,8 +92,8 @@ export default function ResultsList({ data, onViewProfile }: ResultsListProps) {
 
             {/* Results Grid */}
             {visibleResults.length === 0 ? (
-                <div className="bg-card border rounded-lg p-8 text-center">
-                    <p className="text-muted-foreground">
+                <div className="bg-[#1A1F2E] border border-white/10 rounded-xl p-8 text-center">
+                    <p className="text-gray-400">
                         No results in this source
                     </p>
                 </div>

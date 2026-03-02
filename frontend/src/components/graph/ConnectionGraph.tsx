@@ -95,7 +95,7 @@ export default function ConnectionGraph({ data, onNodeClick }: ConnectionGraphPr
     );
 
     return (
-        <div className="h-[600px] relative bg-card border rounded-lg shadow-md">
+        <div className="h-[600px] relative bg-[#1A1F2E] border border-white/10 rounded-xl shadow-md">
             <ReactFlow
                 nodes={nodes}
                 edges={edges}
@@ -106,22 +106,23 @@ export default function ConnectionGraph({ data, onNodeClick }: ConnectionGraphPr
                 minZoom={0.1}
                 maxZoom={2}
             >
-                <Background color="#e2e8f0" gap={16} />
-                <Controls />
+                <Background color="rgba(255, 255, 255, 0.1)" gap={16} />
+                <Controls className="bg-white/5 border-white/10 fill-white" />
                 <MiniMap
                     nodeColor={(node) => {
                         const nodeType = node.data.nodeType;
                         return getNodeColor(nodeType);
                     }}
-                    maskColor="rgba(0, 0, 0, 0.1)"
+                    maskColor="rgba(0, 0, 0, 0.5)"
+                    style={{ backgroundColor: '#0F1419' }}
                 />
             </ReactFlow>
 
             {/* Legend */}
-            <div className="absolute bottom-3 right-3 bg-background p-3 rounded-md shadow-md">
-                <div className="text-xs font-semibold mb-1">Legend</div>
+            <div className="absolute bottom-3 right-3 bg-[#0F1419]/90 border border-white/10 backdrop-blur-sm p-3 rounded-lg shadow-md">
+                <div className="text-xs font-semibold mb-1 text-white">Legend</div>
                 {Object.entries({ Officer: '👤', Entity: '🏢', Intermediary: '🏦', Address: '📍' }).map(([type, icon]) => (
-                    <div key={type} className="flex items-center gap-1 text-xs">
+                    <div key={type} className="flex items-center gap-1 text-xs text-gray-400">
                         <span>{icon}</span>
                         <span>{type}</span>
                     </div>

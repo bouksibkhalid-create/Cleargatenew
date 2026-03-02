@@ -135,20 +135,20 @@ const STEPS = [
 
 function HowItWorks() {
     return (
-        <section className="py-20 bg-white">
+        <section className="py-20 bg-[#1A1F2E]">
             <div className="max-w-5xl mx-auto px-6">
-                <h2 className="text-3xl font-bold text-gray-900 text-center mb-12">How It Works</h2>
+                <h2 className="text-3xl font-bold text-white text-center mb-12">How It Works</h2>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                     {STEPS.map((step, i) => (
                         <div key={step.title} className="relative group text-center">
-                            <div className="w-16 h-16 mx-auto rounded-2xl bg-gray-50 border border-gray-200 flex items-center justify-center mb-4 group-hover:-translate-y-1 transition-transform">
+                            <div className="w-16 h-16 mx-auto rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center mb-4 group-hover:-translate-y-1 transition-transform">
                                 <step.Icon className="w-7 h-7 text-[#00D4AA]" />
                             </div>
                             <div className="absolute -top-2 -left-2 w-7 h-7 rounded-full bg-[#00D4AA] text-[#0F1419] text-xs font-bold flex items-center justify-center md:relative md:mx-auto md:-mt-10 md:mb-4">
                                 {i + 1}
                             </div>
-                            <h3 className="text-lg font-semibold text-gray-900">{step.title}</h3>
-                            <p className="text-sm text-gray-500 mt-2 leading-relaxed">{step.desc}</p>
+                            <h3 className="text-lg font-semibold text-white">{step.title}</h3>
+                            <p className="text-sm text-gray-400 mt-2 leading-relaxed">{step.desc}</p>
                         </div>
                     ))}
                 </div>
@@ -174,19 +174,19 @@ const DATA_SOURCES = [
 
 function DataSourcesGrid() {
     return (
-        <section className="py-20 bg-gray-50">
+        <section className="py-20 bg-[#0F1419]">
             <div className="max-w-7xl mx-auto px-6">
-                <h2 className="text-3xl font-bold text-gray-900 text-center mb-4">Comprehensive Data Coverage</h2>
-                <p className="text-gray-500 text-center mb-12 max-w-2xl mx-auto">Cross-referencing global sanctions, PEP databases, and offshore leak registries</p>
+                <h2 className="text-3xl font-bold text-white text-center mb-4">Comprehensive Data Coverage</h2>
+                <p className="text-gray-400 text-center mb-12 max-w-2xl mx-auto">Cross-referencing global sanctions, PEP databases, and offshore leak registries</p>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     {DATA_SOURCES.map((ds) => (
-                        <div key={ds.name} className="p-5 bg-white rounded-xl border border-gray-200 hover:border-[#00D4AA]/40 hover:shadow-md transition-all">
+                        <div key={ds.name} className="p-5 bg-white/5 rounded-xl border border-white/10 hover:border-[#00D4AA]/40 hover:bg-white/[0.08] transition-all">
                             <div className="text-2xl mb-2">{ds.flag}</div>
-                            <h4 className="text-sm font-semibold text-gray-900">{ds.name}</h4>
+                            <h4 className="text-sm font-semibold text-white">{ds.name}</h4>
                             <p className="text-xs text-gray-400 mt-1">{ds.count} entities</p>
                             <div className="flex items-center gap-1.5 mt-2">
-                                <span className="w-1.5 h-1.5 rounded-full bg-green-400" />
-                                <span className="text-xs text-gray-400">{ds.freq}</span>
+                                <span className="w-1.5 h-1.5 rounded-full bg-[#00D4AA]" />
+                                <span className="text-xs text-gray-500">{ds.freq}</span>
                             </div>
                         </div>
                     ))}
@@ -234,12 +234,12 @@ function CapabilitiesSection() {
 
 function ReportPreview({ onAccessDemo }: { onAccessDemo: () => void }) {
     return (
-        <section className="py-20 bg-white">
+        <section className="py-20 bg-[#1A1F2E]">
             <div className="max-w-6xl mx-auto px-6 flex flex-col lg:flex-row items-center gap-12">
                 {/* Left: Tilted PDF mockup */}
                 <div className="flex-1 flex justify-center">
                     <div
-                        className="w-[280px] h-[380px] rounded-lg shadow-2xl border border-gray-200 overflow-hidden"
+                        className="w-[280px] h-[380px] rounded-lg shadow-2xl border border-white/10 overflow-hidden"
                         style={{ transform: 'perspective(1000px) rotateY(-5deg)', background: 'linear-gradient(135deg, #0F1419, #1A1F2E)' }}
                     >
                         <div className="p-6 flex flex-col h-full">
@@ -249,7 +249,7 @@ function ReportPreview({ onAccessDemo }: { onAccessDemo: () => void }) {
                                 <div className="w-12 h-[2px] bg-[#00D4AA] mb-6" />
                                 <div className="text-[#00D4AA] text-xs font-medium uppercase tracking-wider">Due Diligence Report</div>
                                 <div className="text-white text-lg font-bold mt-4 text-center">Subject Name</div>
-                                <div className="text-gray-500 text-xs mt-2">Entity · Location</div>
+                                <div className="text-gray-400 text-xs mt-2">Entity · Location</div>
                             </div>
                             <div className="grid grid-cols-2 gap-2">
                                 {['Red Flags', 'Entities', 'Risk Axes', 'Coverage'].map((label) => (
@@ -264,8 +264,8 @@ function ReportPreview({ onAccessDemo }: { onAccessDemo: () => void }) {
                 </div>
                 {/* Right: CTA */}
                 <div className="flex-1 text-center lg:text-left">
-                    <h2 className="text-3xl font-bold text-gray-900">Intelligence-grade reporting</h2>
-                    <p className="text-gray-500 mt-4 leading-relaxed max-w-md">
+                    <h2 className="text-3xl font-bold text-white">Intelligence-grade reporting</h2>
+                    <p className="text-gray-400 mt-4 leading-relaxed max-w-md">
                         Generate a comprehensive 15-page intelligence dossier covering sanctions, offshore structures, adverse media, AI-powered risk assessment, and actionable recommendations — ready for regulatory submission.
                     </p>
                     <button

@@ -39,13 +39,13 @@ const LockScreen: React.FC<LockScreenProps> = ({ onUnlock }) => {
             <div className="lock-screen-v2-content">
                 {/* Logo */}
                 <div className="flex flex-col items-center gap-3 mb-2">
-                    <div className="w-14 h-14 rounded-2xl bg-blue-600 flex items-center justify-center">
-                        <Shield className="w-7 h-7 text-white" />
+                    <div className="w-14 h-14 rounded-2xl bg-[#00D4AA] flex items-center justify-center">
+                        <Shield className="w-7 h-7 text-[#0F1419]" />
                     </div>
-                    <h1 className="text-2xl font-bold tracking-tight text-gray-900 uppercase">
+                    <h1 className="text-2xl font-bold tracking-tight text-white uppercase">
                         ClearGate
                     </h1>
-                    <p className="text-sm text-gray-500 text-center">
+                    <p className="text-sm text-gray-400 text-center">
                         Enter the demo password to access the platform
                     </p>
                 </div>
@@ -64,7 +64,7 @@ const LockScreen: React.FC<LockScreenProps> = ({ onUnlock }) => {
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                                 placeholder="Enter password"
-                                className="w-full pl-11 pr-11 py-3 text-base border border-gray-200 rounded-xl bg-white text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                                className="w-full pl-11 pr-11 py-3 text-base border border-white/20 rounded-xl bg-white/10 text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-[#00D4AA]/50 focus:border-transparent transition-all"
                                 autoFocus
                                 autoComplete="off"
                                 aria-label="Password"
@@ -89,7 +89,7 @@ const LockScreen: React.FC<LockScreenProps> = ({ onUnlock }) => {
 
                     <button
                         type="submit"
-                        className="w-full inline-flex items-center justify-center gap-2 py-3 bg-blue-600 text-white font-semibold rounded-full hover:bg-blue-700 transition-colors"
+                        className="w-full inline-flex items-center justify-center gap-2 py-3 bg-[#00D4AA] text-[#0F1419] font-semibold rounded-full hover:bg-[#00E4BA] transition-colors"
                     >
                         Access Platform
                         <ArrowRight className="w-4 h-4" />

@@ -90,9 +90,9 @@ function App() {
 
   return (
     <ToastProvider>
-      <div className="min-h-screen flex flex-col bg-gray-50">
+      <div className="min-h-screen flex flex-col bg-[#0F1419]">
         {/* Header */}
-        <header className="border-b bg-white shadow-sm">
+        <header className="sticky top-0 z-50 bg-[#0F1419]/95 backdrop-blur-sm border-b border-white/10">
           <div className="container mx-auto px-4">
             <div className="flex items-center h-16">
               <button
@@ -100,8 +100,8 @@ function App() {
                 className="flex items-center hover:opacity-70 transition-opacity cursor-pointer"
                 aria-label="Return to home"
               >
-                <Shield className="mr-3 h-6 w-6 text-blue-600" />
-                <h1 className="text-xl font-semibold text-gray-900">ClearGate</h1>
+                <Shield className="mr-3 h-6 w-6 text-[#00D4AA]" />
+                <h1 className="text-xl font-semibold text-white tracking-wide uppercase">ClearGate</h1>
               </button>
             </div>
           </div>
@@ -111,15 +111,15 @@ function App() {
           {/* Hero Section */}
           {!data && !error && (
             <>
-              <section className="bg-gradient-to-b from-white to-gray-50 py-16">
+              <section className="bg-gradient-to-b from-[#0F1419] to-[#1A1F2E] py-16">
                 <div className="container mx-auto px-4 text-center">
                   <p className="eyebrow mb-4">International Sanctions Database</p>
 
-                  <h2 className="hero-title mb-6">
+                  <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-white mb-6 leading-tight">
                     Search for any person, entity, or vessel
                   </h2>
 
-                  <p className="text-base text-gray-600 max-w-2xl mx-auto mb-10 leading-relaxed">
+                  <p className="text-base text-gray-400 max-w-2xl mx-auto mb-10 leading-relaxed">
                     One search across all major sanctions lists, intelligence, and public records.
                   </p>
 
@@ -140,6 +140,7 @@ function App() {
                           size="sm"
                           onClick={() => search(example, 'fuzzy')}
                           disabled={isLoading}
+                          className="bg-white/5 border-white/10 text-gray-300 hover:bg-white/10 hover:text-white transition-colors"
                         >
                           {example}
                         </Button>
@@ -163,7 +164,7 @@ function App() {
           {/* Search Section (After First Search) */}
           {(data || error || isLoading) && (
             <div className="container mx-auto px-4 py-8">
-              <div className="bg-white border rounded-lg shadow-sm p-6 mb-6">
+              <div className="bg-[#1A1F2E] border border-white/10 rounded-xl shadow-sm p-6 mb-6">
                 <div className="max-w-2xl mx-auto">
                   <SearchSection onSearch={handleSearch} isLoading={isLoading} />
                 </div>
@@ -197,7 +198,7 @@ function App() {
         </main>
 
         {/* Footer */}
-        <footer className="border-t bg-white py-6 px-4 mt-auto">
+        <footer className="border-t border-white/10 bg-[#0F1419] py-6 px-4 mt-auto">
           <div className="container mx-auto">
             <p className="text-sm text-gray-500 text-center">
               Powered by OpenSanctions & Sanctions.io • Data updated in real-time

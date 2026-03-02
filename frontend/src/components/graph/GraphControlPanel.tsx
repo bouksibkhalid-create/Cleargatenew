@@ -21,13 +21,13 @@ export default function GraphControlPanel({
     isSimulationRunning = true
 }: GraphControlPanelProps) {
     return (
-        <Card className="absolute top-4 left-4 z-10 p-2 bg-white/95 backdrop-blur-sm shadow-lg border border-slate-200">
+        <Card className="absolute top-4 left-4 z-10 p-2 bg-[#1A1F2E]/95 backdrop-blur-sm shadow-lg border border-white/10">
             <div className="flex flex-col gap-2">
                 <Button
                     variant="outline"
                     size="sm"
                     onClick={onFitView}
-                    className="gap-2 justify-start"
+                    className="gap-2 justify-start bg-transparent border-white/10 text-gray-400 hover:bg-white/5 hover:text-white"
                     title="Fit graph to view"
                 >
                     <Maximize2 className="w-4 h-4" />
@@ -38,7 +38,7 @@ export default function GraphControlPanel({
                     variant="outline"
                     size="sm"
                     onClick={isSimulationRunning ? onStop : onRestart}
-                    className="gap-2 justify-start"
+                    className="gap-2 justify-start bg-transparent border-white/10 text-gray-400 hover:bg-white/5 hover:text-white"
                     title={isSimulationRunning ? "Pause layout" : "Resume layout"}
                 >
                     {isSimulationRunning ? (
@@ -58,7 +58,7 @@ export default function GraphControlPanel({
                     variant="outline"
                     size="sm"
                     onClick={onRestart}
-                    className="gap-2 justify-start"
+                    className="gap-2 justify-start bg-transparent border-white/10 text-gray-400 hover:bg-white/5 hover:text-white"
                     title="Reset layout"
                 >
                     <RotateCcw className="w-4 h-4" />

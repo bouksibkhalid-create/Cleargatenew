@@ -10,8 +10,8 @@ interface StatusBannerProps {
 export default function StatusBanner({ status, icon: Icon, title, subtitle }: StatusBannerProps) {
   const styles =
     status === 'found'
-      ? 'bg-red-50 border-red-200 text-red-900'
-      : 'bg-emerald-50 border-emerald-200 text-emerald-900';
+      ? 'bg-red-500/10 border-red-500/25 text-red-400'
+      : 'bg-green-500/10 border-green-500/25 text-green-400';
 
   return (
     <div className={`rounded-xl border p-4 flex items-start gap-3 ${styles}`}>

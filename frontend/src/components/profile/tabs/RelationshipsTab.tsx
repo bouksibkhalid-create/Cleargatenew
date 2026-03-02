@@ -47,8 +47,8 @@ export default function RelationshipsTab({ profile }: RelationshipsTabProps) {
           onClick={() => setViewMode('graph')}
           className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
             viewMode === 'graph'
-              ? 'bg-gray-900 text-white'
-              : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50'
+              ? 'bg-white/10 text-white border border-white/20'
+              : 'bg-transparent border border-white/10 text-gray-400 hover:bg-white/5'
           }`}
         >
           <Network className="w-4 h-4" /> Graph View
@@ -57,8 +57,8 @@ export default function RelationshipsTab({ profile }: RelationshipsTabProps) {
           onClick={() => setViewMode('list')}
           className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
             viewMode === 'list'
-              ? 'bg-gray-900 text-white'
-              : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50'
+              ? 'bg-white/10 text-white border border-white/20'
+              : 'bg-transparent border border-white/10 text-gray-400 hover:bg-white/5'
           }`}
         >
           <List className="w-4 h-4" /> List View
@@ -78,9 +78,9 @@ export default function RelationshipsTab({ profile }: RelationshipsTabProps) {
 function GraphViewSection({ nodeId, entityName }: { nodeId: string; entityName: string }) {
   if (!nodeId) {
     return (
-      <div className="bg-white rounded-xl border border-gray-200 p-8 text-center">
+      <div className="bg-[#1A1F2E] rounded-xl border border-white/10 p-8 text-center">
         <AlertTriangle className="w-8 h-8 text-amber-500 mx-auto mb-3" />
-        <p className="text-sm text-gray-500">
+        <p className="text-sm text-gray-400">
           No graph node ID available for this entity. Use the list view to see connections.
         </p>
       </div>
@@ -88,7 +88,7 @@ function GraphViewSection({ nodeId, entityName }: { nodeId: string; entityName: 
   }
 
   return (
-    <div className="bg-white rounded-xl border border-gray-200 overflow-hidden" style={{ height: 500 }}>
+    <div className="bg-[#1A1F2E] rounded-xl border border-white/10 overflow-hidden" style={{ height: 500 }}>
       <ReactFlowProvider>
         <InteractiveGraph initialEntityId={nodeId} initialEntityName={entityName} />
       </ReactFlowProvider>
@@ -98,32 +98,32 @@ function GraphViewSection({ nodeId, entityName }: { nodeId: string; entityName: 
 
 function ListViewSection({ results }: { results: Record<string, any>[] }) {
   return (
-    <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+    <div className="bg-[#1A1F2E] rounded-xl border border-white/10 overflow-hidden">
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-gray-100 bg-gray-50">
-              <th className="text-left px-4 py-3 text-xs font-semibold uppercase tracking-wider text-gray-500">
+            <tr className="border-b border-white/10 bg-white/5">
+              <th className="text-left px-4 py-3 text-xs font-semibold uppercase tracking-wider text-gray-400">
                 Connected Entity
               </th>
-              <th className="text-left px-4 py-3 text-xs font-semibold uppercase tracking-wider text-gray-500">
+              <th className="text-left px-4 py-3 text-xs font-semibold uppercase tracking-wider text-gray-400">
                 Type
               </th>
-              <th className="text-left px-4 py-3 text-xs font-semibold uppercase tracking-wider text-gray-500">
+              <th className="text-left px-4 py-3 text-xs font-semibold uppercase tracking-wider text-gray-400">
                 Jurisdiction
               </th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-100">
+          <tbody className="divide-y divide-white/10">
             {results.map((r, idx) => (
-              <tr key={idx} className="hover:bg-gray-50 transition-colors">
-                <td className="px-4 py-3 font-medium text-gray-900">
+              <tr key={idx} className="hover:bg-white/5 transition-colors">
+                <td className="px-4 py-3 font-medium text-white">
                   {r.name || r.label || 'Unknown'}
                 </td>
-                <td className="px-4 py-3 text-gray-600">
+                <td className="px-4 py-3 text-gray-400">
                   {r.node_type || r.type || '—'}
                 </td>
-                <td className="px-4 py-3 text-gray-600">
+                <td className="px-4 py-3 text-gray-400">
                   {r.jurisdiction || r.country || '—'}
                 </td>
               </tr>

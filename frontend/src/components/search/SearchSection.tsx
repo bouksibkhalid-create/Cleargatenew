@@ -27,13 +27,13 @@ export default function SearchSection({ onSearch, isLoading }: SearchSectionProp
     return (
         <form onSubmit={handleSubmit} className="simple-search-form">
             <div className="search-input-wrapper relative">
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#00D4AA]" />
                 <input
                     type="text"
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
                     placeholder="Enter a name, organization, or vessel..."
-                    className="w-full pl-12 pr-12 py-3 text-base border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full pl-12 pr-12 py-3 text-base border border-white/20 rounded-full bg-white/10 text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-[#00D4AA]/50 focus:border-transparent transition-all"
                     autoFocus
                     disabled={isLoading}
                 />
@@ -51,7 +51,7 @@ export default function SearchSection({ onSearch, isLoading }: SearchSectionProp
             <button
                 type="submit"
                 disabled={!query.trim() || isLoading}
-                className="mt-4 w-full sm:w-auto px-8 py-3 bg-blue-600 text-white font-semibold rounded-full hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
+                className="mt-4 w-full sm:w-auto px-8 py-3 bg-[#00D4AA] text-[#0F1419] font-semibold rounded-full hover:bg-[#00E4BA] disabled:bg-white/10 disabled:text-gray-500 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
             >
                 {isLoading ? (
                     <>

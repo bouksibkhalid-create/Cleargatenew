@@ -34,23 +34,23 @@ export default function ExportButton({ data, disabled = false }: ExportButtonPro
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
-                <Button variant="outline" size="sm" disabled={disabled}>
+                <Button variant="outline" size="sm" disabled={disabled} className="bg-transparent border-white/10 text-gray-400 hover:bg-white/5 hover:text-white">
                     <FileDown className="h-4 w-4 mr-2" />
                     Export
                     <ChevronDown className="h-4 w-4 ml-2" />
                 </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-                <DropdownMenuItem onClick={() => handleExport('pdf')}>
-                    <FileText className="h-4 w-4 mr-2" />
+            <DropdownMenuContent align="end" className="bg-[#1A1F2E] border-white/10 text-gray-300">
+                <DropdownMenuItem onClick={() => handleExport('pdf')} className="hover:bg-white/5 hover:text-white focus:bg-white/5 focus:text-white cursor-pointer">
+                    <FileText className="h-4 w-4 mr-2 text-[#00D4AA]" />
                     Export to PDF
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => handleExport('csv')}>
-                    <Table className="h-4 w-4 mr-2" />
+                <DropdownMenuItem onClick={() => handleExport('csv')} className="hover:bg-white/5 hover:text-white focus:bg-white/5 focus:text-white cursor-pointer">
+                    <Table className="h-4 w-4 mr-2 text-[#00D4AA]" />
                     Export to CSV
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => handleExport('json')}>
-                    <Code className="h-4 w-4 mr-2" />
+                <DropdownMenuItem onClick={() => handleExport('json')} className="hover:bg-white/5 hover:text-white focus:bg-white/5 focus:text-white cursor-pointer">
+                    <Code className="h-4 w-4 mr-2 text-[#00D4AA]" />
                     Export to JSON
                 </DropdownMenuItem>
             </DropdownMenuContent>

@@ -53,6 +53,13 @@ export default {
                     DEFAULT: "hsl(var(--card))",
                     foreground: "hsl(var(--card-foreground))",
                 },
+                cg: {
+                    dark: '#0F1419',
+                    darker: '#0A0F14',
+                    card: '#1A1F2E',
+                    accent: '#00D4AA',
+                    'accent-hover': '#00E4BA',
+                },
                 // Custom Phase 2 colors
                 teal: {
                     50: "#ecfdf5",

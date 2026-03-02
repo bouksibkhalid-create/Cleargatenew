@@ -225,7 +225,7 @@ export function EntityCard({ entity, onClick, onViewProfile }: EntityCardProps) 
                         if (onViewProfile) onViewProfile();
                         else onClick();
                     }}
-                    className="text-sm text-blue-600 hover:text-blue-700 hover:underline font-medium flex items-center gap-1"
+                    className="text-sm text-[#00D4AA] hover:text-[#00E4BA] hover:underline font-medium flex items-center gap-1"
                 >
                     View Profile
                     <ArrowRight className="w-4 h-4" />

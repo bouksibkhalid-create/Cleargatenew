@@ -3,9 +3,9 @@ interface SentimentIndicatorProps {
 }
 
 const SENTIMENT_MAP: Record<string, { emoji: string; label: string; color: string }> = {
-  negative: { emoji: '🔴', label: 'Negative', color: 'text-red-600' },
-  neutral: { emoji: '⚪', label: 'Neutral', color: 'text-gray-500' },
-  mixed: { emoji: '🟡', label: 'Mixed', color: 'text-amber-600' },
+  negative: { emoji: '🔴', label: 'Negative', color: 'text-red-400' },
+  neutral: { emoji: '⚪', label: 'Neutral', color: 'text-gray-400' },
+  mixed: { emoji: '🟡', label: 'Mixed', color: 'text-amber-400' },
 };
 
 export default function SentimentIndicator({ sentiment }: SentimentIndicatorProps) {

@@ -8,13 +8,13 @@ interface AISummarySectionProps {
 
 export default function AISummarySection({ summary }: AISummarySectionProps) {
   return (
-    <div className="bg-white rounded-xl border border-gray-200 p-6">
-      <p className="text-xs font-medium uppercase tracking-wider text-gray-400 mb-4">
+    <div className="bg-[#1A1F2E] rounded-xl border border-white/10 p-6">
+      <p className="text-xs font-medium uppercase tracking-wider text-gray-500 mb-4">
         AI Summary
       </p>
 
       {summary ? (
-        <p className="text-sm text-gray-700 leading-relaxed whitespace-pre-line">
+        <p className="text-sm text-white leading-relaxed whitespace-pre-line">
           {summary}
         </p>
       ) : (

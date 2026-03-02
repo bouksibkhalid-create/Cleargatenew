@@ -13,10 +13,10 @@ export default function EntityIdentityCard({ profile }: EntityIdentityCardProps)
   if (!hasAnyData) return null;
 
   return (
-    <div className="bg-white rounded-xl border border-gray-200 p-6">
+    <div className="bg-[#1A1F2E] rounded-xl border border-white/10 p-6">
       <div className="flex items-center gap-2 mb-4">
         <User className="w-4 h-4 text-gray-400" />
-        <p className="text-xs font-medium uppercase tracking-wider text-gray-400">
+        <p className="text-xs font-medium uppercase tracking-wider text-gray-500">
           Entity Identity
         </p>
       </div>
@@ -36,8 +36,8 @@ export default function EntityIdentityCard({ profile }: EntityIdentityCardProps)
 function InfoRow({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <p className="text-xs text-gray-400">{label}</p>
-      <p className="text-sm text-gray-800 font-medium">{value}</p>
+      <p className="text-xs text-gray-500">{label}</p>
+      <p className="text-sm text-white font-medium">{value}</p>
     </div>
   );
 }

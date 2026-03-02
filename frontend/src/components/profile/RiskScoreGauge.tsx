@@ -11,8 +11,8 @@ export default function RiskScoreGauge({ score, riskColor }: RiskScoreGaugeProps
   const progressLength = arcLength * (score / 100);
 
   return (
-    <div className="bg-white rounded-xl border border-gray-200 p-6 flex flex-col items-center">
-      <p className="text-xs font-medium uppercase tracking-wider text-gray-400 mb-4">
+    <div className="bg-white/5 rounded-xl border border-white/10 p-6 flex flex-col items-center">
+      <p className="text-xs font-medium uppercase tracking-wider text-gray-500 mb-4">
         Risk Score
       </p>
 
@@ -24,7 +24,7 @@ export default function RiskScoreGauge({ score, riskColor }: RiskScoreGaugeProps
             cy="60"
             r={radius}
             fill="none"
-            stroke="#E5E7EB"
+            stroke="rgba(255,255,255,0.1)"
             strokeWidth="8"
             strokeLinecap="round"
             strokeDasharray={`${arcLength} ${circumference}`}
@@ -50,7 +50,7 @@ export default function RiskScoreGauge({ score, riskColor }: RiskScoreGaugeProps
           <span className="text-4xl font-bold" style={{ color: riskColor }}>
             {score}
           </span>
-          <span className="text-sm text-gray-400">out of 100</span>
+          <span className="text-sm text-gray-500">out of 100</span>
         </div>
       </div>
     </div>

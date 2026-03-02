@@ -36,8 +36,8 @@ export default function ProfileTabs({ profile, activeTab, onTabChange }: Profile
       className="w-full"
     >
       {/* Tab Bar */}
-      <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
-        <TabsList className="w-full h-auto justify-start bg-transparent border-b border-gray-200 rounded-none p-0 overflow-x-auto">
+      <div className="bg-[#1A1F2E] border border-white/10 rounded-xl overflow-hidden">
+        <TabsList className="w-full h-auto justify-start bg-transparent border-b border-white/10 rounded-none p-0 overflow-x-auto">
           <TabTriggerWithBadge id="overview" icon={LayoutDashboard} label="Overview" />
           <TabTriggerWithBadge
             id="sanctions"
@@ -119,19 +119,19 @@ function TabTriggerWithBadge({
 }) {
   const hasBadge = count !== undefined;
 
-  let badgeClass = 'bg-gray-100 text-gray-500';
+  let badgeClass = 'bg-white/5 text-gray-400';
   if (hasBadge && count > 0 && variant !== 'neutral') {
-    badgeClass = 'bg-red-100 text-red-700';
+    badgeClass = 'bg-red-500/15 text-red-400';
   } else if (hasBadge && count === 0 && variant !== 'neutral') {
-    badgeClass = 'bg-emerald-100 text-emerald-700';
+    badgeClass = 'bg-green-500/15 text-green-400';
   } else if (variant === 'neutral') {
-    badgeClass = 'bg-gray-100 text-gray-600';
+    badgeClass = 'bg-white/5 text-gray-400';
   }
 
   return (
     <TabsTrigger
       value={id}
-      className="inline-flex items-center gap-1.5 px-4 py-3 text-sm font-medium text-gray-500 border-b-2 border-transparent rounded-none data-[state=active]:border-emerald-500 data-[state=active]:text-gray-900 data-[state=active]:shadow-none data-[state=active]:bg-transparent hover:text-gray-700 transition-colors whitespace-nowrap"
+      className="inline-flex items-center gap-1.5 px-4 py-3 text-sm font-medium text-gray-400 border-b-2 border-transparent rounded-none data-[state=active]:border-[#00D4AA] data-[state=active]:text-white data-[state=active]:shadow-none data-[state=active]:bg-transparent hover:text-gray-300 transition-colors whitespace-nowrap"
     >
       <Icon className="w-4 h-4" />
       <span>{label}</span>

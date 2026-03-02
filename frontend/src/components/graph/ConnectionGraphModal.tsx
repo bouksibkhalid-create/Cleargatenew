@@ -53,14 +53,14 @@ export default function ConnectionGraphModal({
             />
 
             {/* Modal Container */}
-            <div className="fixed top-1 left-1 right-1 bottom-1 z-[9999] bg-white rounded-lg shadow-2xl overflow-hidden">
+            <div className="fixed top-1 left-1 right-1 bottom-1 z-[9999] bg-[#0F1419] rounded-xl shadow-2xl overflow-hidden border border-white/10">
                 {/* Close Button */}
                 <button
                     onClick={onClose}
-                    className="absolute top-4 right-4 z-10 p-2 rounded-full bg-white hover:bg-slate-100 transition-colors shadow-lg border border-slate-200"
+                    className="absolute top-4 right-4 z-10 p-2 rounded-full bg-[#1A1F2E] hover:bg-white/10 transition-colors shadow-lg border border-white/10"
                     aria-label="Close graph"
                 >
-                    <X className="w-6 h-6 text-slate-700" />
+                    <X className="w-6 h-6 text-gray-400 hover:text-white" />
                 </button>
 
                 {/* Graph Content */}

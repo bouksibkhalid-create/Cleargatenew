@@ -11,17 +11,17 @@ interface ProfileHeaderProps {
 }
 
 const RISK_BADGE_STYLES: Record<string, { bg: string; border: string; text: string }> = {
-  low: { bg: 'bg-green-50', border: 'border-green-200', text: 'text-green-700' },
-  medium: { bg: 'bg-amber-50', border: 'border-amber-200', text: 'text-amber-700' },
-  high: { bg: 'bg-red-50', border: 'border-red-200', text: 'text-red-700' },
-  critical: { bg: 'bg-red-100', border: 'border-red-300', text: 'text-red-700' },
+  low: { bg: 'bg-green-500/15', border: 'border-green-500/30', text: 'text-green-400' },
+  medium: { bg: 'bg-amber-500/15', border: 'border-amber-500/30', text: 'text-amber-400' },
+  high: { bg: 'bg-red-500/15', border: 'border-red-500/30', text: 'text-red-400' },
+  critical: { bg: 'bg-red-500/20', border: 'border-red-500/50', text: 'text-red-400' },
 };
 
 const AVATAR_STYLES: Record<string, { bg: string; text: string }> = {
-  low: { bg: 'bg-green-100', text: 'text-green-600' },
-  medium: { bg: 'bg-amber-100', text: 'text-amber-600' },
-  high: { bg: 'bg-red-100', text: 'text-red-600' },
-  critical: { bg: 'bg-red-200', text: 'text-red-700' },
+  low: { bg: 'bg-green-500/15', text: 'text-green-400' },
+  medium: { bg: 'bg-amber-500/15', text: 'text-amber-400' },
+  high: { bg: 'bg-red-500/15', text: 'text-red-400' },
+  critical: { bg: 'bg-red-500/20', text: 'text-red-400' },
 };
 
 export default function ProfileHeader({
@@ -48,7 +48,7 @@ export default function ProfileHeader({
       {/* Back link */}
       <button
         onClick={onBack}
-        className="flex items-center gap-1 text-sm text-gray-500 hover:text-gray-700 cursor-pointer mb-6"
+        className="flex items-center gap-1 text-sm text-gray-400 hover:text-white cursor-pointer mb-6 transition-colors"
       >
         <ArrowLeft className="w-4 h-4" />
         Back to Dashboard
@@ -64,11 +64,11 @@ export default function ProfileHeader({
             {initial}
           </div>
           <div>
-            <h1 className="text-2xl font-bold text-gray-900 uppercase tracking-wide">
+            <h1 className="text-2xl font-bold text-white uppercase tracking-wide">
               {entity.name}
             </h1>
             {subtitle && (
-              <p className="text-sm text-gray-500 mt-1">{subtitle}</p>
+              <p className="text-sm text-gray-400 mt-1">{subtitle}</p>
             )}
           </div>
         </div>
@@ -78,7 +78,7 @@ export default function ProfileHeader({
           {reportButton ?? (
             <button
               onClick={onDownloadReport}
-              className="bg-white border border-gray-200 rounded-full px-5 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 flex items-center gap-2 transition-colors"
+              className="bg-white/10 border border-white/20 rounded-full px-5 py-2 text-sm font-medium text-white hover:bg-white/20 flex items-center gap-2 transition-colors"
             >
               <Download className="w-4 h-4" />
               Download Report

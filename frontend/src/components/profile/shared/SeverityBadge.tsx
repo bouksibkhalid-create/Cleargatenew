@@ -4,10 +4,10 @@ interface SeverityBadgeProps {
 }
 
 const SEVERITY_STYLES: Record<string, { dot: string; text: string; label: string }> = {
-  critical: { dot: 'bg-red-600', text: 'text-red-700', label: 'CRITICAL' },
-  high: { dot: 'bg-red-500', text: 'text-red-600', label: 'HIGH' },
-  medium: { dot: 'bg-amber-500', text: 'text-amber-600', label: 'MEDIUM' },
-  low: { dot: 'bg-emerald-500', text: 'text-emerald-600', label: 'LOW' },
+  critical: { dot: 'bg-red-500', text: 'text-red-400', label: 'CRITICAL' },
+  high: { dot: 'bg-red-500', text: 'text-red-400', label: 'HIGH' },
+  medium: { dot: 'bg-amber-500', text: 'text-amber-400', label: 'MEDIUM' },
+  low: { dot: 'bg-green-500', text: 'text-green-400', label: 'LOW' },
 };
 
 export default function SeverityBadge({ severity, label }: SeverityBadgeProps) {

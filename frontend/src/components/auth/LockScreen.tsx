@@ -1,6 +1,8 @@
 import { useState, type FormEvent } from 'react';
 import { Shield, Lock, Eye, EyeOff, ArrowRight } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import ThemeToggle from '../ui/ThemeToggle';
+import LanguageToggle from '../ui/LanguageToggle';
 
 interface LockScreenProps {
     onUnlock: () => void;
@@ -10,6 +12,7 @@ const CORRECT_PASSWORD = 'KB-CS-Presidence-26';
 const ERROR_DISPLAY_DURATION = 600;
 
 const LockScreen: React.FC<LockScreenProps> = ({ onUnlock }) => {
+    const { t } = useTranslation();
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const [isShaking, setIsShaking] = useState(false);
@@ -25,7 +28,7 @@ const LockScreen: React.FC<LockScreenProps> = ({ onUnlock }) => {
         if (password === CORRECT_PASSWORD) {
             onUnlock();
         } else {
-            setError('Incorrect password');
+            setError(t('lock.incorrectPassword'));
             setIsShaking(true);
 
             setTimeout(() => {
@@ -44,10 +47,10 @@ const LockScreen: React.FC<LockScreenProps> = ({ onUnlock }) => {
                         <Shield className="w-7 h-7 text-white" />
                     </div>
                     <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white uppercase">
-                        ClearGate
+                        {t('brand.name')}
                     </h1>
                     <p className="text-sm text-slate-500 dark:text-gray-400 text-center">
-                        Enter the demo password to access the platform
+                        {t('lock.enterPassword')}
                     </p>
                 </div>
 
@@ -64,11 +67,11 @@ const LockScreen: React.FC<LockScreenProps> = ({ onUnlock }) => {
                                 type={showPassword ? 'text' : 'password'}
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
-                                placeholder="Enter password"
+                                placeholder={t('lock.passwordPlaceholder')}
                                 className="w-full pl-11 pr-11 py-3 text-base border border-slate-300 dark:border-white/20 rounded-xl bg-slate-50 dark:bg-white/10 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-[#931CF5]/50 focus:border-transparent transition-all"
                                 autoFocus
                                 autoComplete="off"
-                                aria-label="Password"
+                                aria-label={t('lock.passwordPlaceholder')}
                                 aria-describedby="error-message"
                                 aria-invalid={error ? 'true' : 'false'}
                             />
@@ -76,7 +79,7 @@ const LockScreen: React.FC<LockScreenProps> = ({ onUnlock }) => {
                                 type="button"
                                 onClick={() => setShowPassword(!showPassword)}
                                 className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 dark:text-gray-400 hover:text-slate-600 dark:hover:text-gray-300 transition-colors p-0.5"
-                                aria-label={showPassword ? 'Hide password' : 'Show password'}
+                                aria-label={showPassword ? t('lock.hidePassword') : t('lock.showPassword')}
                             >
                                 {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                             </button>
@@ -92,18 +95,19 @@ const LockScreen: React.FC<LockScreenProps> = ({ onUnlock }) => {
                         type="submit"
                         className="w-full inline-flex items-center justify-center gap-2 py-3 bg-[#931CF5] text-white font-semibold rounded-full hover:bg-[#7B16D0] transition-colors"
                     >
-                        Access Platform
+                        {t('lock.accessPlatform')}
                         <ArrowRight className="w-4 h-4" />
                     </button>
                 </form>
 
                 {/* Footer */}
                 <p className="text-xs text-slate-400 dark:text-gray-400 mt-4">
-                    Restricted Access &middot; ClearGate Intelligence Platform
+                    {t('lock.restrictedAccess')} &middot; {t('brand.name')}
                 </p>
             </div>
-            {/* Theme toggle in corner */}
-            <div className="fixed top-4 right-4 z-50">
+            {/* Theme + Language toggle in corner */}
+            <div className="fixed top-4 right-4 z-50 flex items-center gap-2">
+                <LanguageToggle />
                 <ThemeToggle />
             </div>
         </div>

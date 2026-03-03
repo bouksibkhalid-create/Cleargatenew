@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, type ReactNode } from 'react';
 import { Menu, X } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import Sidebar from './Sidebar';
 
 interface AppShellProps {
@@ -45,6 +46,8 @@ export default function AppShell({ children }: AppShellProps) {
     return () => window.removeEventListener('keydown', handler);
   }, [toggle, isMobile]);
 
+  const { t } = useTranslation();
+
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900 transition-colors duration-200">
       {/* Desktop sidebar */}
@@ -58,11 +61,11 @@ export default function AppShell({ children }: AppShellProps) {
           <button
             onClick={() => setMobileOpen(true)}
             className="text-slate-700 dark:text-white p-1 min-w-[24px] min-h-[24px]"
-            aria-label="Open menu"
+            aria-label={t('sidebar.openMenu')}
           >
             <Menu className="w-6 h-6" />
           </button>
-          <span className="ml-3 text-sm font-bold tracking-wide text-slate-900 dark:text-white uppercase">ClearGate</span>
+          <span className="ml-3 text-sm font-bold tracking-wide text-slate-900 dark:text-white uppercase">{t('brand.name')}</span>
         </div>
       )}
 
@@ -78,7 +81,7 @@ export default function AppShell({ children }: AppShellProps) {
             <button
               onClick={() => setMobileOpen(false)}
               className="absolute top-4 right-[-44px] text-white bg-slate-900 rounded-full p-2 min-w-[24px] min-h-[24px]"
-              aria-label="Close menu"
+              aria-label={t('sidebar.closeMenu')}
             >
               <X className="w-5 h-5" />
             </button>

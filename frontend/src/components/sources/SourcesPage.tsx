@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Database, RefreshCw, CheckCircle, AlertTriangle, Clock, FileText } from 'lucide-react';
+import { Database, CheckCircle, AlertTriangle, Clock, FileText } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import PageHeader from '../common/PageHeader';
 import CgCard from '../common/CgCard';
 
@@ -23,26 +23,25 @@ const STATUS_COLORS: Record<string, string> = {
 };
 
 const SYNC_HISTORY = [
-  { date: 'Mar 2, 2026 03:00', status: 'ok', entities: '33,629', duration: '42s' },
-  { date: 'Feb 23, 2026 03:00', status: 'ok', entities: '33,614', duration: '39s' },
-  { date: 'Feb 16, 2026 03:00', status: 'partial', entities: '33,590', duration: '51s', note: 'UK OFSI: timeout (other 5 succeeded)' },
-  { date: 'Feb 9, 2026 03:00', status: 'ok', entities: '33,571', duration: '38s' },
+  { dateISO: '2026-03-02T03:00:00Z', status: 'ok', entities: '33,629', duration: '42s' },
+  { dateISO: '2026-02-23T03:00:00Z', status: 'ok', entities: '33,614', duration: '39s' },
+  { dateISO: '2026-02-16T03:00:00Z', status: 'partial', entities: '33,590', duration: '51s', note: 'UK OFSI: timeout (other 5 succeeded)' },
+  { dateISO: '2026-02-09T03:00:00Z', status: 'ok', entities: '33,571', duration: '38s' },
 ];
 
 export default function SourcesPage() {
-  const [syncing, setSyncing] = useState(false);
+  const { t, i18n } = useTranslation();
+  const currentLocale = i18n.language?.startsWith('fr') ? 'fr-FR' : 'en-US';
 
-  const handleManualSync = () => {
-    setSyncing(true);
-    setTimeout(() => setSyncing(false), 3000);
-  };
+  const lastSyncDate = new Date('2026-03-02T03:00:00Z').toLocaleDateString(currentLocale, { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', timeZone: 'UTC' });
+  const nextSyncDate = new Date('2026-03-09T03:00:00Z').toLocaleDateString(currentLocale, { year: 'numeric', month: 'long', day: 'numeric' });
 
   return (
     <div>
       <PageHeader
         icon={<Database className="w-6 h-6 text-[#931CF5]" />}
-        title="Sources"
-        subtitle="Sanctions databases and data freshness"
+        title={t('sources.title')}
+        subtitle={t('sources.subtitle')}
       />
 
       {/* Update Status */}
@@ -51,27 +50,19 @@ export default function SourcesPage() {
           <div>
             <div className="flex items-center gap-2 mb-2">
               <CheckCircle className="w-4 h-4 text-[#10B981]" />
-              <span className="text-sm font-medium text-slate-900 dark:text-slate-100">All sources healthy</span>
+              <span className="text-sm font-medium text-slate-900 dark:text-slate-100">{t('sources.allHealthy')}</span>
             </div>
             <div className="flex flex-wrap gap-x-6 gap-y-1 text-xs text-slate-500 dark:text-slate-400">
-              <span>Last sync: <strong className="text-slate-900 dark:text-slate-100">March 2, 2026 at 03:00 UTC</strong></span>
-              <span>Next scheduled: <strong className="text-slate-900 dark:text-slate-100">March 9, 2026</strong></span>
-              <span>Total entities: <strong className="text-slate-900 dark:text-slate-100">33,629</strong></span>
-              <span>Sources active: <strong className="text-slate-900 dark:text-slate-100">6/6</strong></span>
+              <span>{t('sources.lastSync')}: <strong className="text-slate-900 dark:text-slate-100">{lastSyncDate} UTC</strong></span>
+              <span>{t('sources.nextScheduled')}: <strong className="text-slate-900 dark:text-slate-100">{nextSyncDate}</strong></span>
+              <span>{t('sources.totalEntities')}: <strong className="text-slate-900 dark:text-slate-100">33,629</strong></span>
+              <span>{t('sources.sourcesActive')}: <strong className="text-slate-900 dark:text-slate-100">6/6</strong></span>
             </div>
           </div>
           <div className="flex gap-2">
-            <button
-              onClick={handleManualSync}
-              disabled={syncing}
-              className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-medium bg-[#931CF5] text-white rounded-lg hover:bg-[#7B16D0] disabled:opacity-50 transition-colors min-h-[36px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2563eb]"
-            >
-              <RefreshCw className={`w-3.5 h-3.5 ${syncing ? 'animate-spin' : ''}`} />
-              {syncing ? 'Syncing...' : 'Run Manual Sync'}
-            </button>
             <button className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-medium border border-slate-200 dark:border-slate-600 text-slate-500 dark:text-slate-400 rounded-lg hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors min-h-[36px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2563eb]">
               <FileText className="w-3.5 h-3.5" />
-              View Sync Logs
+              {t('sources.viewSyncLogs')}
             </button>
           </div>
         </div>
@@ -80,7 +71,7 @@ export default function SourcesPage() {
       {/* Data Sources section label */}
       <div className="flex items-center gap-3 mb-4">
         <div className="h-px flex-1 bg-slate-200 dark:bg-slate-700" />
-        <span className="text-[10px] font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Data Sources</span>
+        <span className="text-[10px] font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider">{t('sources.dataSources')}</span>
         <div className="h-px flex-1 bg-slate-200 dark:bg-slate-700" />
       </div>
 
@@ -112,7 +103,7 @@ export default function SourcesPage() {
       {/* Sync History section label */}
       <div className="flex items-center gap-3 mb-4">
         <div className="h-px flex-1 bg-slate-200 dark:bg-slate-700" />
-        <span className="text-[10px] font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Sync History</span>
+        <span className="text-[10px] font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider">{t('sources.syncHistory')}</span>
         <div className="h-px flex-1 bg-slate-200 dark:bg-slate-700" />
       </div>
 
@@ -122,16 +113,16 @@ export default function SourcesPage() {
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50">
-                <th className="text-left px-4 py-3 text-[10px] font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Date</th>
-                <th className="text-left px-4 py-3 text-[10px] font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Status</th>
-                <th className="text-left px-4 py-3 text-[10px] font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Entities</th>
-                <th className="text-left px-4 py-3 text-[10px] font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Duration</th>
+                <th className="text-left px-4 py-3 text-[10px] font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider">{t('sources.date')}</th>
+                <th className="text-left px-4 py-3 text-[10px] font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider">{t('sources.status')}</th>
+                <th className="text-left px-4 py-3 text-[10px] font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider">{t('sources.entities')}</th>
+                <th className="text-left px-4 py-3 text-[10px] font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider">{t('sources.duration')}</th>
               </tr>
             </thead>
             <tbody>
               {SYNC_HISTORY.map((row, i) => (
                 <tr key={i} className="border-b border-slate-200 dark:border-slate-700 last:border-b-0">
-                  <td className="px-4 py-3 text-slate-900 dark:text-slate-100">{row.date}</td>
+                  <td className="px-4 py-3 text-slate-900 dark:text-slate-100">{new Date(row.dateISO).toLocaleDateString(currentLocale, { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', timeZone: 'UTC' })}</td>
                   <td className="px-4 py-3">
                     <span className="inline-flex items-center gap-1.5">
                       {row.status === 'ok' ? (
@@ -140,7 +131,7 @@ export default function SourcesPage() {
                         <AlertTriangle className="w-3.5 h-3.5 text-[#F59E0B]" />
                       )}
                       <span className={row.status === 'ok' ? 'text-[#10B981]' : 'text-[#F59E0B]'}>
-                        {row.status === 'ok' ? 'OK' : 'Partial'}
+                        {row.status === 'ok' ? t('sources.ok') : t('sources.partial')}
                       </span>
                     </span>
                     {row.note && (

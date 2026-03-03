@@ -3,18 +3,19 @@ import { useScrollLock } from './hooks/useScrollLock';
 import {
   Search, Database, Globe, Shield, Brain, FileText,
 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { useTheme } from '../../hooks/useTheme';
 
 const TOTAL_STEPS = 6;
 const SCROLL_MULTIPLIER = 3;
 
-const PIPELINE_STEPS = [
-  { Icon: Search, label: 'Query Parsing', desc: 'Name normalization & fuzzy matching engine' },
-  { Icon: Database, label: 'Multi-Source Fetch', desc: 'OFAC, EU, UN, UK, Canada, OpenSanctions' },
-  { Icon: Globe, label: 'Offshore Intelligence', desc: 'Panama Papers, ICIJ, FinCEN Files' },
-  { Icon: Shield, label: 'Risk Scoring', desc: 'Cross-reference & deduplication' },
-  { Icon: Brain, label: 'AI Analysis', desc: 'Claude-powered executive summary' },
-  { Icon: FileText, label: 'Report Generation', desc: 'PDF intelligence dossier' },
+const PIPELINE_STEP_KEYS = [
+  { Icon: Search, labelKey: 'pipeline.queryParsing', descKey: 'pipeline.queryParsingDesc' },
+  { Icon: Database, labelKey: 'pipeline.multiSourceFetch', descKey: 'pipeline.multiSourceFetchDesc' },
+  { Icon: Globe, labelKey: 'pipeline.offshoreIntelligence', descKey: 'pipeline.offshoreIntelligenceDesc' },
+  { Icon: Shield, labelKey: 'pipeline.riskScoring', descKey: 'pipeline.riskScoringDesc' },
+  { Icon: Brain, labelKey: 'pipeline.aiAnalysis', descKey: 'pipeline.aiAnalysisDesc' },
+  { Icon: FileText, labelKey: 'pipeline.reportGeneration', descKey: 'pipeline.reportGenerationDesc' },
 ];
 
 // Asymmetric block positions in SVG viewBox coordinates (960 × 480)
@@ -76,6 +77,7 @@ function getPointAtProgress(pathD: string, t: number, totalLen: number): { x: nu
 
 export default function SplinePipelineSection() {
   const { theme } = useTheme();
+  const { t } = useTranslation();
   const isDark = theme === 'dark';
   const [isMobile, setIsMobile] = useState(false);
   const [pathLen, setPathLen] = useState(1200);
@@ -118,20 +120,20 @@ export default function SplinePipelineSection() {
     return (
       <div className="py-16 px-6 bg-slate-50 dark:bg-[#1B1F2D]">
         <p className="text-center text-xs text-slate-400 dark:text-gray-500 uppercase tracking-[0.2em] mb-10">
-          Under the Hood — Intelligence Pipeline
+          {t('pipeline.sectionTitle')}
         </p>
         <div className="grid grid-cols-2 gap-5 max-w-sm mx-auto">
-          {PIPELINE_STEPS.map((step, i) => (
+          {PIPELINE_STEP_KEYS.map((step, i) => (
             <div
-              key={step.label}
+              key={step.labelKey}
               className="flex flex-col items-center text-center p-5 rounded-2xl border border-[#931CF5]/15 bg-[#931CF5]/5"
             >
               <div className="w-12 h-12 rounded-xl bg-[#931CF5]/10 flex items-center justify-center mb-3">
                 <step.Icon className="w-6 h-6 text-[#931CF5]" />
               </div>
-              <span className="text-[10px] font-bold text-[#931CF5] mb-1">Step {i + 1}</span>
-              <h4 className="text-sm font-semibold text-slate-900 dark:text-white">{step.label}</h4>
-              <p className="text-[11px] text-slate-500 dark:text-gray-500 mt-1">{step.desc}</p>
+              <span className="text-[10px] font-bold text-[#931CF5] mb-1">{t('pipeline.step', { number: i + 1 })}</span>
+              <h4 className="text-sm font-semibold text-slate-900 dark:text-white">{t(step.labelKey)}</h4>
+              <p className="text-[11px] text-slate-500 dark:text-gray-500 mt-1">{t(step.descKey)}</p>
             </div>
           ))}
         </div>
@@ -158,7 +160,7 @@ export default function SplinePipelineSection() {
               className="text-center text-xs uppercase tracking-[0.25em] mb-6 transition-opacity duration-700"
               style={{ color: isDark ? 'rgba(255,255,255,0.3)' : 'rgba(0,0,0,0.3)', opacity: totalProgress > 0.01 ? 1 : 0.5 }}
             >
-              Under the Hood — Intelligence Pipeline
+              {t('pipeline.sectionTitle')}
             </p>
 
             {/* Pipeline canvas */}
@@ -217,7 +219,7 @@ export default function SplinePipelineSection() {
               </svg>
 
               {/* Pipeline blocks — absolutely positioned over the SVG */}
-              {PIPELINE_STEPS.map((step, i) => {
+              {PIPELINE_STEP_KEYS.map((step, i) => {
                 const pos = NODE_POS[i];
                 const stepThreshold = i / TOTAL_STEPS;
                 const isReached = totalProgress >= stepThreshold;
@@ -225,7 +227,7 @@ export default function SplinePipelineSection() {
 
                 return (
                   <div
-                    key={step.label}
+                    key={step.labelKey}
                     className="absolute flex flex-col items-center text-center"
                     style={{
                       left: `${(pos.x / VB_W) * 100}%`,
@@ -266,7 +268,7 @@ export default function SplinePipelineSection() {
                         className="absolute -top-2.5 -right-2.5 w-6 h-6 rounded-full text-[10px] font-bold flex items-center justify-center"
                         style={{
                           background: isReached ? '#931CF5' : isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.08)',
-                          color: isReached ? '#0F1419' : isDark ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.2)',
+                          color: isReached ? '#ffffff' : isDark ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.2)',
                           transition: 'all 0.5s ease',
                         }}
                       >
@@ -282,7 +284,7 @@ export default function SplinePipelineSection() {
                         transition: 'color 0.5s ease',
                       }}
                     >
-                      {step.label}
+                      {t(step.labelKey)}
                     </span>
 
                     {/* Description */}
@@ -294,7 +296,7 @@ export default function SplinePipelineSection() {
                         transition: 'all 0.6s ease',
                       }}
                     >
-                      {step.desc}
+                      {t(step.descKey)}
                     </span>
                   </div>
                 );
@@ -316,7 +318,7 @@ export default function SplinePipelineSection() {
               </div>
               {totalProgress < 0.03 && (
                 <div className="flex flex-col items-center gap-1.5 animate-bounce mt-1">
-                  <span className="text-[10px] text-gray-600 uppercase tracking-[0.15em]">Scroll to explore</span>
+                  <span className="text-[10px] text-gray-600 uppercase tracking-[0.15em]">{t('pipeline.scrollToExplore')}</span>
                   <svg className="w-3.5 h-3.5 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
                   </svg>

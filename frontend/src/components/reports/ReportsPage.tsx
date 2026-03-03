@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FileText, Search, Download, MoreVertical, Eye, RefreshCw, Trash2, EyeOff } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import PageHeader from '../common/PageHeader';
 import RiskLevelBadge from '../common/RiskLevelBadge';
 import CgCard from '../common/CgCard';
@@ -18,6 +19,7 @@ function formatTimeAgo(dateStr: string) {
 }
 
 export default function ReportsPage() {
+  const { t } = useTranslation();
   const [entities, setEntities] = useState<SavedEntity[]>([]);
   const [loading, setLoading] = useState(true);
   const [filterText, setFilterText] = useState('');
@@ -81,8 +83,8 @@ export default function ReportsPage() {
     <div>
       <PageHeader
         icon={<FileText className="w-6 h-6 text-[#931CF5]" />}
-        title="Reports"
-        subtitle="Saved entity profiles for ongoing due diligence"
+        title={t('reports.title')}
+        subtitle={t('reports.subtitle')}
       />
 
       {/* Search + Filter */}
@@ -92,7 +94,7 @@ export default function ReportsPage() {
           <input
             value={filterText}
             onChange={(e) => setFilterText(e.target.value)}
-            placeholder="Search reports..."
+            placeholder={t('reports.searchPlaceholder')}
             className="w-full pl-9 pr-3 py-2 text-sm border border-slate-200 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-[#931CF5]/40"
           />
         </div>
@@ -101,12 +103,12 @@ export default function ReportsPage() {
       {/* Table */}
       <CgCard noPadding>
         {loading ? (
-          <div className="p-8 text-center text-sm text-slate-400 dark:text-slate-500">Loading saved entities...</div>
+          <div className="p-8 text-center text-sm text-slate-400 dark:text-slate-500">{t('reports.loading')}</div>
         ) : filtered.length === 0 ? (
           <div className="p-8 text-center text-sm text-slate-400 dark:text-slate-500">
             {entities.length === 0
-              ? 'No saved entities yet. Save your first entity from a search result.'
-              : 'No matching entities found.'}
+              ? t('reports.noSaved')
+              : t('reports.noMatch')}
           </div>
         ) : (
           <div className="overflow-x-auto">
@@ -114,11 +116,11 @@ export default function ReportsPage() {
               <thead>
                 <tr className="border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50">
                   <th className="text-left px-4 py-3 text-[10px] font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider w-10"></th>
-                  <th className="text-left px-4 py-3 text-[10px] font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Name</th>
+                  <th className="text-left px-4 py-3 text-[10px] font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider">{t('reports.title')}</th>
                   <th className="text-left px-4 py-3 text-[10px] font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider hidden sm:table-cell">Type</th>
-                  <th className="text-left px-4 py-3 text-[10px] font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider hidden md:table-cell">Risk Level</th>
-                  <th className="text-left px-4 py-3 text-[10px] font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider hidden lg:table-cell">Last Search</th>
-                  <th className="text-right px-4 py-3 text-[10px] font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Actions</th>
+                  <th className="text-left px-4 py-3 text-[10px] font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider hidden md:table-cell">{t('reports.riskLevel')}</th>
+                  <th className="text-left px-4 py-3 text-[10px] font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider hidden lg:table-cell">{t('reports.lastSearch')}</th>
+                  <th className="text-right px-4 py-3 text-[10px] font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider">{t('reports.actions')}</th>
                 </tr>
               </thead>
               <tbody>
@@ -137,7 +139,7 @@ export default function ReportsPage() {
                         <div className="font-semibold text-slate-900 dark:text-slate-100">{entity.entity_name}</div>
                         {entity.is_monitored && (
                           <span className="inline-flex items-center gap-1 text-[10px] text-[#931CF5] font-medium mt-0.5">
-                            <Eye className="w-3 h-3" /> Monitored
+                            <Eye className="w-3 h-3" /> {t('reports.monitored')}
                           </span>
                         )}
                       </td>
@@ -152,7 +154,7 @@ export default function ReportsPage() {
                         <div className="flex items-center justify-end gap-1 relative">
                           <button
                             className="p-1.5 rounded hover:bg-slate-100 dark:hover:bg-slate-600 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors min-w-[24px] min-h-[24px]"
-                            title="Download Report"
+                            title={t('reports.downloadReport')}
                           >
                             <Download className="w-4 h-4" />
                           </button>
@@ -170,33 +172,33 @@ export default function ReportsPage() {
                                 onClick={() => { navigate(`/reports/${entity.id}`); setOpenMenu(null); }}
                                 className="w-full flex items-center gap-2 px-3 py-2 text-sm text-slate-900 dark:text-slate-100 hover:bg-slate-50 dark:hover:bg-slate-700"
                               >
-                                <Eye className="w-4 h-4 text-slate-500 dark:text-slate-400" /> View Profile
+                                <Eye className="w-4 h-4 text-slate-500 dark:text-slate-400" /> {t('reports.viewProfile')}
                               </button>
                               <button
                                 className="w-full flex items-center gap-2 px-3 py-2 text-sm text-slate-900 dark:text-slate-100 hover:bg-slate-50 dark:hover:bg-slate-700"
                               >
-                                <RefreshCw className="w-4 h-4 text-slate-500 dark:text-slate-400" /> Refresh Search
+                                <RefreshCw className="w-4 h-4 text-slate-500 dark:text-slate-400" /> {t('reports.refreshSearch')}
                               </button>
                               <button
                                 onClick={() => handleToggleMonitor(entity)}
                                 className="w-full flex items-center gap-2 px-3 py-2 text-sm text-slate-900 dark:text-slate-100 hover:bg-slate-50 dark:hover:bg-slate-700"
                               >
                                 {entity.is_monitored
-                                  ? <><EyeOff className="w-4 h-4 text-slate-500 dark:text-slate-400" /> Disable Monitoring</>
-                                  : <><Eye className="w-4 h-4 text-slate-500 dark:text-slate-400" /> Enable Monitoring</>
+                                  ? <><EyeOff className="w-4 h-4 text-slate-500 dark:text-slate-400" /> {t('reports.disableMonitoring')}</>
+                                  : <><Eye className="w-4 h-4 text-slate-500 dark:text-slate-400" /> {t('reports.enableMonitoring')}</>
                                 }
                               </button>
                               <button
                                 className="w-full flex items-center gap-2 px-3 py-2 text-sm text-slate-900 dark:text-slate-100 hover:bg-slate-50 dark:hover:bg-slate-700"
                               >
-                                <Download className="w-4 h-4 text-slate-500 dark:text-slate-400" /> Download Report
+                                <Download className="w-4 h-4 text-slate-500 dark:text-slate-400" /> {t('reports.downloadReport')}
                               </button>
                               <hr className="my-1 border-slate-200 dark:border-slate-700" />
                               <button
                                 onClick={() => { setConfirmDelete(entity.id); setOpenMenu(null); }}
                                 className="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-600 hover:bg-red-50"
                               >
-                                <Trash2 className="w-4 h-4" /> Remove from Reports
+                                <Trash2 className="w-4 h-4" /> {t('reports.removeFromReports')}
                               </button>
                             </div>
                           )}
@@ -212,27 +214,27 @@ export default function ReportsPage() {
       </CgCard>
 
       <div className="mt-2 text-xs text-slate-400 dark:text-slate-500">
-        Showing {filtered.length} saved {filtered.length === 1 ? 'entity' : 'entities'}
+        {filtered.length === 1 ? t('reports.showingEntity', { count: filtered.length }) : t('reports.showingEntities', { count: filtered.length })}
       </div>
 
       {/* Delete Confirmation Dialog */}
       {confirmDelete && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
           <div className="bg-white dark:bg-slate-800 rounded-xl shadow-xl p-6 max-w-sm w-full mx-4 border border-slate-200 dark:border-slate-700">
-            <h3 className="text-base font-semibold text-slate-900 dark:text-slate-50 mb-2">Remove Entity</h3>
-            <p className="text-sm text-slate-500 dark:text-slate-400 mb-4">Are you sure you want to remove this entity from your saved reports? This action cannot be undone.</p>
+            <h3 className="text-base font-semibold text-slate-900 dark:text-slate-50 mb-2">{t('reports.removeEntity')}</h3>
+            <p className="text-sm text-slate-500 dark:text-slate-400 mb-4">{t('reports.removeConfirm')}</p>
             <div className="flex justify-end gap-2">
               <button
                 onClick={() => setConfirmDelete(null)}
                 className="px-4 py-2 text-sm text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white border border-slate-200 dark:border-slate-600 rounded-lg min-h-[36px]"
               >
-                Cancel
+                {t('reports.cancel')}
               </button>
               <button
                 onClick={() => handleRemove(confirmDelete)}
                 className="px-4 py-2 text-sm text-white bg-red-500 hover:bg-red-600 rounded-lg"
               >
-                Remove
+                {t('reports.remove')}
               </button>
             </div>
           </div>

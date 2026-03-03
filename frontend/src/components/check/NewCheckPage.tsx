@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Search, Clock, ArrowRight } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import SearchSection from '../search/SearchSection';
 import { OSINTLoader } from '../search/OSINTLoader';
 import ResultsList from '../results/ResultsList';
@@ -20,6 +21,7 @@ interface RecentSearch {
 }
 
 export default function NewCheckPage() {
+  const { t } = useTranslation();
   const { data, isLoading, error, search, reset } = useSearch();
   const [currentQuery, setCurrentQuery] = useState('');
   const [recentSearches, setRecentSearches] = useState<RecentSearch[]>([]);
@@ -126,7 +128,7 @@ export default function NewCheckPage() {
 
   const handleDownload = () => {
     // Trigger existing PDF generation — placeholder
-    alert('Report generation triggered. The PDF will download shortly.');
+    alert(t('check.reportGenTriggered'));
   };
 
   const handleBack = () => {
@@ -180,8 +182,8 @@ export default function NewCheckPage() {
       <div>
         <PageHeader
           icon={<Search className="w-6 h-6 text-[#931CF5]" />}
-          title="New Check"
-          subtitle="Screen any person, entity, or vessel"
+          title={t('check.title')}
+          subtitle={t('check.subtitle')}
         />
 
         <div className="max-w-2xl mx-auto mt-8">
@@ -191,7 +193,7 @@ export default function NewCheckPage() {
             <div className="mt-8">
               <div className="flex items-center gap-2 mb-3">
                 <Clock className="w-4 h-4 text-slate-400 dark:text-slate-500" />
-                <span className="text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Recent searches</span>
+                <span className="text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider">{t('check.recentSearches')}</span>
               </div>
               <div className="space-y-1">
                 {recentSearches.map((rs) => (
@@ -221,8 +223,8 @@ export default function NewCheckPage() {
       <div>
         <PageHeader
           icon={<Search className="w-6 h-6 text-[#931CF5]" />}
-          title="New Check"
-          subtitle={`Searching "${currentQuery}"...`}
+          title={t('check.title')}
+          subtitle={`${t('check.searching')} "${currentQuery}"...`}
         />
         <div className="mt-4">
           <OSINTLoader query={currentQuery} searchType="fuzzy" />
@@ -236,8 +238,8 @@ export default function NewCheckPage() {
     <div>
       <PageHeader
         icon={<Search className="w-6 h-6 text-[#931CF5]" />}
-        title="New Check"
-        subtitle={currentQuery ? `Results for "${currentQuery}"` : undefined}
+        title={t('check.title')}
+        subtitle={currentQuery ? `${t('check.resultsFor')} "${currentQuery}"` : undefined}
       />
 
       <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-sm dark:shadow-none p-4 mb-6">

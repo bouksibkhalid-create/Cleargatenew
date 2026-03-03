@@ -3,8 +3,10 @@ import {
   LayoutDashboard, Search, FileText, Clock, Database,
   ChevronLeft, ChevronRight, Shield,
 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { useReportsCount } from '../../hooks/useReportsCount';
 import ThemeToggle from '../ui/ThemeToggle';
+import LanguageToggle from '../ui/LanguageToggle';
 
 interface SidebarProps {
   collapsed: boolean;
@@ -14,24 +16,25 @@ interface SidebarProps {
 
 const NAV_SECTIONS = [
   {
-    label: 'MAIN',
+    labelKey: 'nav.main',
     items: [
-      { icon: LayoutDashboard, label: 'Dashboard', path: '/dashboard' },
-      { icon: Search, label: 'New Check', path: '/check' },
-      { icon: FileText, label: 'Reports', path: '/reports', badge: true },
-      { icon: Clock, label: 'Timeline', path: '/timeline' },
+      { icon: LayoutDashboard, labelKey: 'nav.dashboard', path: '/dashboard' },
+      { icon: Search, labelKey: 'nav.newCheck', path: '/check' },
+      { icon: FileText, labelKey: 'nav.reports', path: '/reports', badge: true },
+      { icon: Clock, labelKey: 'nav.timeline', path: '/timeline' },
     ],
   },
   {
-    label: 'DATA',
+    labelKey: 'nav.data',
     items: [
-      { icon: Database, label: 'Sources', path: '/sources' },
+      { icon: Database, labelKey: 'nav.sources', path: '/sources' },
     ],
   },
 ];
 
 export default function Sidebar({ collapsed, onToggle, onClose }: SidebarProps) {
   const location = useLocation();
+  const { t } = useTranslation();
   const { count: reportsCount } = useReportsCount();
 
   const handleNavClick = () => {
@@ -51,13 +54,13 @@ export default function Sidebar({ collapsed, onToggle, onClose }: SidebarProps) 
             <Shield className="w-4 h-4 text-white" />
           </div>
           {!collapsed && (
-            <span className="text-sm font-bold tracking-wide text-slate-900 dark:text-white uppercase whitespace-nowrap">ClearGate</span>
+            <span className="text-sm font-bold tracking-wide text-slate-900 dark:text-white uppercase whitespace-nowrap">{t('brand.name')}</span>
           )}
         </Link>
         <button
           onClick={onToggle}
           className={`text-slate-400 dark:text-slate-500 hover:text-slate-700 dark:hover:text-white transition-colors p-1 rounded min-w-[24px] min-h-[24px] ${collapsed ? 'hidden' : ''}`}
-          aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+          aria-label={collapsed ? t('sidebar.expandSidebar') : t('sidebar.collapseSidebar')}
         >
           {collapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
         </button>
@@ -66,10 +69,10 @@ export default function Sidebar({ collapsed, onToggle, onClose }: SidebarProps) 
       {/* Navigation */}
       <nav className="flex-1 py-2 overflow-y-auto overflow-x-hidden">
         {NAV_SECTIONS.map((section) => (
-          <div key={section.label} className="mb-2">
+          <div key={section.labelKey} className="mb-2">
             {!collapsed && (
               <div className="px-4 pt-4 pb-1.5 text-[10px] font-semibold uppercase tracking-[0.05em] text-slate-400 dark:text-slate-500">
-                {section.label}
+                {t(section.labelKey)}
               </div>
             )}
             {section.items.map((item) => {
@@ -79,7 +82,7 @@ export default function Sidebar({ collapsed, onToggle, onClose }: SidebarProps) 
                   key={item.path}
                   to={item.path}
                   onClick={handleNavClick}
-                  title={collapsed ? item.label : undefined}
+                  title={collapsed ? t(item.labelKey) : undefined}
                   className={`relative flex items-center gap-3 mx-2 my-0.5 rounded-lg transition-all duration-150 text-sm font-medium min-h-[36px]
                     focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2563eb]
                     ${collapsed ? 'justify-center px-2 py-2.5' : 'px-3 py-2.5'}
@@ -92,7 +95,7 @@ export default function Sidebar({ collapsed, onToggle, onClose }: SidebarProps) 
                   <item.icon className="w-5 h-5 flex-shrink-0" />
                   {!collapsed && (
                     <>
-                      <span className="truncate">{item.label}</span>
+                      <span className="truncate">{t(item.labelKey)}</span>
                       {item.badge && reportsCount > 0 && (
                         <span className="ml-auto bg-[#931CF5] text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[18px] text-center">
                           {reportsCount}
@@ -107,32 +110,38 @@ export default function Sidebar({ collapsed, onToggle, onClose }: SidebarProps) 
         ))}
       </nav>
 
-      {/* User section + Theme toggle (bottom) */}
+      {/* User section + Theme/Language toggles (bottom) */}
       <div className="border-t border-slate-200 dark:border-slate-700 p-3">
         {collapsed ? (
           <div className="flex flex-col items-center gap-2">
+            <ThemeToggle className="!min-w-[32px] !min-h-[32px]" />
+            <LanguageToggle />
             <div className="w-8 h-8 rounded-full bg-[#931CF5] flex items-center justify-center text-white text-xs font-bold">
               K
             </div>
-            <ThemeToggle className="!min-w-[32px] !min-h-[32px]" />
             <button
               onClick={onToggle}
               className="text-slate-400 dark:text-slate-500 hover:text-slate-700 dark:hover:text-white transition-colors p-1 min-w-[24px] min-h-[24px]"
-              aria-label="Expand sidebar"
+              aria-label={t('sidebar.expandSidebar')}
             >
               <ChevronRight className="w-4 h-4" />
             </button>
           </div>
         ) : (
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-full bg-[#931CF5] flex items-center justify-center text-white text-xs font-bold flex-shrink-0">
-              K
+          <div className="flex flex-col gap-2">
+            <div className="flex items-center gap-2">
+              <LanguageToggle />
+              <ThemeToggle />
             </div>
-            <div className="min-w-0 flex-1">
-              <div className="text-sm font-medium text-slate-900 dark:text-white truncate">Khalid B.</div>
-              <div className="text-[10px] text-slate-400 dark:text-slate-500">Free Plan</div>
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-full bg-[#931CF5] flex items-center justify-center text-white text-xs font-bold flex-shrink-0">
+                K
+              </div>
+              <div className="min-w-0 flex-1">
+                <div className="text-sm font-medium text-slate-900 dark:text-white truncate">Khalid B.</div>
+                <div className="text-[10px] text-slate-400 dark:text-slate-500">{t('sidebar.freePlan')}</div>
+              </div>
             </div>
-            <ThemeToggle />
           </div>
         )}
       </div>

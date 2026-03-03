@@ -3,10 +3,12 @@ import {
     Shield, ShieldAlert, Search, Zap, FileText, ArrowRight,
     Database, Globe, Radar, Users, Newspaper, Brain, Network, ScanLine,
 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { StatsCards } from '../home/StatsCards';
 import SplinePipelineSection from './SplinePipelineSection';
 import NetworkHeroAnimation from './NetworkHeroAnimation';
 import ThemeToggle from '../ui/ThemeToggle';
+import LanguageToggle from '../ui/LanguageToggle';
 import { useTheme } from '../../hooks/useTheme';
 
 /* ------------------------------------------------------------------ */
@@ -21,6 +23,7 @@ interface LandingPageProps {
 function HeroSection({ onAccessDemo, onSearch }: LandingPageProps) {
     const { theme } = useTheme();
     const isDark = theme === 'dark';
+    const { t } = useTranslation();
     const [query, setQuery] = useState('');
     const inputRef = useRef<HTMLInputElement>(null);
 
@@ -43,22 +46,22 @@ function HeroSection({ onAccessDemo, onSearch }: LandingPageProps) {
                 {/* Left: Text + Search */}
                 <div className="flex-1 text-center lg:text-left">
                     <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-slate-900 dark:text-white leading-tight">
-                        One Search.<br />
-                        <span className="text-[#931CF5]">Complete Intelligence.</span>
+                        {t('landing.heroTitle1')}<br />
+                        <span className="text-[#931CF5]">{t('landing.heroTitle2')}</span>
                     </h1>
                     <p className="text-lg text-slate-600 dark:text-gray-400 mt-6 max-w-xl leading-relaxed">
-                        Screen any person, entity, or organization across global sanctions lists, offshore databases, and open-source intelligence — in seconds.
+                        {t('landing.heroSubtitle')}
                     </p>
                     <form onSubmit={handleSubmit} className="mt-8 flex gap-3 max-w-lg mx-auto lg:mx-0">
                         <input
                             ref={inputRef}
                             value={query}
                             onChange={(e) => setQuery(e.target.value)}
-                            placeholder="Search any name or entity…"
+                            placeholder={t('landing.searchPlaceholder')}
                             className="flex-1 px-5 py-3 rounded-full bg-white dark:bg-white/10 border border-slate-300 dark:border-white/20 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-gray-500 text-sm focus:outline-none focus:ring-2 focus:ring-[#931CF5]/50"
                         />
                         <button type="submit" className="px-6 py-3 bg-[#931CF5] text-white font-semibold rounded-full text-sm hover:bg-[#7B16D0] transition-colors">
-                            Search
+                            {t('landing.searchButton')}
                         </button>
                     </form>
                 </div>
@@ -104,23 +107,24 @@ function AnimatedCounter({ target, suffix = '' }: { target: string; suffix?: str
     return <div ref={ref} className="text-3xl font-bold text-slate-900 dark:text-white tabular-nums">{display}</div>;
 }
 
-const STATS = [
-    { value: '2.1', suffix: 'M+', label: 'Entities in Database', Icon: Database },
-    { value: '14057', suffix: '', label: 'Sanctioned Records', Icon: ShieldAlert },
-    { value: '8', suffix: '', label: 'Sanctions Lists', Icon: Globe },
-    { value: '3', suffix: 's', label: 'Average Search Time', Icon: Zap },
-    { value: '360', suffix: '°', label: 'OSINT Coverage', Icon: Radar },
+const STAT_KEYS = [
+    { value: '2.1', suffix: 'M+', labelKey: 'stats.entitiesInDb', Icon: Database },
+    { value: '14057', suffix: '', labelKey: 'stats.sanctionedRecords', Icon: ShieldAlert },
+    { value: '8', suffix: '', labelKey: 'stats.sanctionsLists', Icon: Globe },
+    { value: '3', suffix: 's', labelKey: 'stats.avgSearchTime', Icon: Zap },
+    { value: '360', suffix: '°', labelKey: 'stats.osintCoverage', Icon: Radar },
 ];
 
 function StatsBar() {
+    const { t } = useTranslation();
     return (
         <section className="bg-slate-100 dark:bg-[#111827] py-10">
             <div className="max-w-7xl mx-auto px-6 grid grid-cols-2 md:grid-cols-5 gap-8 text-center">
-                {STATS.map((s) => (
-                    <div key={s.label} className="flex flex-col items-center gap-2">
+                {STAT_KEYS.map((s) => (
+                    <div key={s.labelKey} className="flex flex-col items-center gap-2">
                         <s.Icon className="w-5 h-5 text-[#931CF5] mb-1" />
                         <AnimatedCounter target={s.value} suffix={s.suffix} />
-                        <span className="text-xs text-slate-500 dark:text-gray-500 uppercase tracking-wide">{s.label}</span>
+                        <span className="text-xs text-slate-500 dark:text-gray-500 uppercase tracking-wide">{t(s.labelKey)}</span>
                     </div>
                 ))}
             </div>
@@ -132,25 +136,26 @@ function StatsBar() {
 /*  Section 3 — How It Works                                           */
 /* ------------------------------------------------------------------ */
 
-const STEPS = [
-    { Icon: Search, title: 'Search', desc: 'Enter any name — person, entity, or organization' },
-    { Icon: ScanLine, title: 'Analyze', desc: 'ClearGate screens 8+ sources in parallel: sanctions, offshore, OSINT, media' },
-    { Icon: FileText, title: 'Report', desc: 'Download a complete PDF intelligence dossier, ready for regulatory submission' },
+const STEP_KEYS = [
+    { Icon: Search, titleKey: 'landing.stepSearchTitle', descKey: 'landing.stepSearchDesc' },
+    { Icon: ScanLine, titleKey: 'landing.stepAnalyzeTitle', descKey: 'landing.stepAnalyzeDesc' },
+    { Icon: FileText, titleKey: 'landing.stepReportTitle', descKey: 'landing.stepReportDesc' },
 ];
 
 function HowItWorks() {
+    const { t } = useTranslation();
     return (
         <section className="py-20 bg-slate-50 dark:bg-[#1A1F2E]">
             <div className="max-w-5xl mx-auto px-6">
-                <h2 className="text-3xl font-bold text-slate-900 dark:text-white text-center mb-12">How It Works</h2>
+                <h2 className="text-3xl font-bold text-slate-900 dark:text-white text-center mb-12">{t('landing.howItWorks')}</h2>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    {STEPS.map((step) => (
-                        <div key={step.title} className="relative group text-center">
+                    {STEP_KEYS.map((step) => (
+                        <div key={step.titleKey} className="relative group text-center">
                             <div className="w-16 h-16 mx-auto rounded-2xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 flex items-center justify-center mb-4 group-hover:-translate-y-1 transition-transform">
                                 <step.Icon className="w-7 h-7 text-[#931CF5]" />
                             </div>
-                            <h3 className="text-lg font-semibold text-slate-900 dark:text-white">{step.title}</h3>
-                            <p className="text-sm text-slate-600 dark:text-gray-400 mt-2 leading-relaxed">{step.desc}</p>
+                            <h3 className="text-lg font-semibold text-slate-900 dark:text-white">{t(step.titleKey)}</h3>
+                            <p className="text-sm text-slate-600 dark:text-gray-400 mt-2 leading-relaxed">{t(step.descKey)}</p>
                         </div>
                     ))}
                 </div>
@@ -176,17 +181,18 @@ const DATA_SOURCES = [
 ];
 
 function DataSourcesGrid() {
+    const { t } = useTranslation();
     return (
         <section className="py-20 bg-white dark:bg-[#0F1419]">
             <div className="max-w-7xl mx-auto px-6">
-                <h2 className="text-3xl font-bold text-slate-900 dark:text-white text-center mb-4">Comprehensive Data Coverage</h2>
-                <p className="text-slate-600 dark:text-gray-400 text-center mb-12 max-w-2xl mx-auto">Cross-referencing global sanctions, PEP databases, and offshore leak registries</p>
+                <h2 className="text-3xl font-bold text-slate-900 dark:text-white text-center mb-4">{t('landing.dataCoverage')}</h2>
+                <p className="text-slate-600 dark:text-gray-400 text-center mb-12 max-w-2xl mx-auto">{t('landing.dataCoverageSubtitle')}</p>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     {DATA_SOURCES.map((ds) => (
                         <div key={ds.name} className="p-5 bg-slate-50 dark:bg-white/5 rounded-xl border border-slate-200 dark:border-white/10 hover:border-[#931CF5]/40 hover:bg-slate-100 dark:hover:bg-white/[0.08] transition-all">
                             <div className="text-2xl mb-2">{ds.flag}</div>
                             <h4 className="text-sm font-semibold text-slate-900 dark:text-white">{ds.name}</h4>
-                            <p className="text-xs text-slate-500 dark:text-gray-400 mt-1">{ds.count} entities</p>
+                            <p className="text-xs text-slate-500 dark:text-gray-400 mt-1">{ds.count} {t('landing.entities')}</p>
                             <div className="flex items-center gap-1.5 mt-2">
                                 <span className="w-1.5 h-1.5 rounded-full bg-[#931CF5]" />
                                 <span className="text-xs text-slate-400 dark:text-gray-500">{ds.freq}</span>
@@ -203,26 +209,27 @@ function DataSourcesGrid() {
 /*  Section 5 — Intelligence Capabilities                              */
 /* ------------------------------------------------------------------ */
 
-const CAPABILITIES = [
-    { Icon: Shield, title: 'Sanctions Screening', desc: 'Cross-reference OFAC, EU, UN, UK, Canada simultaneously' },
-    { Icon: Users, title: 'PEP Detection', desc: 'Identify Politically Exposed Persons and associates' },
-    { Icon: Globe, title: 'Offshore Intelligence', desc: 'Panama Papers, Pandora Papers, Paradise Papers, FinCEN Files' },
-    { Icon: Newspaper, title: 'Adverse Media', desc: 'Automated news screening for corruption, fraud, investigations' },
-    { Icon: Brain, title: 'AI Analysis', desc: 'Claude-powered executive summaries and risk assessment' },
-    { Icon: Network, title: 'Relationship Graphs', desc: 'Interactive force-directed visualization of entity connections' },
+const CAP_KEYS = [
+    { Icon: Shield, titleKey: 'landing.capSanctionsTitle', descKey: 'landing.capSanctionsDesc' },
+    { Icon: Users, titleKey: 'landing.capPEPTitle', descKey: 'landing.capPEPDesc' },
+    { Icon: Globe, titleKey: 'landing.capOffshoreTitle', descKey: 'landing.capOffshoreDesc' },
+    { Icon: Newspaper, titleKey: 'landing.capMediaTitle', descKey: 'landing.capMediaDesc' },
+    { Icon: Brain, titleKey: 'landing.capAITitle', descKey: 'landing.capAIDesc' },
+    { Icon: Network, titleKey: 'landing.capGraphTitle', descKey: 'landing.capGraphDesc' },
 ];
 
 function CapabilitiesSection() {
+    const { t } = useTranslation();
     return (
         <section className="py-20 bg-gradient-to-br from-slate-100 to-slate-200 dark:from-[#0F1419] dark:to-[#1A1F2E]">
             <div className="max-w-7xl mx-auto px-6">
-                <h2 className="text-3xl font-bold text-slate-900 dark:text-white text-center mb-12">Intelligence Capabilities</h2>
+                <h2 className="text-3xl font-bold text-slate-900 dark:text-white text-center mb-12">{t('landing.capabilities')}</h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {CAPABILITIES.map((cap) => (
-                        <div key={cap.title} className="p-6 rounded-xl bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 hover:border-[#931CF5]/30 hover:bg-slate-50 dark:hover:bg-white/[0.08] transition-all group shadow-sm dark:shadow-none">
+                    {CAP_KEYS.map((cap) => (
+                        <div key={cap.titleKey} className="p-6 rounded-xl bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 hover:border-[#931CF5]/30 hover:bg-slate-50 dark:hover:bg-white/[0.08] transition-all group shadow-sm dark:shadow-none">
                             <cap.Icon className="w-8 h-8 text-[#931CF5] mb-4 group-hover:scale-110 transition-transform" />
-                            <h3 className="text-base font-semibold text-slate-900 dark:text-white">{cap.title}</h3>
-                            <p className="text-sm text-slate-600 dark:text-gray-400 mt-2 leading-relaxed">{cap.desc}</p>
+                            <h3 className="text-base font-semibold text-slate-900 dark:text-white">{t(cap.titleKey)}</h3>
+                            <p className="text-sm text-slate-600 dark:text-gray-400 mt-2 leading-relaxed">{t(cap.descKey)}</p>
                         </div>
                     ))}
                 </div>
@@ -236,6 +243,7 @@ function CapabilitiesSection() {
 /* ------------------------------------------------------------------ */
 
 function ReportPreview({ onAccessDemo }: { onAccessDemo: () => void }) {
+    const { t } = useTranslation();
     return (
         <section className="py-20 bg-slate-50 dark:bg-[#1A1F2E]">
             <div className="max-w-6xl mx-auto px-6 flex flex-col lg:flex-row items-center gap-12">
@@ -246,16 +254,21 @@ function ReportPreview({ onAccessDemo }: { onAccessDemo: () => void }) {
                         style={{ transform: 'perspective(1000px) rotateY(-5deg)', background: 'linear-gradient(135deg, #0F1419, #1A1F2E)' }}
                     >
                         <div className="p-6 flex flex-col h-full">
-                            <div className="text-[#931CF5] text-xs font-semibold tracking-wider uppercase">Taskforce × ClearGate</div>
-                            <div className="text-gray-500 text-[10px] mt-1">Due Diligence & Economic Intelligence</div>
+                            <div className="text-[#931CF5] text-xs font-semibold tracking-wider uppercase">{t('landing.reportMockHeader')}</div>
+                            <div className="text-gray-500 text-[10px] mt-1">{t('landing.reportMockSubheader')}</div>
                             <div className="flex-1 flex flex-col items-center justify-center">
                                 <div className="w-12 h-[2px] bg-[#931CF5] mb-6" />
-                                <div className="text-[#931CF5] text-xs font-medium uppercase tracking-wider">Due Diligence Report</div>
-                                <div className="text-white text-lg font-bold mt-4 text-center">Subject Name</div>
-                                <div className="text-gray-400 text-xs mt-2">Entity · Location</div>
+                                <div className="text-[#931CF5] text-xs font-medium uppercase tracking-wider">{t('landing.reportMockLabel')}</div>
+                                <div className="text-white text-lg font-bold mt-4 text-center">{t('landing.reportMockSubject')}</div>
+                                <div className="text-gray-400 text-xs mt-2">{t('landing.reportMockEntityLocation')}</div>
                             </div>
                             <div className="grid grid-cols-2 gap-2">
-                                {['Red Flags', 'Entities', 'Risk Axes', 'Coverage'].map((label) => (
+                                {[
+                                    t('landing.reportMockRedFlags'),
+                                    t('landing.reportMockEntities'),
+                                    t('landing.reportMockRiskAxes'),
+                                    t('landing.reportMockCoverage'),
+                                ].map((label) => (
                                     <div key={label} className="bg-white/5 rounded p-2 text-center">
                                         <div className="text-[#931CF5] text-sm font-bold">—</div>
                                         <div className="text-gray-500 text-[8px] mt-0.5">{label}</div>
@@ -267,15 +280,15 @@ function ReportPreview({ onAccessDemo }: { onAccessDemo: () => void }) {
                 </div>
                 {/* Right: CTA */}
                 <div className="flex-1 text-center lg:text-left">
-                    <h2 className="text-3xl font-bold text-slate-900 dark:text-white">Intelligence-grade reporting</h2>
+                    <h2 className="text-3xl font-bold text-slate-900 dark:text-white">{t('landing.reportPreviewTitle')}</h2>
                     <p className="text-slate-600 dark:text-gray-400 mt-4 leading-relaxed max-w-md">
-                        Generate a comprehensive 15-page intelligence dossier covering sanctions, offshore structures, adverse media, AI-powered risk assessment, and actionable recommendations — ready for regulatory submission.
+                        {t('landing.reportPreviewDesc')}
                     </p>
                     <button
                         onClick={onAccessDemo}
                         className="mt-8 inline-flex items-center gap-2 px-8 py-3 bg-[#931CF5] text-white font-semibold rounded-full text-sm hover:bg-[#7B16D0] transition-colors"
                     >
-                        Generate your first report
+                        {t('landing.generateReport')}
                         <ArrowRight className="w-4 h-4" />
                     </button>
                 </div>
@@ -289,11 +302,12 @@ function ReportPreview({ onAccessDemo }: { onAccessDemo: () => void }) {
 /* ------------------------------------------------------------------ */
 
 function Footer() {
+    const { t } = useTranslation();
     return (
         <footer className="bg-slate-100 dark:bg-[#0F1419] py-8 border-t border-slate-200 dark:border-white/10">
             <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
-                <span className="text-sm text-slate-500 dark:text-gray-500">ClearGate Intelligence Platform · v2.0</span>
-                <span className="text-sm text-slate-500 dark:text-gray-500">Powered by Taskforce</span>
+                <span className="text-sm text-slate-500 dark:text-gray-500">{t('brand.tagline')}</span>
+                <span className="text-sm text-slate-500 dark:text-gray-500">{t('brand.poweredBy')}</span>
             </div>
         </footer>
     );
@@ -304,6 +318,7 @@ function Footer() {
 /* ------------------------------------------------------------------ */
 
 export default function LandingPage({ onAccessDemo, onSearch }: LandingPageProps) {
+    const { t } = useTranslation();
     return (
         <div className="min-h-screen flex flex-col">
             {/* Navbar */}
@@ -311,15 +326,16 @@ export default function LandingPage({ onAccessDemo, onSearch }: LandingPageProps
                 <div className="flex items-center justify-between px-6 py-4 max-w-7xl mx-auto">
                     <div className="flex items-center gap-2">
                         <Shield className="w-6 h-6 text-[#931CF5]" />
-                        <span className="text-lg font-bold tracking-wide text-slate-900 dark:text-white uppercase">ClearGate</span>
+                        <span className="text-lg font-bold tracking-wide text-slate-900 dark:text-white uppercase">{t('brand.name')}</span>
                     </div>
                     <div className="flex items-center gap-3">
+                        <LanguageToggle />
                         <ThemeToggle />
                         <button
                             onClick={onAccessDemo}
                             className="inline-flex items-center gap-2 px-6 py-2.5 bg-[#931CF5] text-white text-sm font-semibold rounded-full hover:bg-[#7B16D0] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#2563eb]"
                         >
-                            Access Demo
+                            {t('landing.accessDemo')}
                             <ArrowRight className="w-4 h-4" />
                         </button>
                     </div>

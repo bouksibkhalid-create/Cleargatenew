@@ -4,6 +4,7 @@
 
 import { useState } from 'react';
 import { Search, X, Loader2 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 interface SearchSectionProps {
     onSearch: (query: string) => void;
@@ -11,6 +12,7 @@ interface SearchSectionProps {
 }
 
 export default function SearchSection({ onSearch, isLoading }: SearchSectionProps) {
+    const { t } = useTranslation();
     const [query, setQuery] = useState('');
 
     const handleSubmit = (e: React.FormEvent) => {
@@ -32,7 +34,7 @@ export default function SearchSection({ onSearch, isLoading }: SearchSectionProp
                     type="text"
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
-                    placeholder="Enter a name, organization, or vessel..."
+                    placeholder={t('check.subtitle')}
                     className="w-full pl-12 pr-12 py-3 text-base border border-slate-200 dark:border-slate-600 rounded-full bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-[#931CF5]/50 focus:border-transparent transition-all"
                     autoFocus
                     disabled={isLoading}
@@ -56,12 +58,12 @@ export default function SearchSection({ onSearch, isLoading }: SearchSectionProp
                 {isLoading ? (
                     <>
                         <Loader2 className="w-5 h-5 animate-spin" />
-                        Searching...
+                        {t('search.searching')}
                     </>
                 ) : (
                     <>
                         <Search className="w-5 h-5" />
-                        Search
+                        {t('search.searchButton')}
                     </>
                 )}
             </button>

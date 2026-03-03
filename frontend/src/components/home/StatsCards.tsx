@@ -1,8 +1,10 @@
 import { StatsCard } from './StatsCard';
 import { Database, Users, Building2, Ship, Globe } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { statsData } from '../../data/statsData';
 
 export function StatsCards() {
+    const { t } = useTranslation();
     return (
         <section className="py-8 bg-white dark:bg-[#0F1419]">
             <div className="container mx-auto px-4">
@@ -12,7 +14,7 @@ export function StatsCards() {
                         iconBg="bg-blue-500/15"
                         iconColor="text-blue-400"
                         number={statsData.databases_count}
-                        label="Sanctions databases"
+                        label={t('stats.sanctionsDatabases')}
                     />
 
                     <StatsCard
@@ -20,7 +22,7 @@ export function StatsCards() {
                         iconBg="bg-blue-500/15"
                         iconColor="text-blue-400"
                         number={statsData.sanctioned_individuals}
-                        label="Sanctioned individuals"
+                        label={t('stats.sanctionedIndividuals')}
                     />
 
                     <StatsCard
@@ -28,7 +30,7 @@ export function StatsCards() {
                         iconBg="bg-purple-500/15"
                         iconColor="text-purple-400"
                         number={statsData.sanctioned_entities}
-                        label="Sanctioned organizations"
+                        label={t('stats.sanctionedOrganizations')}
                     />
 
                     <StatsCard
@@ -36,7 +38,7 @@ export function StatsCards() {
                         iconBg="bg-indigo-500/15"
                         iconColor="text-indigo-400"
                         number={statsData.sanctioned_vehicles}
-                        label="Sanctioned vehicles"
+                        label={t('stats.sanctionedVehicles')}
                     />
 
                     <StatsCard
@@ -44,7 +46,7 @@ export function StatsCards() {
                         iconBg="bg-amber-500/15"
                         iconColor="text-amber-400"
                         number={statsData.sources_count}
-                        label="Sanctions lists"
+                        label={t('stats.sanctionsListsCount')}
                     />
                 </div>
             </div>

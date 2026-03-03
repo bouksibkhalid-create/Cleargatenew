@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Clock, Search, FileText, Bookmark, Eye, Bell, Filter } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import PageHeader from '../common/PageHeader';
 import CgCard from '../common/CgCard';
 import { supabase } from '../../lib/supabase';
@@ -24,22 +25,33 @@ const EVENT_CONFIG: Record<string, { icon: typeof Search; color: string; bg: str
   monitoring_update: { icon: Bell, color: '#931CF5', bg: '#ECFDF5' },
 };
 
-const DATE_FILTERS = [
-  { label: 'Last 24 hours', days: 1 },
-  { label: 'Last 7 days', days: 7 },
-  { label: 'Last 30 days', days: 30 },
-  { label: 'Last 90 days', days: 90 },
+const DATE_FILTER_KEYS = [
+  { labelKey: 'timeline.last24h', days: 1 },
+  { labelKey: 'timeline.last7d', days: 7 },
+  { labelKey: 'timeline.last30d', days: 30 },
+  { labelKey: 'timeline.last90d', days: 90 },
 ];
 
-const EVENT_TYPE_FILTERS = [
-  { label: 'All Events', value: '' },
-  { label: 'Searches', value: 'search' },
-  { label: 'Reports', value: 'report_download' },
-  { label: 'Saves', value: 'entity_saved' },
-  { label: 'Monitoring', value: 'monitoring_enabled' },
+const EVENT_TYPE_FILTER_KEYS = [
+  { labelKey: 'timeline.allEvents', value: '' },
+  { labelKey: 'timeline.searches', value: 'search' },
+  { labelKey: 'timeline.reportsFilter', value: 'report_download' },
+  { labelKey: 'timeline.saves', value: 'entity_saved' },
+  { labelKey: 'timeline.monitoring', value: 'monitoring_enabled' },
 ];
+
+// Map DB event types to i18n title keys
+const EVENT_TITLE_MAP: Record<string, string> = {
+  search: 'timeline.searched',
+  report_download: 'timeline.reportDownloaded',
+  entity_saved: 'timeline.savedEntity',
+  monitoring_enabled: 'timeline.monitoringEnabled',
+  monitoring_disabled: 'timeline.monitoringDisabled',
+};
 
 export default function TimelinePage() {
+  const { t, i18n } = useTranslation();
+  const currentLocale = i18n.language?.startsWith('fr') ? 'fr-FR' : 'en-US';
   const [events, setEvents] = useState<ActivityEvent[]>([]);
   const [loading, setLoading] = useState(true);
   const [typeFilter, setTypeFilter] = useState('');
@@ -78,7 +90,7 @@ export default function TimelinePage() {
   function groupByDate(evts: ActivityEvent[]) {
     const groups: Record<string, ActivityEvent[]> = {};
     evts.forEach((ev) => {
-      const date = new Date(ev.created_at).toLocaleDateString('en-US', {
+      const date = new Date(ev.created_at).toLocaleDateString(currentLocale, {
         weekday: 'long',
         year: 'numeric',
         month: 'long',
@@ -91,7 +103,13 @@ export default function TimelinePage() {
   }
 
   function formatTime(dateStr: string) {
-    return new Date(dateStr).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+    return new Date(dateStr).toLocaleTimeString(currentLocale, { hour: '2-digit', minute: '2-digit' });
+  }
+
+  function translateEventTitle(ev: ActivityEvent) {
+    const key = EVENT_TITLE_MAP[ev.event_type];
+    if (key && ev.entity_name) return t(key, { name: ev.entity_name });
+    return ev.title;
   }
 
   const grouped = groupByDate(events);
@@ -100,8 +118,8 @@ export default function TimelinePage() {
     <div>
       <PageHeader
         icon={<Clock className="w-6 h-6 text-[#931CF5]" />}
-        title="Timeline"
-        subtitle="Complete activity log"
+        title={t('timeline.title')}
+        subtitle={t('timeline.subtitle')}
         action={
           <button
             onClick={() => setShowFilters(!showFilters)}
@@ -110,7 +128,7 @@ export default function TimelinePage() {
             }`}
           >
             <Filter className="w-3.5 h-3.5" />
-            Filters
+            {t('timeline.filters')}
           </button>
         }
       />
@@ -119,26 +137,26 @@ export default function TimelinePage() {
       {showFilters && (
         <div className="flex flex-wrap gap-3 mb-4 p-4 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl">
           <div>
-            <label className="block text-[10px] font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-1">Event Type</label>
+            <label className="block text-[10px] font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-1">{t('timeline.eventType')}</label>
             <select
               value={typeFilter}
               onChange={(e) => setTypeFilter(e.target.value)}
               className="px-3 py-1.5 text-sm border border-slate-200 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-[#931CF5]/40"
             >
-              {EVENT_TYPE_FILTERS.map((f) => (
-                <option key={f.value} value={f.value}>{f.label}</option>
+              {EVENT_TYPE_FILTER_KEYS.map((f) => (
+                <option key={f.value} value={f.value}>{t(f.labelKey)}</option>
               ))}
             </select>
           </div>
           <div>
-            <label className="block text-[10px] font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-1">Date Range</label>
+            <label className="block text-[10px] font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-1">{t('timeline.dateRange')}</label>
             <select
               value={dateFilter}
               onChange={(e) => setDateFilter(Number(e.target.value))}
               className="px-3 py-1.5 text-sm border border-slate-200 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-[#931CF5]/40"
             >
-              {DATE_FILTERS.map((f) => (
-                <option key={f.days} value={f.days}>{f.label}</option>
+              {DATE_FILTER_KEYS.map((f) => (
+                <option key={f.days} value={f.days}>{t(f.labelKey)}</option>
               ))}
             </select>
           </div>
@@ -147,11 +165,11 @@ export default function TimelinePage() {
 
       {/* Timeline */}
       {loading ? (
-        <div className="text-center text-sm text-slate-400 dark:text-slate-500 py-12">Loading activity...</div>
+        <div className="text-center text-sm text-slate-400 dark:text-slate-500 py-12">{t('timeline.loading')}</div>
       ) : events.length === 0 ? (
         <CgCard>
           <div className="text-center text-sm text-slate-400 dark:text-slate-500 py-8">
-            No activity in this period. Start by searching for an entity.
+            {t('timeline.noActivity')}
           </div>
         </CgCard>
       ) : (
@@ -178,9 +196,9 @@ export default function TimelinePage() {
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2">
-                          <span className="text-sm font-medium text-slate-900 dark:text-slate-100">{ev.title}</span>
+                          <span className="text-sm font-medium text-slate-900 dark:text-slate-100">{translateEventTitle(ev)}</span>
                           {!ev.is_read && (
-                            <span className="text-[9px] bg-[#931CF5] text-white font-bold px-1.5 py-0.5 rounded-full uppercase">New</span>
+                            <span className="text-[9px] bg-[#931CF5] text-white font-bold px-1.5 py-0.5 rounded-full uppercase">{t('timeline.new')}</span>
                           )}
                         </div>
                         {ev.description && (

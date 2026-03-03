@@ -3,6 +3,7 @@ import { useScrollLock } from './hooks/useScrollLock';
 import {
   Search, Database, Globe, Shield, Brain, FileText,
 } from 'lucide-react';
+import { useTheme } from '../../hooks/useTheme';
 
 const TOTAL_STEPS = 6;
 const SCROLL_MULTIPLIER = 3;
@@ -74,6 +75,8 @@ function getPointAtProgress(pathD: string, t: number, totalLen: number): { x: nu
 }
 
 export default function SplinePipelineSection() {
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
   const [isMobile, setIsMobile] = useState(false);
   const [pathLen, setPathLen] = useState(1200);
   const svgPathD = useRef(buildPath());
@@ -113,23 +116,22 @@ export default function SplinePipelineSection() {
   // On mobile, show a simple static grid
   if (isMobile) {
     return (
-      <div style={{ background: '#1B1F2D' }} className="py-16 px-6">
-        <p className="text-center text-xs text-gray-500 uppercase tracking-[0.2em] mb-10">
+      <div className="py-16 px-6 bg-slate-50 dark:bg-[#1B1F2D]">
+        <p className="text-center text-xs text-slate-400 dark:text-gray-500 uppercase tracking-[0.2em] mb-10">
           Under the Hood — Intelligence Pipeline
         </p>
         <div className="grid grid-cols-2 gap-5 max-w-sm mx-auto">
           {PIPELINE_STEPS.map((step, i) => (
             <div
               key={step.label}
-              className="flex flex-col items-center text-center p-5 rounded-2xl border"
-              style={{ background: 'rgba(0,212,170,0.05)', borderColor: 'rgba(0,212,170,0.15)' }}
+              className="flex flex-col items-center text-center p-5 rounded-2xl border border-[#931CF5]/15 bg-[#931CF5]/5"
             >
-              <div className="w-12 h-12 rounded-xl bg-[#00D4AA]/10 flex items-center justify-center mb-3">
-                <step.Icon className="w-6 h-6 text-[#00D4AA]" />
+              <div className="w-12 h-12 rounded-xl bg-[#931CF5]/10 flex items-center justify-center mb-3">
+                <step.Icon className="w-6 h-6 text-[#931CF5]" />
               </div>
-              <span className="text-[10px] font-bold text-[#00D4AA] mb-1">Step {i + 1}</span>
-              <h4 className="text-sm font-semibold text-white">{step.label}</h4>
-              <p className="text-[11px] text-gray-500 mt-1">{step.desc}</p>
+              <span className="text-[10px] font-bold text-[#931CF5] mb-1">Step {i + 1}</span>
+              <h4 className="text-sm font-semibold text-slate-900 dark:text-white">{step.label}</h4>
+              <p className="text-[11px] text-slate-500 dark:text-gray-500 mt-1">{step.desc}</p>
             </div>
           ))}
         </div>
@@ -144,8 +146,8 @@ export default function SplinePipelineSection() {
     <div>
       <div
         ref={outerRef}
-        className="relative"
-        style={{ height: `${SCROLL_MULTIPLIER * 100}vh`, background: '#1B1F2D' }}
+        className={`relative ${isDark ? '' : 'bg-slate-50'}`}
+        style={{ height: `${SCROLL_MULTIPLIER * 100}vh`, ...(isDark ? { background: '#1B1F2D' } : {}) }}
         role="img"
         aria-label="Animation showing ClearGate's 6-step intelligence pipeline."
       >
@@ -154,7 +156,7 @@ export default function SplinePipelineSection() {
             {/* Section label */}
             <p
               className="text-center text-xs uppercase tracking-[0.25em] mb-6 transition-opacity duration-700"
-              style={{ color: 'rgba(255,255,255,0.3)', opacity: totalProgress > 0.01 ? 1 : 0.5 }}
+              style={{ color: isDark ? 'rgba(255,255,255,0.3)' : 'rgba(0,0,0,0.3)', opacity: totalProgress > 0.01 ? 1 : 0.5 }}
             >
               Under the Hood — Intelligence Pipeline
             </p>
@@ -190,7 +192,7 @@ export default function SplinePipelineSection() {
                 {totalProgress > 0.005 && (
                   <path
                     d={svgPathD.current}
-                    stroke="#00D4AA"
+                    stroke="#931CF5"
                     strokeWidth="2.5"
                     strokeLinecap="round"
                     strokeDasharray={pathLen}
@@ -203,10 +205,10 @@ export default function SplinePipelineSection() {
                 {/* Orb — leading dot */}
                 {totalProgress > 0.005 && totalProgress < 0.995 && (
                   <g>
-                    <circle cx={orb.x} cy={orb.y} r="8" fill="#00D4AA" filter="url(#orbGlow)" />
+                    <circle cx={orb.x} cy={orb.y} r="8" fill="#931CF5" filter="url(#orbGlow)" />
                     <circle cx={orb.x} cy={orb.y} r="4" fill="#ffffff" />
                     {/* Pulsing ring */}
-                    <circle cx={orb.x} cy={orb.y} r="12" fill="none" stroke="#00D4AA" strokeWidth="1.5" opacity="0.3">
+                    <circle cx={orb.x} cy={orb.y} r="12" fill="none" stroke="#931CF5" strokeWidth="1.5" opacity="0.3">
                       <animate attributeName="r" from="10" to="22" dur="1.5s" repeatCount="indefinite" />
                       <animate attributeName="opacity" from="0.4" to="0" dur="1.5s" repeatCount="indefinite" />
                     </circle>
@@ -239,14 +241,14 @@ export default function SplinePipelineSection() {
                       style={{
                         width: '72px',
                         height: '72px',
-                        background: isReached ? 'rgba(0,212,170,0.08)' : 'rgba(255,255,255,0.02)',
+                        background: isReached ? 'rgba(147,28,245,0.08)' : isDark ? 'rgba(255,255,255,0.02)' : 'rgba(0,0,0,0.03)',
                         borderColor: isActive
-                          ? 'rgba(0,212,170,0.6)'
+                          ? 'rgba(147,28,245,0.6)'
                           : isReached
-                            ? 'rgba(0,212,170,0.2)'
-                            : 'rgba(255,255,255,0.06)',
+                            ? 'rgba(147,28,245,0.2)'
+                            : isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.08)',
                         boxShadow: isActive
-                          ? '0 0 30px rgba(0,212,170,0.25), 0 0 60px rgba(0,212,170,0.1)'
+                          ? '0 0 30px rgba(147,28,245,0.25), 0 0 60px rgba(147,28,245,0.1)'
                           : 'none',
                         transition: 'all 0.6s ease',
                       }}
@@ -256,15 +258,15 @@ export default function SplinePipelineSection() {
                         style={{
                           width: '30px',
                           height: '30px',
-                          color: isReached ? '#00D4AA' : 'rgba(255,255,255,0.15)',
+                          color: isReached ? '#931CF5' : isDark ? 'rgba(255,255,255,0.15)' : 'rgba(0,0,0,0.15)',
                         }}
                       />
                       {/* Step number badge */}
                       <div
                         className="absolute -top-2.5 -right-2.5 w-6 h-6 rounded-full text-[10px] font-bold flex items-center justify-center"
                         style={{
-                          background: isReached ? '#00D4AA' : 'rgba(255,255,255,0.08)',
-                          color: isReached ? '#0F1419' : 'rgba(255,255,255,0.2)',
+                          background: isReached ? '#931CF5' : isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.08)',
+                          color: isReached ? '#0F1419' : isDark ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.2)',
                           transition: 'all 0.5s ease',
                         }}
                       >
@@ -276,7 +278,7 @@ export default function SplinePipelineSection() {
                     <span
                       className="text-sm font-semibold mt-3 whitespace-nowrap"
                       style={{
-                        color: isReached ? '#ffffff' : 'rgba(255,255,255,0.15)',
+                        color: isReached ? (isDark ? '#ffffff' : '#0f172a') : isDark ? 'rgba(255,255,255,0.15)' : 'rgba(0,0,0,0.15)',
                         transition: 'color 0.5s ease',
                       }}
                     >
@@ -287,7 +289,7 @@ export default function SplinePipelineSection() {
                     <span
                       className="text-xs mt-1.5 max-w-[140px] leading-relaxed"
                       style={{
-                        color: isReached ? 'rgba(255,255,255,0.5)' : 'rgba(255,255,255,0.06)',
+                        color: isReached ? (isDark ? 'rgba(255,255,255,0.5)' : 'rgba(0,0,0,0.5)') : isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)',
                         transform: isReached ? 'translateY(0)' : 'translateY(6px)',
                         transition: 'all 0.6s ease',
                       }}
@@ -301,14 +303,14 @@ export default function SplinePipelineSection() {
 
             {/* Bottom progress */}
             <div className="flex flex-col items-center gap-3 mt-10">
-              <div className="w-72 h-[3px] bg-white/[0.05] rounded-full overflow-hidden">
+              <div className="w-72 h-[3px] bg-black/[0.05] dark:bg-white/[0.05] rounded-full overflow-hidden">
                 <div
                   className="h-full rounded-full"
                   style={{
                     width: `${totalProgress * 100}%`,
-                    background: 'linear-gradient(90deg, #00D4AA, #00E4BA)',
+                    background: 'linear-gradient(90deg, #931CF5, #A855F7)',
                     transition: 'width 0.12s ease-out',
-                    boxShadow: '0 0 12px rgba(0,212,170,0.5)',
+                    boxShadow: '0 0 12px rgba(147,28,245,0.5)',
                   }}
                 />
               </div>

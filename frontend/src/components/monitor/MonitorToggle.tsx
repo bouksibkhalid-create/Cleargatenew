@@ -41,7 +41,7 @@ export default function MonitorToggle({ entityName, entityData }: MonitorToggleP
 
   if (loading) {
     return (
-      <button disabled className="inline-flex items-center gap-2 px-4 py-2 text-sm rounded-lg bg-white/5 text-gray-500 cursor-wait">
+      <button disabled className="inline-flex items-center gap-2 px-4 py-2 text-sm rounded-lg bg-slate-100 dark:bg-white/5 text-slate-500 dark:text-gray-500 cursor-wait">
         <Loader2 className="w-4 h-4 animate-spin" />
         Checking…
       </button>
@@ -53,8 +53,8 @@ export default function MonitorToggle({ entityName, entityData }: MonitorToggleP
       onClick={toggle}
       className={`inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
         isMonitored
-          ? 'bg-[#00D4AA]/10 text-[#00D4AA] border border-[#00D4AA]/30 hover:bg-[#00D4AA]/20'
-          : 'bg-white/5 text-gray-400 border border-white/10 hover:bg-white/10 hover:text-white'
+          ? 'bg-[#931CF5]/10 text-[#931CF5] border border-[#931CF5]/30 hover:bg-[#931CF5]/20'
+          : 'bg-slate-100 dark:bg-white/5 text-slate-500 dark:text-gray-400 border border-slate-200 dark:border-white/10 hover:bg-slate-200 dark:hover:bg-white/10 hover:text-slate-900 dark:hover:text-white'
       }`}
     >
       {isMonitored ? (

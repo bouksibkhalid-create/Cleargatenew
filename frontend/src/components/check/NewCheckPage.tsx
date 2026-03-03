@@ -179,7 +179,7 @@ export default function NewCheckPage() {
     return (
       <div>
         <PageHeader
-          icon={<Search className="w-6 h-6 text-[#00D4AA]" />}
+          icon={<Search className="w-6 h-6 text-[#931CF5]" />}
           title="New Check"
           subtitle="Screen any person, entity, or vessel"
         />
@@ -190,21 +190,21 @@ export default function NewCheckPage() {
           {recentSearches.length > 0 && (
             <div className="mt-8">
               <div className="flex items-center gap-2 mb-3">
-                <Clock className="w-4 h-4 text-[#9CA3AF]" />
-                <span className="text-xs font-semibold text-[#9CA3AF] uppercase tracking-wider">Recent searches</span>
+                <Clock className="w-4 h-4 text-slate-400 dark:text-slate-500" />
+                <span className="text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Recent searches</span>
               </div>
               <div className="space-y-1">
                 {recentSearches.map((rs) => (
                   <button
                     key={rs.id}
                     onClick={() => handleSearch(rs.query)}
-                    className="flex items-center justify-between w-full px-4 py-3 text-left rounded-lg hover:bg-white border border-transparent hover:border-[#E5E7EB] hover:shadow-sm transition-all group"
+                    className="flex items-center justify-between w-full px-4 py-3 text-left rounded-lg hover:bg-white dark:hover:bg-slate-800 border border-transparent hover:border-slate-200 dark:hover:border-slate-700 hover:shadow-sm transition-all group min-h-[36px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2563eb]"
                   >
                     <div>
-                      <span className="text-sm font-medium text-[#111827]">{rs.entity_name || rs.query}</span>
-                      <span className="text-xs text-[#9CA3AF] ml-3">{formatTimeAgo(rs.searched_at)}</span>
+                      <span className="text-sm font-medium text-slate-900 dark:text-slate-100">{rs.entity_name || rs.query}</span>
+                      <span className="text-xs text-slate-400 dark:text-slate-500 ml-3">{formatTimeAgo(rs.searched_at)}</span>
                     </div>
-                    <ArrowRight className="w-4 h-4 text-[#9CA3AF] opacity-0 group-hover:opacity-100 transition-opacity" />
+                    <ArrowRight className="w-4 h-4 text-slate-400 dark:text-slate-500 opacity-0 group-hover:opacity-100 transition-opacity" />
                   </button>
                 ))}
               </div>
@@ -220,7 +220,7 @@ export default function NewCheckPage() {
     return (
       <div>
         <PageHeader
-          icon={<Search className="w-6 h-6 text-[#00D4AA]" />}
+          icon={<Search className="w-6 h-6 text-[#931CF5]" />}
           title="New Check"
           subtitle={`Searching "${currentQuery}"...`}
         />
@@ -235,12 +235,12 @@ export default function NewCheckPage() {
   return (
     <div>
       <PageHeader
-        icon={<Search className="w-6 h-6 text-[#00D4AA]" />}
+        icon={<Search className="w-6 h-6 text-[#931CF5]" />}
         title="New Check"
         subtitle={currentQuery ? `Results for "${currentQuery}"` : undefined}
       />
 
-      <div className="bg-white border border-[#E5E7EB] rounded-xl shadow-sm p-4 mb-6">
+      <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-sm dark:shadow-none p-4 mb-6">
         <div className="max-w-2xl mx-auto">
           <SearchSection onSearch={handleSearch} isLoading={isLoading} />
         </div>

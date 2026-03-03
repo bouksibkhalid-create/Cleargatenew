@@ -80,9 +80,9 @@ export function OSINTLoader({ query, searchType = 'fuzzy', threshold = 80 }: OSI
                 {/* Header */}
                 <div className="bg-[#1A1F2E] border-b border-white/10 text-white p-6">
                     <div className="flex items-center gap-2 mb-4">
-                        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#00D4AA]/10 border border-[#00D4AA]/30">
-                            <Radar className="w-4 h-4 text-[#00D4AA] animate-spin" style={{ animationDuration: '3s' }} />
-                            <span className="text-sm font-semibold text-[#00D4AA] uppercase tracking-wide">
+                        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#931CF5]/10 border border-[#931CF5]/30">
+                            <Radar className="w-4 h-4 text-[#931CF5] animate-spin" style={{ animationDuration: '3s' }} />
+                            <span className="text-sm font-semibold text-[#931CF5] uppercase tracking-wide">
                                 Intelligence Gathering
                             </span>
                         </div>
@@ -99,7 +99,7 @@ export function OSINTLoader({ query, searchType = 'fuzzy', threshold = 80 }: OSI
                 <div className="flex items-center gap-4 p-6 bg-[#1A1F2E] border-b border-white/10">
                     <div className="flex-1 h-3 bg-white/10 rounded-full overflow-hidden relative">
                         <motion.div
-                            className="h-full bg-gradient-to-r from-[#00D4AA] to-[#00E4BA] rounded-full relative"
+                            className="h-full bg-gradient-to-r from-[#931CF5] to-[#A855F7] rounded-full relative"
                             initial={{ width: 0 }}
                             animate={{ width: `${overallProgress}%` }}
                             transition={{ duration: 0.3 }}
@@ -107,7 +107,7 @@ export function OSINTLoader({ query, searchType = 'fuzzy', threshold = 80 }: OSI
                             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-shimmer" />
                         </motion.div>
                     </div>
-                    <span className="text-xl font-bold text-[#00D4AA] min-w-[4rem] text-right">
+                    <span className="text-xl font-bold text-[#931CF5] min-w-[4rem] text-right">
                         {overallProgress}%
                     </span>
                 </div>
@@ -122,30 +122,30 @@ export function OSINTLoader({ query, searchType = 'fuzzy', threshold = 80 }: OSI
                 {/* Intelligence Summary */}
                 <div className="p-6 bg-[#1A1F2E] border-t border-white/10">
                     <h3 className="flex items-center gap-2 text-base font-bold text-white mb-4">
-                        <BarChart3 className="w-5 h-5 text-[#00D4AA]" />
+                        <BarChart3 className="w-5 h-5 text-[#931CF5]" />
                         Intelligence Summary
                     </h3>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                         <div className="flex items-center gap-2 text-sm text-gray-400">
-                            <Database className="w-4 h-4 text-[#00D4AA] flex-shrink-0" />
+                            <Database className="w-4 h-4 text-[#931CF5] flex-shrink-0" />
                             <span>Cross-referencing {sources.length} international databases</span>
                         </div>
 
                         <div className="flex items-center gap-2 text-sm text-gray-400">
-                            <Users className="w-4 h-4 text-[#00D4AA] flex-shrink-0" />
+                            <Users className="w-4 h-4 text-[#931CF5] flex-shrink-0" />
                             <span>Analyzing 2,100,000 entity records</span>
                         </div>
 
                         {searchType === 'fuzzy' && (
                             <div className="flex items-center gap-2 text-sm text-gray-400">
-                                <Sparkles className="w-4 h-4 text-[#00D4AA] flex-shrink-0" />
+                                <Sparkles className="w-4 h-4 text-[#931CF5] flex-shrink-0" />
                                 <span>Fuzzy matching enabled ({threshold}% threshold)</span>
                             </div>
                         )}
 
                         <div className="flex items-center gap-2 text-sm text-gray-400">
-                            <Shield className="w-4 h-4 text-[#00D4AA] flex-shrink-0" />
+                            <Shield className="w-4 h-4 text-[#931CF5] flex-shrink-0" />
                             <span>Compliance check in progress</span>
                         </div>
                     </div>

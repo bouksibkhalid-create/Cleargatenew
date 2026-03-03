@@ -1,14 +1,24 @@
 import { useRef, useEffect, useCallback } from 'react';
 
 // ── Color tokens ──────────────────────────────────────────────
-const COLORS = {
+const DARK_COLORS = {
   base: '#1f2937',
   safe: '#22c55e',
   risk: '#f97316',
-  teal: '#00D4AA',
+  teal: '#931CF5',
 };
 
-const NODE_COLORS = [COLORS.base, COLORS.base, COLORS.safe, COLORS.safe, COLORS.risk, COLORS.teal];
+const LIGHT_COLORS = {
+  base: '#94a3b8',
+  safe: '#16a34a',
+  risk: '#ea580c',
+  teal: '#7B16D0',
+};
+
+function getNodeColors(isDark: boolean) {
+  const C = isDark ? DARK_COLORS : LIGHT_COLORS;
+  return [C.base, C.base, C.safe, C.safe, C.risk, C.teal];
+}
 
 // ── Configuration ─────────────────────────────────────────────
 const SOFT_CAP = 80;          // start culling oldest beyond this
@@ -93,7 +103,7 @@ function buildClusters(): SpawnCluster[] {
   return clusters;
 }
 
-export default function NetworkHeroAnimation({ className = '' }: { className?: string }) {
+export default function NetworkHeroAnimation({ className = '', isDark = true }: { className?: string; isDark?: boolean }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const nodesRef = useRef<Node[]>([]);
   const edgesRef = useRef<Edge[]>([]);
@@ -118,7 +128,7 @@ export default function NetworkHeroAnimation({ className = '' }: { className?: s
       vx: randomBetween(-DRIFT_SPEED, DRIFT_SPEED),
       vy: randomBetween(-DRIFT_SPEED, DRIFT_SPEED),
       radius: randomBetween(2.5, 6.5),
-      color: pickRandom(NODE_COLORS),
+      color: pickRandom(getNodeColors(isDark)),
       birthTime: now,
       opacity: 0,
       dying: false,
@@ -270,7 +280,7 @@ export default function NetworkHeroAnimation({ className = '' }: { className?: s
       ctx.beginPath();
       ctx.moveTo(a.x, a.y);
       ctx.lineTo(b.x, b.y);
-      ctx.strokeStyle = `rgba(156, 163, 175, ${alpha})`;
+      ctx.strokeStyle = isDark ? `rgba(156, 163, 175, ${alpha})` : `rgba(100, 116, 139, ${alpha * 0.7})`;
       ctx.lineWidth = 0.8;
       ctx.stroke();
     }

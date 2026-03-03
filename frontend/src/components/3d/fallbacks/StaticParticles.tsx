@@ -24,7 +24,7 @@ export default function StaticParticles({ className = '' }: { className?: string
           <line
             key={`l-${i}`}
             x1={x1} y1={y1} x2={x2} y2={y2}
-            stroke="#00D4AA" strokeWidth="0.5" opacity={0.15}
+            stroke="#931CF5" strokeWidth="0.5" opacity={0.15}
           >
             <animate attributeName="opacity" values="0.05;0.2;0.05" dur={`${3 + i * 0.2}s`} repeatCount="indefinite" />
           </line>

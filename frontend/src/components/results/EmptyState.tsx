@@ -10,7 +10,7 @@ interface EmptyStateProps {
 
 export default function EmptyState({ query }: EmptyStateProps) {
     return (
-        <div className="bg-green-50 border border-green-200 rounded-lg shadow-sm p-8 text-center">
+        <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-700/50 rounded-lg shadow-sm dark:shadow-none p-8 text-center">
             <div className="flex justify-center mb-4">
                 <CheckCircle className="h-16 w-16 text-green-600" />
             </div>

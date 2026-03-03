@@ -21,20 +21,20 @@ export default function BreadcrumbBar({
   const baseLabel = source === 'reports' ? 'Reports' : 'New Check';
 
   return (
-    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6 pb-4 border-b border-[#E5E7EB]">
+    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6 pb-4 border-b border-slate-200 dark:border-slate-700">
       <div className="flex items-center gap-1.5 text-sm">
-        <Link to={basePath} className="text-[#6B7280] hover:text-[#00D4AA] transition-colors">
+        <Link to={basePath} className="text-slate-500 dark:text-slate-400 hover:text-[#931CF5] transition-colors">
           {baseLabel}
         </Link>
-        <ChevronRight className="w-3.5 h-3.5 text-[#9CA3AF]" />
-        <span className="text-[#111827] font-semibold uppercase">{entityName}</span>
+        <ChevronRight className="w-3.5 h-3.5 text-slate-400 dark:text-slate-500" />
+        <span className="text-slate-900 dark:text-slate-100 font-semibold uppercase">{entityName}</span>
       </div>
 
       <div className="flex items-center gap-2">
         {source === 'reports' && onRefresh ? (
           <button
             onClick={onRefresh}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium border border-[#E5E7EB] rounded-lg text-[#6B7280] hover:text-[#111827] hover:bg-gray-50 transition-colors"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium border border-slate-200 dark:border-slate-600 rounded-lg text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors min-h-[32px]"
           >
             <RefreshCw className="w-3.5 h-3.5" />
             Refresh Search
@@ -45,8 +45,8 @@ export default function BreadcrumbBar({
             disabled={isSaved || saving}
             className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg transition-colors ${
               isSaved
-                ? 'bg-[#00D4AA]/10 text-[#00D4AA] border border-[#00D4AA]/30 cursor-default'
-                : 'border border-[#E5E7EB] text-[#6B7280] hover:text-[#111827] hover:bg-gray-50'
+                ? 'bg-[#931CF5]/10 text-[#931CF5] border border-[#931CF5]/30 cursor-default'
+                : 'border border-slate-200 dark:border-slate-600 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-700'
             }`}
           >
             {isSaved ? <BookmarkCheck className="w-3.5 h-3.5" /> : <Bookmark className="w-3.5 h-3.5" />}
@@ -58,8 +58,8 @@ export default function BreadcrumbBar({
           onClick={onToggleMonitor}
           className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg transition-colors ${
             isMonitored
-              ? 'bg-[#00D4AA]/10 text-[#00D4AA] border border-[#00D4AA]/30'
-              : 'border border-[#E5E7EB] text-[#6B7280] hover:text-[#111827] hover:bg-gray-50'
+              ? 'bg-[#931CF5]/10 text-[#931CF5] border border-[#931CF5]/30'
+              : 'border border-slate-200 dark:border-slate-600 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-700'
           }`}
         >
           {isMonitored ? <Eye className="w-3.5 h-3.5" /> : <EyeOff className="w-3.5 h-3.5" />}
@@ -68,7 +68,7 @@ export default function BreadcrumbBar({
 
         <button
           onClick={onDownload}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium border border-[#E5E7EB] rounded-lg text-[#6B7280] hover:text-[#111827] hover:bg-gray-50 transition-colors"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium border border-slate-200 dark:border-slate-600 rounded-lg text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors min-h-[32px]"
         >
           <Download className="w-3.5 h-3.5" />
           Report

@@ -6,6 +6,7 @@
 
 import { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { ThemeProvider } from './hooks/useTheme';
 import { ToastProvider } from './components/common/ToastProvider';
 import LockScreen from './components/auth/LockScreen';
 import LandingPage from './components/landing/LandingPage';
@@ -41,33 +42,43 @@ function App() {
 
   // Show landing page first (marketing, pre-login)
   if (showLanding && !isUnlocked) {
-    return <LandingPage onAccessDemo={handleAccessDemo} />;
+    return (
+      <ThemeProvider>
+        <LandingPage onAccessDemo={handleAccessDemo} />
+      </ThemeProvider>
+    );
   }
 
   // Show lock screen if not unlocked
   if (!isUnlocked) {
-    return <LockScreen onUnlock={handleUnlock} />;
+    return (
+      <ThemeProvider>
+        <LockScreen onUnlock={handleUnlock} />
+      </ThemeProvider>
+    );
   }
 
   // Authenticated app shell with sidebar navigation
   return (
-    <ToastProvider>
-      <BrowserRouter>
-        <AppShell>
-          <Routes>
-            <Route path="/" element={<Navigate to="/dashboard" replace />} />
-            <Route path="/dashboard" element={<DashboardPage />} />
-            <Route path="/check" element={<NewCheckPage />} />
-            <Route path="/check/:entityId" element={<EntityProfileView source="check" />} />
-            <Route path="/reports" element={<ReportsPage />} />
-            <Route path="/reports/:entityId" element={<EntityProfileView source="reports" />} />
-            <Route path="/timeline" element={<TimelinePage />} />
-            <Route path="/sources" element={<SourcesPage />} />
-            <Route path="*" element={<Navigate to="/dashboard" replace />} />
-          </Routes>
-        </AppShell>
-      </BrowserRouter>
-    </ToastProvider>
+    <ThemeProvider>
+      <ToastProvider>
+        <BrowserRouter>
+          <AppShell>
+            <Routes>
+              <Route path="/" element={<Navigate to="/dashboard" replace />} />
+              <Route path="/dashboard" element={<DashboardPage />} />
+              <Route path="/check" element={<NewCheckPage />} />
+              <Route path="/check/:entityId" element={<EntityProfileView source="check" />} />
+              <Route path="/reports" element={<ReportsPage />} />
+              <Route path="/reports/:entityId" element={<EntityProfileView source="reports" />} />
+              <Route path="/timeline" element={<TimelinePage />} />
+              <Route path="/sources" element={<SourcesPage />} />
+              <Route path="*" element={<Navigate to="/dashboard" replace />} />
+            </Routes>
+          </AppShell>
+        </BrowserRouter>
+      </ToastProvider>
+    </ThemeProvider>
   );
 }
 

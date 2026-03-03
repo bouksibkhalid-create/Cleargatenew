@@ -48,7 +48,7 @@ export default function ProfileHeader({
       {/* Back link */}
       <button
         onClick={onBack}
-        className="flex items-center gap-1 text-sm text-gray-400 hover:text-white cursor-pointer mb-6 transition-colors"
+        className="flex items-center gap-1 text-sm text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white cursor-pointer mb-6 transition-colors"
       >
         <ArrowLeft className="w-4 h-4" />
         Back to Dashboard
@@ -64,11 +64,11 @@ export default function ProfileHeader({
             {initial}
           </div>
           <div>
-            <h1 className="text-2xl font-bold text-white uppercase tracking-wide">
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-white uppercase tracking-wide">
               {entity.name}
             </h1>
             {subtitle && (
-              <p className="text-sm text-gray-400 mt-1">{subtitle}</p>
+              <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">{subtitle}</p>
             )}
           </div>
         </div>
@@ -78,7 +78,7 @@ export default function ProfileHeader({
           {reportButton ?? (
             <button
               onClick={onDownloadReport}
-              className="bg-white/10 border border-white/20 rounded-full px-5 py-2 text-sm font-medium text-white hover:bg-white/20 flex items-center gap-2 transition-colors"
+              className="bg-slate-100 dark:bg-white/10 border border-slate-200 dark:border-white/20 rounded-full px-5 py-2 text-sm font-medium text-slate-900 dark:text-white hover:bg-slate-200 dark:hover:bg-white/20 flex items-center gap-2 transition-colors min-h-[36px]"
             >
               <Download className="w-4 h-4" />
               Download Report

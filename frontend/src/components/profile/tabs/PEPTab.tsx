@@ -44,8 +44,8 @@ export default function PEPTab({ profile }: PEPTabProps) {
       />
 
       {/* PEP Category Grid */}
-      <div className="bg-[#1A1F2E] rounded-xl border border-white/10 p-6">
-        <p className="text-xs font-medium uppercase tracking-wider text-gray-500 mb-4">
+      <div className="bg-white dark:bg-[#1A1F2E] rounded-xl border border-slate-200 dark:border-white/10 p-6">
+        <p className="text-xs font-medium uppercase tracking-wider text-slate-500 dark:text-gray-500 mb-4">
           PEP Category Mapping
         </p>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
@@ -58,7 +58,7 @@ export default function PEPTab({ profile }: PEPTabProps) {
                 className={`rounded-lg border p-3 text-center text-sm font-medium transition-colors ${
                   isActive
                     ? 'bg-amber-500/15 border-amber-500/30 text-amber-400'
-                    : 'bg-white/5 border-white/10 text-gray-400'
+                    : 'bg-slate-50 dark:bg-white/5 border-slate-200 dark:border-white/10 text-slate-500 dark:text-gray-400'
                 }`}
               >
                 {cat}
@@ -67,31 +67,31 @@ export default function PEPTab({ profile }: PEPTabProps) {
             );
           })}
         </div>
-        <p className="text-xs text-gray-500 mt-3">● = This entity's category</p>
+        <p className="text-xs text-slate-400 dark:text-gray-500 mt-3">● = This entity's category</p>
       </div>
 
       {/* PEP Risk Narrative */}
       {pepDetails && (
-        <div className="bg-[#1A1F2E] rounded-xl border border-white/10 p-6">
-          <p className="text-xs font-medium uppercase tracking-wider text-gray-500 mb-4">
+        <div className="bg-white dark:bg-[#1A1F2E] rounded-xl border border-slate-200 dark:border-white/10 p-6">
+          <p className="text-xs font-medium uppercase tracking-wider text-slate-500 dark:text-gray-500 mb-4">
             PEP Risk Narrative
           </p>
-          <p className="text-sm text-gray-300 leading-relaxed italic">
+          <p className="text-sm text-slate-700 dark:text-gray-300 leading-relaxed italic">
             "{pepDetails}"
           </p>
         </div>
       )}
 
       {/* Sources */}
-      <div className="bg-[#1A1F2E] rounded-xl border border-white/10 p-6">
+      <div className="bg-white dark:bg-[#1A1F2E] rounded-xl border border-slate-200 dark:border-white/10 p-6">
         <div className="flex items-center gap-2 mb-4">
-          <Users className="w-4 h-4 text-gray-400" />
-          <p className="text-xs font-medium uppercase tracking-wider text-gray-500">
+          <Users className="w-4 h-4 text-slate-400 dark:text-gray-400" />
+          <p className="text-xs font-medium uppercase tracking-wider text-slate-500 dark:text-gray-500">
             PEP Data Sources
           </p>
         </div>
-        <div className="flex items-center gap-2 text-sm text-gray-400">
-          <CheckCircle className="w-4 h-4 text-[#00D4AA] shrink-0" />
+        <div className="flex items-center gap-2 text-sm text-slate-500 dark:text-gray-400">
+          <CheckCircle className="w-4 h-4 text-[#931CF5] shrink-0" />
           <span>OpenSanctions PEP Database — {profile.pep_hits} hit(s)</span>
         </div>
       </div>

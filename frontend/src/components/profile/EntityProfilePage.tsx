@@ -40,21 +40,21 @@ export default function EntityProfilePage({
   // Error state
   if (error) {
     return (
-      <div className="min-h-screen bg-[#0F1419]">
+      <div className="min-h-screen">
         <div className="max-w-5xl mx-auto px-6 py-8">
           <button
             onClick={onBack}
-            className="flex items-center gap-1 text-sm text-gray-400 hover:text-white cursor-pointer mb-8 transition-colors"
+            className="flex items-center gap-1 text-sm text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white cursor-pointer mb-8 transition-colors"
           >
             ← Back to Dashboard
           </button>
 
-          <div className="bg-[#1A1F2E] rounded-xl border border-red-500/30 p-8 text-center">
+          <div className="bg-white dark:bg-slate-800 rounded-xl border border-red-500/30 p-8 text-center">
             <AlertTriangle className="w-10 h-10 text-red-500 mx-auto mb-4" />
-            <h2 className="text-lg font-semibold text-white mb-2">
+            <h2 className="text-lg font-semibold text-slate-900 dark:text-white mb-2">
               Failed to Generate Profile
             </h2>
-            <p className="text-sm text-gray-400 mb-6 max-w-md mx-auto">
+            <p className="text-sm text-slate-500 dark:text-slate-400 mb-6 max-w-md mx-auto">
               {error}
             </p>
             <button
@@ -65,7 +65,7 @@ export default function EntityProfilePage({
                   country,
                 })
               }
-              className="inline-flex items-center gap-2 bg-white/10 text-white rounded-full px-6 py-2 text-sm font-medium hover:bg-white/20 border border-white/20 transition-colors"
+              className="inline-flex items-center gap-2 bg-slate-100 dark:bg-white/10 text-slate-900 dark:text-white rounded-full px-6 py-2 text-sm font-medium hover:bg-slate-200 dark:hover:bg-white/20 border border-slate-200 dark:border-white/20 transition-colors min-h-[36px]"
             >
               <RotateCcw className="w-4 h-4" />
               Try Again
@@ -97,7 +97,7 @@ function EntityProfileContent({
   const [activeTab, setActiveTab] = useState<ProfileTabId>('overview');
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#0F1419] to-[#1A1F2E]">
+    <div className="min-h-screen bg-white dark:bg-gradient-to-b dark:from-[#0F1419] dark:to-[#1A1F2E]">
       <div className="max-w-5xl mx-auto px-6 py-8 space-y-8">
         {/* Zone A: Fixed Header */}
         <ProfileHeader

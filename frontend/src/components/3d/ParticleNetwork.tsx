@@ -90,7 +90,7 @@ function ParticleCloud({ count = 60, connectionDistance = 1.5 }: {
         <pointsMaterial size={0.06} color="#4B5563" transparent opacity={0.8} sizeAttenuation />
       </points>
       <lineSegments ref={linesRef} geometry={lineGeo}>
-        <lineBasicMaterial color="#00D4AA" transparent opacity={0.15} />
+        <lineBasicMaterial color="#931CF5" transparent opacity={0.15} />
       </lineSegments>
     </>
   )

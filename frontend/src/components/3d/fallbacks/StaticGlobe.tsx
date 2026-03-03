@@ -14,12 +14,12 @@ export default function StaticGlobe({ className = '' }: { className?: string }) 
           [150, 110], [50, 80], [130, 140], [80, 45], [110, 155],
           [45, 120], [155, 75], [100, 60], [75, 145], [135, 50],
         ].map(([cx, cy], i) => (
-          <circle key={i} cx={cx} cy={cy} r="2" fill="#00D4AA" opacity={0.6} />
+          <circle key={i} cx={cx} cy={cy} r="2" fill="#931CF5" opacity={0.6} />
         ))}
         {/* Arcs */}
-        <path d="M60,55 Q100,20 140,65" fill="none" stroke="#00D4AA" strokeWidth="0.8" opacity="0.4" />
-        <path d="M90,130 Q130,90 150,110" fill="none" stroke="#00D4AA" strokeWidth="0.8" opacity="0.4" />
-        <path d="M70,100 Q100,60 120,85" fill="none" stroke="#00D4AA" strokeWidth="0.8" opacity="0.4" />
+        <path d="M60,55 Q100,20 140,65" fill="none" stroke="#931CF5" strokeWidth="0.8" opacity="0.4" />
+        <path d="M90,130 Q130,90 150,110" fill="none" stroke="#931CF5" strokeWidth="0.8" opacity="0.4" />
+        <path d="M70,100 Q100,60 120,85" fill="none" stroke="#931CF5" strokeWidth="0.8" opacity="0.4" />
       </svg>
     </div>
   )

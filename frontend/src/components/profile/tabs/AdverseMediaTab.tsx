@@ -12,7 +12,7 @@ const SOURCE_BADGE_COLORS: Record<string, string> = {
   news: 'bg-blue-500/15 text-blue-400 border border-blue-500/30',
   investigation: 'bg-red-500/15 text-red-400 border border-red-500/30',
   regulatory: 'bg-purple-500/15 text-purple-400 border border-purple-500/30',
-  blog: 'bg-white/5 text-gray-400 border border-white/10',
+  blog: 'bg-slate-50 dark:bg-white/5 text-slate-500 dark:text-gray-400 border border-slate-200 dark:border-white/10',
   social: 'bg-cyan-500/15 text-cyan-400 border border-cyan-500/30',
 };
 
@@ -50,11 +50,11 @@ export default function AdverseMediaTab({ profile }: AdverseMediaTabProps) {
       ))}
 
       {/* Source Breakdown */}
-      <div className="bg-[#1A1F2E] rounded-xl border border-white/10 p-6">
-        <p className="text-xs font-medium uppercase tracking-wider text-gray-500 mb-4">
+      <div className="bg-white dark:bg-[#1A1F2E] rounded-xl border border-slate-200 dark:border-white/10 p-6">
+        <p className="text-xs font-medium uppercase tracking-wider text-slate-500 dark:text-gray-500 mb-4">
           Source Breakdown
         </p>
-        <div className="space-y-2 text-sm text-gray-400">
+        <div className="space-y-2 text-sm text-slate-500 dark:text-gray-400">
           <div className="flex items-center gap-2">
             <span>🔍</span>
             <span>Serper.dev / Google CSE — {hits.length} result(s)</span>
@@ -69,7 +69,7 @@ function MediaFindingCard({ hit, index }: { hit: AdverseMediaHit; index: number 
   const badgeClass = SOURCE_BADGE_COLORS.news;
 
   return (
-    <div className="bg-[#1A1F2E] rounded-xl border border-white/10 overflow-hidden">
+    <div className="bg-white dark:bg-[#1A1F2E] rounded-xl border border-slate-200 dark:border-white/10 overflow-hidden">
       <div className="p-6 space-y-3">
         {/* Header row */}
         <div className="flex items-start justify-between gap-4">
@@ -77,23 +77,23 @@ function MediaFindingCard({ hit, index }: { hit: AdverseMediaHit; index: number 
             <span className={`shrink-0 text-xs font-semibold px-2 py-0.5 rounded-full ${badgeClass}`}>
               News
             </span>
-            <h4 className="text-sm font-semibold text-white leading-snug">
+            <h4 className="text-sm font-semibold text-slate-900 dark:text-white leading-snug">
               {hit.title}
             </h4>
           </div>
-          <span className="text-xs text-gray-500 shrink-0">#{index}</span>
+          <span className="text-xs text-slate-400 dark:text-gray-500 shrink-0">#{index}</span>
         </div>
 
         {/* Meta row */}
-        <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-gray-400">
-          {hit.source_name && <span>Source: <strong className="text-gray-300">{hit.source_name}</strong></span>}
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-slate-500 dark:text-gray-400">
+          {hit.source_name && <span>Source: <strong className="text-slate-700 dark:text-gray-300">{hit.source_name}</strong></span>}
           {hit.published_date && <span>Published: {hit.published_date}</span>}
           <SeverityBadge severity={hit.severity} />
         </div>
 
         {/* Snippet */}
         {hit.snippet && (
-          <p className="text-sm text-gray-400 leading-relaxed bg-white/5 rounded-lg p-3 italic">
+          <p className="text-sm text-slate-600 dark:text-gray-400 leading-relaxed bg-slate-50 dark:bg-white/5 rounded-lg p-3 italic">
             "{hit.snippet}"
           </p>
         )}
@@ -104,7 +104,7 @@ function MediaFindingCard({ hit, index }: { hit: AdverseMediaHit; index: number 
             href={hit.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1 text-sm text-[#00D4AA] hover:text-[#00E4BA] hover:underline"
+            className="inline-flex items-center gap-1 text-sm text-[#931CF5] hover:text-[#A855F7] hover:underline"
           >
             View Source <ExternalLink className="w-3.5 h-3.5" />
           </a>

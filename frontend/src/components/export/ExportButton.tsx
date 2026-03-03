@@ -34,23 +34,23 @@ export default function ExportButton({ data, disabled = false }: ExportButtonPro
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
-                <Button variant="outline" size="sm" disabled={disabled} className="bg-white border-[#E5E7EB] text-[#6B7280] hover:bg-gray-50 hover:text-[#111827]">
+                <Button variant="outline" size="sm" disabled={disabled} className="bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-600 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700 hover:text-slate-900 dark:hover:text-white">
                     <FileDown className="h-4 w-4 mr-2" />
                     Export
                     <ChevronDown className="h-4 w-4 ml-2" />
                 </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="bg-white border-[#E5E7EB] text-[#111827]">
-                <DropdownMenuItem onClick={() => handleExport('pdf')} className="hover:bg-gray-50 focus:bg-gray-50 cursor-pointer">
-                    <FileText className="h-4 w-4 mr-2 text-[#00D4AA]" />
+            <DropdownMenuContent align="end" className="bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-slate-100">
+                <DropdownMenuItem onClick={() => handleExport('pdf')} className="hover:bg-slate-50 dark:hover:bg-slate-700 focus:bg-slate-50 dark:focus:bg-slate-700 cursor-pointer">
+                    <FileText className="h-4 w-4 mr-2 text-[#931CF5]" />
                     Export to PDF
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => handleExport('csv')} className="hover:bg-gray-50 focus:bg-gray-50 cursor-pointer">
-                    <Table className="h-4 w-4 mr-2 text-[#00D4AA]" />
+                <DropdownMenuItem onClick={() => handleExport('csv')} className="hover:bg-slate-50 dark:hover:bg-slate-700 focus:bg-slate-50 dark:focus:bg-slate-700 cursor-pointer">
+                    <Table className="h-4 w-4 mr-2 text-[#931CF5]" />
                     Export to CSV
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => handleExport('json')} className="hover:bg-gray-50 focus:bg-gray-50 cursor-pointer">
-                    <Code className="h-4 w-4 mr-2 text-[#00D4AA]" />
+                <DropdownMenuItem onClick={() => handleExport('json')} className="hover:bg-slate-50 dark:hover:bg-slate-700 focus:bg-slate-50 dark:focus:bg-slate-700 cursor-pointer">
+                    <Code className="h-4 w-4 mr-2 text-[#931CF5]" />
                     Export to JSON
                 </DropdownMenuItem>
             </DropdownMenuContent>

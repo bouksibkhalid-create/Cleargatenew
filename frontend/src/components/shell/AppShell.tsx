@@ -46,7 +46,7 @@ export default function AppShell({ children }: AppShellProps) {
   }, [toggle, isMobile]);
 
   return (
-    <div className="min-h-screen bg-[#F9FAFB]">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 transition-colors duration-200">
       {/* Desktop sidebar */}
       {!isMobile && (
         <Sidebar collapsed={collapsed} onToggle={toggle} />
@@ -54,15 +54,15 @@ export default function AppShell({ children }: AppShellProps) {
 
       {/* Mobile hamburger */}
       {isMobile && (
-        <div className="fixed top-0 left-0 right-0 h-14 bg-[#0F1419] border-b border-[#1F2937] z-40 flex items-center px-4">
+        <div className="fixed top-0 left-0 right-0 h-14 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-700 z-40 flex items-center px-4">
           <button
             onClick={() => setMobileOpen(true)}
-            className="text-white p-1"
+            className="text-slate-700 dark:text-white p-1 min-w-[24px] min-h-[24px]"
             aria-label="Open menu"
           >
             <Menu className="w-6 h-6" />
           </button>
-          <span className="ml-3 text-sm font-bold tracking-wide text-white uppercase">ClearGate</span>
+          <span className="ml-3 text-sm font-bold tracking-wide text-slate-900 dark:text-white uppercase">ClearGate</span>
         </div>
       )}
 
@@ -77,7 +77,7 @@ export default function AppShell({ children }: AppShellProps) {
             <Sidebar collapsed={false} onToggle={() => setMobileOpen(false)} onClose={() => setMobileOpen(false)} />
             <button
               onClick={() => setMobileOpen(false)}
-              className="absolute top-4 right-[-44px] text-white bg-[#0F1419] rounded-full p-2"
+              className="absolute top-4 right-[-44px] text-white bg-slate-900 rounded-full p-2 min-w-[24px] min-h-[24px]"
               aria-label="Close menu"
             >
               <X className="w-5 h-5" />

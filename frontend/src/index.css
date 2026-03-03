@@ -44,7 +44,7 @@
 
   body {
     @apply bg-background text-foreground;
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
   }
 }
 
@@ -151,24 +151,24 @@
 
   /* Card Container */
   .modern-entity-card {
-    @apply bg-white/5 border border-white/10 rounded-2xl overflow-hidden;
+    @apply bg-white border border-[#E5E7EB] rounded-2xl overflow-hidden shadow-sm;
     @apply transition-all duration-300 ease-out cursor-pointer;
   }
 
   .modern-entity-card:hover {
-    @apply border-[#00D4AA]/30 bg-white/[0.08];
+    @apply border-[#00D4AA]/30 shadow-md;
   }
 
   /* Header Bar */
   .card-header-modern {
     @apply flex justify-between items-center px-6 py-4;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid #E5E7EB;
   }
 
   .match-score-badge {
     @apply inline-flex items-center gap-2;
     @apply text-xs font-bold tracking-wide text-[#00D4AA];
-    @apply bg-white/10 px-3 py-1.5 rounded-full;
+    @apply bg-[#00D4AA]/10 px-3 py-1.5 rounded-full;
     border: 1px solid rgba(0, 212, 170, 0.3);
   }
 
@@ -199,17 +199,17 @@
   }
 
   .entity-name-modern {
-    @apply text-2xl font-bold leading-tight text-white mb-2;
+    @apply text-2xl font-bold leading-tight text-[#111827] mb-2;
   }
 
   .entity-description-modern {
-    @apply text-sm leading-relaxed text-gray-400 mb-0;
+    @apply text-sm leading-relaxed text-[#6B7280] mb-0;
   }
 
   /* Info Grid */
   .info-grid-modern {
     @apply grid gap-4 px-6 py-6 mx-6 mb-6;
-    @apply bg-white/5 rounded-xl border border-white/10;
+    @apply bg-[#F9FAFB] rounded-xl border border-[#E5E7EB];
     grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
   }
 
@@ -219,7 +219,7 @@
 
   .info-icon-modern {
     @apply flex items-center justify-center w-8 h-8;
-    @apply bg-white/10 rounded-lg text-[#00D4AA] flex-shrink-0;
+    @apply bg-[#00D4AA]/10 rounded-lg text-[#00D4AA] flex-shrink-0;
   }
 
   .info-content-modern {
@@ -231,7 +231,7 @@
   }
 
   .info-value-modern {
-    @apply text-sm font-semibold text-white;
+    @apply text-sm font-semibold text-[#111827];
     @apply flex items-center gap-2 flex-wrap;
   }
 
@@ -246,30 +246,30 @@
 
   .aliases-toggle-modern {
     @apply flex items-center gap-2 w-full px-3 py-3;
-    @apply bg-transparent border border-dashed border-white/20 rounded-lg;
-    @apply text-sm text-gray-400 cursor-pointer transition-all;
+    @apply bg-transparent border border-dashed border-[#E5E7EB] rounded-lg;
+    @apply text-sm text-[#6B7280] cursor-pointer transition-all;
   }
 
   .aliases-toggle-modern:hover {
-    @apply bg-white/5 border-[#00D4AA]/50 text-[#00D4AA];
+    @apply bg-[#00D4AA]/5 border-[#00D4AA]/50 text-[#00D4AA];
   }
 
   .aliases-list-modern {
     @apply flex flex-wrap gap-2 mt-3 p-3;
-    @apply bg-white/5 rounded-lg border border-white/10;
+    @apply bg-[#F9FAFB] rounded-lg border border-[#E5E7EB];
     overflow: hidden;
   }
 
   .alias-badge-modern {
     @apply inline-block px-3 py-1;
-    @apply bg-white/10 border border-white/10 rounded-full;
-    @apply text-xs text-gray-300;
+    @apply bg-gray-100 border border-[#E5E7EB] rounded-full;
+    @apply text-xs text-[#6B7280];
   }
 
   /* Status Bar */
   .status-bar-modern {
     @apply flex justify-between items-center px-6 py-3.5;
-    @apply border-t border-white/10 text-sm;
+    @apply border-t border-[#E5E7EB] text-sm;
   }
 
   .status-bar-modern.sanctioned {
@@ -301,20 +301,20 @@
   }
 
   .source-badge-modern {
-    @apply text-xs text-gray-400 px-3 py-1;
-    @apply bg-white/5 rounded-full border border-white/10;
+    @apply text-xs text-[#6B7280] px-3 py-1;
+    @apply bg-gray-100 rounded-full border border-[#E5E7EB];
   }
 
   /* Action Button */
   .view-intelligence-btn-modern {
     @apply flex items-center justify-between w-full px-6 py-4;
-    @apply bg-transparent border-t border-white/10;
+    @apply bg-transparent border-t border-[#E5E7EB];
     @apply text-[#00D4AA] font-semibold text-sm;
     @apply cursor-pointer transition-all;
   }
 
   .view-intelligence-btn-modern:hover {
-    @apply bg-white/5 text-[#00E4BA];
+    @apply bg-[#00D4AA]/5 text-[#00E4BA];
   }
 
   .view-intelligence-btn-modern svg {

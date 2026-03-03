@@ -33,7 +33,7 @@ export default function SearchSection({ onSearch, isLoading }: SearchSectionProp
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
                     placeholder="Enter a name, organization, or vessel..."
-                    className="w-full pl-12 pr-12 py-3 text-base border border-white/20 rounded-full bg-white/10 text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-[#00D4AA]/50 focus:border-transparent transition-all"
+                    className="w-full pl-12 pr-12 py-3 text-base border border-[#E5E7EB] rounded-full bg-white text-[#111827] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#00D4AA]/50 focus:border-transparent transition-all"
                     autoFocus
                     disabled={isLoading}
                 />

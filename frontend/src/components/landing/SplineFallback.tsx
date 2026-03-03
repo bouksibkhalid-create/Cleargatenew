@@ -23,7 +23,7 @@ export default function SplineFallback() {
           {PIPELINE_STEPS.map((step, i) => (
             <div
               key={step.label}
-              className="relative flex flex-col items-center text-center p-4 bg-white/5 rounded-xl border border-white/10 hover:border-[#00D4AA]/30 transition-all group"
+              className="relative flex flex-col items-center text-center p-4 bg-white/[0.04] rounded-xl border border-white/10 hover:border-[#00D4AA]/30 transition-all group"
             >
               <div className="w-10 h-10 rounded-xl bg-[#00D4AA]/10 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
                 <step.Icon className="w-5 h-5 text-[#00D4AA]" />

@@ -1,225 +1,91 @@
-import { useRef, useState, useEffect, useCallback } from 'react';
+import { useRef, useState, useEffect } from 'react';
 
-type ScrollLockState = 'IDLE' | 'LOCKED' | 'COMPLETING' | 'RELEASED';
+/**
+ * Scroll-position-based animation driver.
+ * Uses a tall outer container with a sticky inner scene.
+ * As the user scrolls through the container's extra height,
+ * progress (0→1) and step index are derived from scroll position.
+ * NO body overflow manipulation — normal scrolling is never blocked.
+ */
 
-interface UseScrollLockOptions {
+interface UseScrollProgressOptions {
   totalSteps: number;
-  scrollPerStep: number;
   enabled: boolean;
 }
 
-interface UseScrollLockReturn {
+interface UseScrollProgressReturn {
   currentStep: number;
   progress: number;
-  isLocked: boolean;
-  state: ScrollLockState;
-  containerRef: React.RefObject<HTMLDivElement | null>;
+  totalProgress: number;
+  isActive: boolean;
+  outerRef: React.RefObject<HTMLDivElement | null>;
 }
 
 export function useScrollLock({
   totalSteps,
-  scrollPerStep = 180,
   enabled,
-}: UseScrollLockOptions): UseScrollLockReturn {
-  const containerRef = useRef<HTMLDivElement | null>(null);
-  const [state, setState] = useState<ScrollLockState>('IDLE');
+}: UseScrollProgressOptions): UseScrollProgressReturn {
+  const outerRef = useRef<HTMLDivElement | null>(null);
   const [currentStep, setCurrentStep] = useState(0);
   const [progress, setProgress] = useState(0);
+  const [totalProgress, setTotalProgress] = useState(0);
+  const [isActive, setIsActive] = useState(false);
+  const rafRef = useRef<number | null>(null);
 
-  const accumulatedDelta = useRef(0);
-  const directionDebounce = useRef<number | null>(null);
-  const savedScrollY = useRef(0);
-  const isLockedRef = useRef(false);
+  useEffect(() => {
+    if (!enabled) return;
 
-  const lock = useCallback(() => {
-    if (isLockedRef.current) return;
-    isLockedRef.current = true;
-    savedScrollY.current = window.scrollY;
-    document.body.style.overflow = 'hidden';
-    setState('LOCKED');
-  }, []);
+    const onScroll = () => {
+      const el = outerRef.current;
+      if (!el) return;
 
-  const unlock = useCallback((direction: 'down' | 'up') => {
-    if (!isLockedRef.current) return;
-    isLockedRef.current = false;
-    document.body.style.overflow = '';
-    setState('RELEASED');
+      const rect = el.getBoundingClientRect();
+      const viewH = window.innerHeight;
 
-    if (direction === 'down' && containerRef.current) {
-      const rect = containerRef.current.getBoundingClientRect();
-      const targetY = window.scrollY + rect.bottom;
-      window.scrollTo({ top: targetY, behavior: 'instant' });
-    } else if (direction === 'up') {
-      window.scrollTo({ top: savedScrollY.current, behavior: 'instant' });
-    }
-  }, []);
+      // The outer container is taller than the viewport.
+      // scrollableDistance = how many pixels of scroll travel are available
+      // within this section (total height minus one viewport).
+      const scrollableDistance = el.offsetHeight - viewH;
+      if (scrollableDistance <= 0) return;
 
-  const handleDelta = useCallback(
-    (deltaY: number) => {
-      if (!isLockedRef.current) return;
+      // How far the user has scrolled into this section:
+      // 0 = top of section at top of viewport
+      // scrollableDistance = bottom of section at bottom of viewport
+      const scrolled = -rect.top;
+      const clamped = Math.max(0, Math.min(scrollableDistance, scrolled));
+      const normalized = clamped / scrollableDistance; // 0 → 1
 
-      accumulatedDelta.current += deltaY;
+      setTotalProgress(normalized);
+      setIsActive(normalized > 0 && normalized < 1);
 
-      const totalScroll = totalSteps * scrollPerStep;
-      const clampedDelta = Math.max(0, Math.min(totalScroll, accumulatedDelta.current));
-
-      // Check if we should release upward
-      if (accumulatedDelta.current < -scrollPerStep * 0.5) {
-        accumulatedDelta.current = 0;
-        setCurrentStep(0);
-        setProgress(0);
-        unlock('up');
-        return;
-      }
-
-      // Check if animation complete — release downward
-      if (accumulatedDelta.current > totalScroll + scrollPerStep * 0.5) {
-        setCurrentStep(totalSteps);
-        setProgress(1);
-        setState('COMPLETING');
-        setTimeout(() => unlock('down'), 100);
-        return;
-      }
-
-      accumulatedDelta.current = clampedDelta;
-
-      const rawStep = clampedDelta / scrollPerStep;
-      const step = Math.min(Math.floor(rawStep), totalSteps);
+      const rawStep = normalized * totalSteps;
+      const step = Math.min(Math.floor(rawStep), totalSteps - 1);
       const stepProgress = rawStep - Math.floor(rawStep);
 
-      setCurrentStep(step);
-      setProgress(step >= totalSteps ? 1 : stepProgress);
-    },
-    [totalSteps, scrollPerStep, unlock]
-  );
-
-  // Wheel handler
-  useEffect(() => {
-    if (!enabled) return;
-
-    const onWheel = (e: WheelEvent) => {
-      if (!isLockedRef.current) return;
-      e.preventDefault();
-      // Clamp large deltas from trackpad momentum
-      const clamped = Math.max(-60, Math.min(60, e.deltaY));
-      handleDelta(clamped);
+      setCurrentStep(normalized >= 1 ? totalSteps : step);
+      setProgress(normalized >= 1 ? 1 : stepProgress);
     };
 
-    const el = containerRef.current;
-    if (!el) return;
-    el.addEventListener('wheel', onWheel, { passive: false });
-    return () => el.removeEventListener('wheel', onWheel);
-  }, [enabled, handleDelta]);
-
-  // Touch handlers
-  useEffect(() => {
-    if (!enabled) return;
-    const el = containerRef.current;
-    if (!el) return;
-
-    let lastTouchY = 0;
-
-    const onTouchStart = (e: TouchEvent) => {
-      if (!isLockedRef.current) return;
-      lastTouchY = e.touches[0].clientY;
+    const rafScroll = () => {
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+      rafRef.current = requestAnimationFrame(onScroll);
     };
 
-    const onTouchMove = (e: TouchEvent) => {
-      if (!isLockedRef.current) return;
-      e.preventDefault();
-      const currentY = e.touches[0].clientY;
-      const delta = lastTouchY - currentY; // positive = scroll down
-      lastTouchY = currentY;
-      handleDelta(delta);
-    };
+    window.addEventListener('scroll', rafScroll, { passive: true });
+    // Initial calculation
+    onScroll();
 
-    el.addEventListener('touchstart', onTouchStart, { passive: true });
-    el.addEventListener('touchmove', onTouchMove, { passive: false });
     return () => {
-      el.removeEventListener('touchstart', onTouchStart);
-      el.removeEventListener('touchmove', onTouchMove);
+      window.removeEventListener('scroll', rafScroll);
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
     };
-  }, [enabled, handleDelta]);
-
-  // Keyboard handler
-  useEffect(() => {
-    if (!enabled) return;
-
-    const onKeyDown = (e: KeyboardEvent) => {
-      if (!isLockedRef.current) return;
-
-      let delta = 0;
-      if (e.key === 'ArrowDown' || (e.key === ' ' && !e.shiftKey)) {
-        delta = 50;
-        e.preventDefault();
-      } else if (e.key === 'ArrowUp' || (e.key === ' ' && e.shiftKey)) {
-        delta = -50;
-        e.preventDefault();
-      }
-
-      if (delta !== 0) handleDelta(delta);
-    };
-
-    window.addEventListener('keydown', onKeyDown);
-    return () => window.removeEventListener('keydown', onKeyDown);
-  }, [enabled, handleDelta]);
-
-  // Intersection Observer — engage/disengage lock
-  useEffect(() => {
-    if (!enabled) return;
-    const el = containerRef.current;
-    if (!el) return;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting && entry.intersectionRatio >= 0.7) {
-          if (!isLockedRef.current && state !== 'RELEASED') {
-            accumulatedDelta.current = 0;
-            setCurrentStep(0);
-            setProgress(0);
-            lock();
-          }
-        }
-      },
-      { threshold: [0.7, 0.8, 0.9, 1.0] }
-    );
-
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, [enabled, lock, state]);
-
-  // Reset state when scrolling away from section
-  useEffect(() => {
-    if (!enabled) return;
-    const el = containerRef.current;
-    if (!el) return;
-
-    const resetObserver = new IntersectionObserver(
-      ([entry]) => {
-        if (!entry.isIntersecting && state === 'RELEASED') {
-          setState('IDLE');
-        }
-      },
-      { threshold: 0 }
-    );
-
-    resetObserver.observe(el);
-    return () => resetObserver.disconnect();
-  }, [enabled, state]);
-
-  // Cleanup on unmount
-  useEffect(() => {
-    return () => {
-      document.body.style.overflow = '';
-      if (directionDebounce.current) clearTimeout(directionDebounce.current);
-    };
-  }, []);
+  }, [enabled, totalSteps]);
 
   return {
     currentStep,
     progress,
-    isLocked: state === 'LOCKED',
-    state,
-    containerRef,
+    totalProgress,
+    isActive,
+    outerRef,
   };
 }

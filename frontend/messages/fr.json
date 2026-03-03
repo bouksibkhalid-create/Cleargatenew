@@ -149,7 +149,8 @@
     "lastSearch": "Dernière recherche",
     "actions": "Actions",
     "name": "Nom",
-    "type": "Type"
+    "type": "Type",
+    "downloadError": "Échec de la génération du rapport : {{message}}"
   },
   "timeline": {
     "title": "Chronologie",

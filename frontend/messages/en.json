@@ -149,7 +149,8 @@
     "lastSearch": "Last Search",
     "actions": "Actions",
     "name": "Name",
-    "type": "Type"
+    "type": "Type",
+    "downloadError": "Failed to generate report: {{message}}"
   },
   "timeline": {
     "title": "Timeline",

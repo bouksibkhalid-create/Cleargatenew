@@ -1,31 +1,84 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FileText, Search, Download, MoreVertical, Eye, RefreshCw, Trash2, EyeOff } from 'lucide-react';
+import { FileText, Search, Download, MoreVertical, Eye, RefreshCw, Trash2, EyeOff, Loader2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import PageHeader from '../common/PageHeader';
 import RiskLevelBadge from '../common/RiskLevelBadge';
 import CgCard from '../common/CgCard';
 import { fetchSavedEntities, removeSavedEntity, toggleMonitoring, type SavedEntity } from '../../services/savedEntitiesService';
+import { activityLogger } from '../../services/activityLogger';
 
-function formatTimeAgo(dateStr: string) {
-  const diff = Date.now() - new Date(dateStr).getTime();
-  const mins = Math.floor(diff / 60000);
-  if (mins < 60) return `${mins}m ago`;
-  const hrs = Math.floor(mins / 60);
-  if (hrs < 24) return `${hrs}h ago`;
-  const days = Math.floor(hrs / 24);
-  if (days === 1) return 'yesterday';
-  return `${days}d ago`;
-}
+const API_BASE = import.meta.env.VITE_API_URL ?? '';
 
 export default function ReportsPage() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [entities, setEntities] = useState<SavedEntity[]>([]);
   const [loading, setLoading] = useState(true);
   const [filterText, setFilterText] = useState('');
   const [openMenu, setOpenMenu] = useState<string | null>(null);
   const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
+  const [downloading, setDownloading] = useState<string | null>(null);
+  const [menuPos, setMenuPos] = useState<{ top: number; left: number } | null>(null);
+  const menuBtnRefs = useRef<Record<string, HTMLButtonElement | null>>({});
   const navigate = useNavigate();
+
+  function formatTimeAgo(dateStr: string) {
+    const diff = Date.now() - new Date(dateStr).getTime();
+    const mins = Math.floor(diff / 60000);
+    if (mins < 60) return t('common.minAgo', { count: mins });
+    const hrs = Math.floor(mins / 60);
+    if (hrs < 24) return t('common.hAgo', { count: hrs });
+    const days = Math.floor(hrs / 24);
+    return t('common.dAgo', { count: days });
+  }
+
+  function openMenuFor(entityId: string) {
+    const btn = menuBtnRefs.current[entityId];
+    if (btn) {
+      const rect = btn.getBoundingClientRect();
+      setMenuPos({ top: rect.bottom + 4, left: rect.right - 192 });
+    }
+    setOpenMenu(entityId);
+  }
+
+  async function handleDownloadReport(entity: SavedEntity) {
+    try {
+      setDownloading(entity.id);
+      setOpenMenu(null);
+      const lang = i18n.language?.startsWith('fr') ? 'fr' : 'en';
+      const res = await fetch(`${API_BASE}/api/report`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          profile: entity.profile_data || { name: entity.entity_name, entity_type: entity.entity_type },
+          language: lang,
+          classification: 'CONFIDENTIEL',
+        }),
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({ message: res.statusText }));
+        throw new Error(err.message || `Server error ${res.status}`);
+      }
+      const disposition = res.headers.get('Content-Disposition') || '';
+      const filenameMatch = disposition.match(/filename="?([^"]+)"?/);
+      const filename = filenameMatch
+        ? filenameMatch[1]
+        : `ClearGate_Report_${entity.entity_name.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.pdf`;
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = filename;
+      link.click();
+      URL.revokeObjectURL(url);
+      await activityLogger.logReportDownload(entity.entity_name, entity.id);
+    } catch (error: any) {
+      console.error('Report generation error:', error);
+      alert(t('reports.downloadError', { message: error?.message || String(error) }));
+    } finally {
+      setDownloading(null);
+    }
+  }
 
   useEffect(() => {
     loadEntities();
@@ -153,55 +206,20 @@ export default function ReportsPage() {
                       <td className="px-4 py-3 text-right" onClick={(e) => e.stopPropagation()}>
                         <div className="flex items-center justify-end gap-1 relative">
                           <button
-                            className="p-1.5 rounded hover:bg-slate-100 dark:hover:bg-slate-600 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors min-w-[24px] min-h-[24px]"
+                            className="p-1.5 rounded hover:bg-slate-100 dark:hover:bg-slate-600 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors min-w-[24px] min-h-[24px] disabled:opacity-50"
                             title={t('reports.downloadReport')}
+                            disabled={downloading === entity.id}
+                            onClick={() => handleDownloadReport(entity)}
                           >
-                            <Download className="w-4 h-4" />
+                            {downloading === entity.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
                           </button>
                           <button
+                            ref={(el) => { menuBtnRefs.current[entity.id] = el; }}
                             className="p-1.5 rounded hover:bg-slate-100 dark:hover:bg-slate-600 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors min-w-[24px] min-h-[24px]"
-                            onClick={() => setOpenMenu(openMenu === entity.id ? null : entity.id)}
+                            onClick={() => openMenu === entity.id ? setOpenMenu(null) : openMenuFor(entity.id)}
                           >
                             <MoreVertical className="w-4 h-4" />
                           </button>
-
-                          {/* Overflow Menu */}
-                          {openMenu === entity.id && (
-                            <div className="absolute right-0 top-full mt-1 z-20 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg shadow-lg dark:shadow-none py-1 w-48">
-                              <button
-                                onClick={() => { navigate(`/reports/${entity.id}`); setOpenMenu(null); }}
-                                className="w-full flex items-center gap-2 px-3 py-2 text-sm text-slate-900 dark:text-slate-100 hover:bg-slate-50 dark:hover:bg-slate-700"
-                              >
-                                <Eye className="w-4 h-4 text-slate-500 dark:text-slate-400" /> {t('reports.viewProfile')}
-                              </button>
-                              <button
-                                className="w-full flex items-center gap-2 px-3 py-2 text-sm text-slate-900 dark:text-slate-100 hover:bg-slate-50 dark:hover:bg-slate-700"
-                              >
-                                <RefreshCw className="w-4 h-4 text-slate-500 dark:text-slate-400" /> {t('reports.refreshSearch')}
-                              </button>
-                              <button
-                                onClick={() => handleToggleMonitor(entity)}
-                                className="w-full flex items-center gap-2 px-3 py-2 text-sm text-slate-900 dark:text-slate-100 hover:bg-slate-50 dark:hover:bg-slate-700"
-                              >
-                                {entity.is_monitored
-                                  ? <><EyeOff className="w-4 h-4 text-slate-500 dark:text-slate-400" /> {t('reports.disableMonitoring')}</>
-                                  : <><Eye className="w-4 h-4 text-slate-500 dark:text-slate-400" /> {t('reports.enableMonitoring')}</>
-                                }
-                              </button>
-                              <button
-                                className="w-full flex items-center gap-2 px-3 py-2 text-sm text-slate-900 dark:text-slate-100 hover:bg-slate-50 dark:hover:bg-slate-700"
-                              >
-                                <Download className="w-4 h-4 text-slate-500 dark:text-slate-400" /> {t('reports.downloadReport')}
-                              </button>
-                              <hr className="my-1 border-slate-200 dark:border-slate-700" />
-                              <button
-                                onClick={() => { setConfirmDelete(entity.id); setOpenMenu(null); }}
-                                className="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-600 hover:bg-red-50"
-                              >
-                                <Trash2 className="w-4 h-4" /> {t('reports.removeFromReports')}
-                              </button>
-                            </div>
-                          )}
                         </div>
                       </td>
                     </tr>
@@ -216,6 +234,52 @@ export default function ReportsPage() {
       <div className="mt-2 text-xs text-slate-400 dark:text-slate-500">
         {filtered.length === 1 ? t('reports.showingEntity', { count: filtered.length }) : t('reports.showingEntities', { count: filtered.length })}
       </div>
+
+      {/* Overflow Menu — rendered as fixed portal outside the table */}
+      {openMenu && menuPos && (() => {
+        const entity = entities.find((e) => e.id === openMenu);
+        if (!entity) return null;
+        return (
+          <div
+            className="fixed z-50 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg shadow-lg dark:shadow-none py-1 w-48"
+            style={{ top: menuPos.top, left: menuPos.left }}
+          >
+            <button
+              onClick={() => { navigate(`/reports/${entity.id}`); setOpenMenu(null); }}
+              className="w-full flex items-center gap-2 px-3 py-2 text-sm text-slate-900 dark:text-slate-100 hover:bg-slate-50 dark:hover:bg-slate-700"
+            >
+              <Eye className="w-4 h-4 text-slate-500 dark:text-slate-400" /> {t('reports.viewProfile')}
+            </button>
+            <button
+              className="w-full flex items-center gap-2 px-3 py-2 text-sm text-slate-900 dark:text-slate-100 hover:bg-slate-50 dark:hover:bg-slate-700"
+            >
+              <RefreshCw className="w-4 h-4 text-slate-500 dark:text-slate-400" /> {t('reports.refreshSearch')}
+            </button>
+            <button
+              onClick={() => handleToggleMonitor(entity)}
+              className="w-full flex items-center gap-2 px-3 py-2 text-sm text-slate-900 dark:text-slate-100 hover:bg-slate-50 dark:hover:bg-slate-700"
+            >
+              {entity.is_monitored
+                ? <><EyeOff className="w-4 h-4 text-slate-500 dark:text-slate-400" /> {t('reports.disableMonitoring')}</>
+                : <><Eye className="w-4 h-4 text-slate-500 dark:text-slate-400" /> {t('reports.enableMonitoring')}</>
+              }
+            </button>
+            <button
+              onClick={() => { handleDownloadReport(entity); }}
+              className="w-full flex items-center gap-2 px-3 py-2 text-sm text-slate-900 dark:text-slate-100 hover:bg-slate-50 dark:hover:bg-slate-700"
+            >
+              <Download className="w-4 h-4 text-slate-500 dark:text-slate-400" /> {t('reports.downloadReport')}
+            </button>
+            <hr className="my-1 border-slate-200 dark:border-slate-700" />
+            <button
+              onClick={() => { setConfirmDelete(entity.id); setOpenMenu(null); }}
+              className="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20"
+            >
+              <Trash2 className="w-4 h-4" /> {t('reports.removeFromReports')}
+            </button>
+          </div>
+        );
+      })()}
 
       {/* Delete Confirmation Dialog */}
       {confirmDelete && (
@@ -243,7 +307,7 @@ export default function ReportsPage() {
 
       {/* Close overflow menu on outside click */}
       {openMenu && (
-        <div className="fixed inset-0 z-10" onClick={() => setOpenMenu(null)} />
+        <div className="fixed inset-0 z-40" onClick={() => setOpenMenu(null)} />
       )}
     </div>
   );

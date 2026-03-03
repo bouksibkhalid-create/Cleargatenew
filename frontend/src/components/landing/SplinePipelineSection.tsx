@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import { useScrollLock } from './hooks/useScrollLock';
 import {
   Search, Database, Globe, Shield, Brain, FileText,
@@ -16,33 +16,68 @@ const PIPELINE_STEPS = [
   { Icon: FileText, label: 'Report Generation', desc: 'PDF intelligence dossier' },
 ];
 
-// Block positions (percentage-based for responsive layout)
-// Arranged in a staggered 2-row pipeline flowing left→right
-const BLOCK_POSITIONS = [
-  { x: 8, y: 25 },
-  { x: 28, y: 25 },
-  { x: 48, y: 25 },
-  { x: 48, y: 62 },
-  { x: 68, y: 62 },
-  { x: 88, y: 62 },
+// Asymmetric block positions in SVG viewBox coordinates (960 × 480)
+// Organic stagger — not a perfect grid
+const NODE_POS = [
+  { x: 100, y: 140 },   // 1 — top-left
+  { x: 320, y: 100 },   // 2 — slightly higher
+  { x: 540, y: 160 },   // 3 — mid, dips down
+  { x: 420, y: 340 },   // 4 — drops to bottom row, offset left
+  { x: 640, y: 310 },   // 5 — bottom row right
+  { x: 860, y: 350 },   // 6 — far right, low
 ];
 
-function buildSvgPath(): string {
-  // Build the path connecting block centers
-  // Row 1: left to right (blocks 0→1→2), then down, then Row 2: left to right (blocks 3→4→5)
-  const pts = BLOCK_POSITIONS.map((p) => ({ x: p.x, y: p.y }));
-  return [
-    `M ${pts[0].x} ${pts[0].y}`,
-    `L ${pts[1].x} ${pts[1].y}`,
-    `L ${pts[2].x} ${pts[2].y}`,
-    `L ${pts[3].x} ${pts[3].y}`,
-    `L ${pts[4].x} ${pts[4].y}`,
-    `L ${pts[5].x} ${pts[5].y}`,
-  ].join(' ');
+const VB_W = 960;
+const VB_H = 480;
+
+// Build a smooth cubic bezier path through the nodes
+function buildPath(): string {
+  const p = NODE_POS;
+  let d = `M ${p[0].x} ${p[0].y}`;
+  for (let i = 0; i < p.length - 1; i++) {
+    const curr = p[i];
+    const next = p[i + 1];
+    // Control points: horizontal pull toward midpoint
+    const cpx1 = curr.x + (next.x - curr.x) * 0.5;
+    const cpy1 = curr.y;
+    const cpx2 = next.x - (next.x - curr.x) * 0.5;
+    const cpy2 = next.y;
+    d += ` C ${cpx1} ${cpy1}, ${cpx2} ${cpy2}, ${next.x} ${next.y}`;
+  }
+  return d;
+}
+
+// Calculate total path length from segments
+function calcPathLength(pathD: string): number {
+  if (typeof document === 'undefined') return 1200;
+  const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+  path.setAttribute('d', pathD);
+  svg.appendChild(path);
+  document.body.appendChild(svg);
+  const len = path.getTotalLength();
+  document.body.removeChild(svg);
+  return len;
+}
+
+// Get point at length along a path
+function getPointAtProgress(pathD: string, t: number, totalLen: number): { x: number; y: number } {
+  if (typeof document === 'undefined') return { x: 0, y: 0 };
+  const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+  path.setAttribute('d', pathD);
+  svg.appendChild(path);
+  document.body.appendChild(svg);
+  const pt = path.getPointAtLength(t * totalLen);
+  document.body.removeChild(svg);
+  return { x: pt.x, y: pt.y };
 }
 
 export default function SplinePipelineSection() {
   const [isMobile, setIsMobile] = useState(false);
+  const [pathLen, setPathLen] = useState(1200);
+  const svgPathD = useRef(buildPath());
+  const orbPos = useRef({ x: NODE_POS[0].x, y: NODE_POS[0].y });
 
   useEffect(() => {
     const check = () => setIsMobile(window.innerWidth < 768);
@@ -51,33 +86,50 @@ export default function SplinePipelineSection() {
     return () => window.removeEventListener('resize', check);
   }, []);
 
+  // Measure real path length on mount
+  useEffect(() => {
+    setPathLen(calcPathLength(svgPathD.current));
+  }, []);
+
   const { currentStep, totalProgress, outerRef } = useScrollLock({
     totalSteps: TOTAL_STEPS,
     enabled: !isMobile,
   });
 
-  const svgPath = buildSvgPath();
-  // Approximate path length for stroke-dasharray animation
-  const pathLength = 200;
+  // Track orb position
+  const getOrb = useCallback(() => {
+    if (totalProgress <= 0) return { x: NODE_POS[0].x, y: NODE_POS[0].y };
+    if (totalProgress >= 1) return { x: NODE_POS[5].x, y: NODE_POS[5].y };
+    return getPointAtProgress(svgPathD.current, totalProgress, pathLen);
+  }, [totalProgress, pathLen]);
 
-  // On mobile, show a simple static grid instead of the scroll-driven version
+  // Update orb position
+  useEffect(() => {
+    orbPos.current = getOrb();
+  }, [getOrb]);
+
+  const orb = getOrb();
+
+  // On mobile, show a simple static grid
   if (isMobile) {
     return (
-      <div style={{ background: '#1B1F2D' }} className="py-12 px-6">
-        <p className="text-center text-xs text-gray-500 uppercase tracking-wider mb-8">
+      <div style={{ background: '#1B1F2D' }} className="py-16 px-6">
+        <p className="text-center text-xs text-gray-500 uppercase tracking-[0.2em] mb-10">
           Under the Hood — Intelligence Pipeline
         </p>
-        <div className="grid grid-cols-2 gap-4 max-w-md mx-auto">
+        <div className="grid grid-cols-2 gap-5 max-w-sm mx-auto">
           {PIPELINE_STEPS.map((step, i) => (
             <div
               key={step.label}
-              className="flex flex-col items-center text-center p-4 bg-white/[0.04] rounded-xl border border-white/10"
+              className="flex flex-col items-center text-center p-5 rounded-2xl border"
+              style={{ background: 'rgba(0,212,170,0.05)', borderColor: 'rgba(0,212,170,0.15)' }}
             >
-              <div className="w-10 h-10 rounded-xl bg-[#00D4AA]/10 flex items-center justify-center mb-2">
-                <step.Icon className="w-5 h-5 text-[#00D4AA]" />
+              <div className="w-12 h-12 rounded-xl bg-[#00D4AA]/10 flex items-center justify-center mb-3">
+                <step.Icon className="w-6 h-6 text-[#00D4AA]" />
               </div>
-              <span className="text-[10px] font-bold text-[#00D4AA]">Step {i + 1}</span>
-              <h4 className="text-xs font-semibold text-white mt-1">{step.label}</h4>
+              <span className="text-[10px] font-bold text-[#00D4AA] mb-1">Step {i + 1}</span>
+              <h4 className="text-sm font-semibold text-white">{step.label}</h4>
+              <p className="text-[11px] text-gray-500 mt-1">{step.desc}</p>
             </div>
           ))}
         </div>
@@ -85,85 +137,86 @@ export default function SplinePipelineSection() {
     );
   }
 
+  // Dashoffset: full length = hidden, 0 = fully drawn
+  const dashOffset = pathLen - pathLen * totalProgress;
+
   return (
     <div>
-      {/* Tall outer container — scroll distance drives animation */}
       <div
         ref={outerRef}
         className="relative"
-        style={{
-          height: `${SCROLL_MULTIPLIER * 100}vh`,
-          background: '#1B1F2D',
-        }}
+        style={{ height: `${SCROLL_MULTIPLIER * 100}vh`, background: '#1B1F2D' }}
         role="img"
         aria-label="Animation showing ClearGate's 6-step intelligence pipeline."
       >
-        {/* Sticky inner — stays in view while scrolling */}
         <div className="sticky top-0 w-full" style={{ height: '100vh' }}>
           <div className="relative w-full h-full max-w-5xl mx-auto px-6 flex flex-col justify-center">
             {/* Section label */}
             <p
-              className="text-center text-xs text-gray-500 uppercase tracking-[0.2em] mb-8 transition-opacity duration-500"
-              style={{ opacity: totalProgress > 0.02 ? 1 : 0.4 }}
+              className="text-center text-xs uppercase tracking-[0.25em] mb-6 transition-opacity duration-700"
+              style={{ color: 'rgba(255,255,255,0.3)', opacity: totalProgress > 0.01 ? 1 : 0.5 }}
             >
               Under the Hood — Intelligence Pipeline
             </p>
 
             {/* Pipeline canvas */}
-            <div className="relative w-full" style={{ height: '340px' }}>
-              {/* SVG connecting line */}
+            <div className="relative w-full" style={{ aspectRatio: `${VB_W} / ${VB_H}` }}>
               <svg
                 className="absolute inset-0 w-full h-full"
-                viewBox="0 0 100 100"
-                preserveAspectRatio="none"
-                style={{ overflow: 'visible' }}
+                viewBox={`0 0 ${VB_W} ${VB_H}`}
+                fill="none"
               >
-                {/* Background line (dim) */}
-                <path
-                  d={svgPath}
-                  fill="none"
-                  stroke="rgba(255,255,255,0.06)"
-                  strokeWidth="0.4"
-                  vectorEffect="non-scaling-stroke"
-                />
-                {/* Animated line (teal) */}
-                <path
-                  d={svgPath}
-                  fill="none"
-                  stroke="#00D4AA"
-                  strokeWidth="0.5"
-                  vectorEffect="non-scaling-stroke"
-                  strokeDasharray={pathLength}
-                  strokeDashoffset={pathLength - pathLength * totalProgress}
-                  strokeLinecap="round"
-                  style={{ transition: 'stroke-dashoffset 0.15s ease-out', filter: 'drop-shadow(0 0 6px rgba(0,212,170,0.4))' }}
-                />
-                {/* Animated dot at the leading edge */}
-                {totalProgress > 0.01 && totalProgress < 0.99 && (() => {
-                  // Interpolate position along the path segments
-                  const segCount = BLOCK_POSITIONS.length - 1;
-                  const rawSeg = totalProgress * segCount;
-                  const segIdx = Math.min(Math.floor(rawSeg), segCount - 1);
-                  const segT = rawSeg - segIdx;
-                  const from = BLOCK_POSITIONS[segIdx];
-                  const to = BLOCK_POSITIONS[segIdx + 1];
-                  const cx = from.x + (to.x - from.x) * segT;
-                  const cy = from.y + (to.y - from.y) * segT;
-                  return (
-                    <>
-                      <circle cx={cx} cy={cy} r="1.2" fill="#00D4AA" style={{ filter: 'drop-shadow(0 0 8px rgba(0,212,170,0.8))' }} />
-                      <circle cx={cx} cy={cy} r="2.5" fill="none" stroke="#00D4AA" strokeWidth="0.3" opacity="0.4">
-                        <animate attributeName="r" from="1.5" to="3.5" dur="1.5s" repeatCount="indefinite" />
-                        <animate attributeName="opacity" from="0.5" to="0" dur="1.5s" repeatCount="indefinite" />
-                      </circle>
-                    </>
-                  );
-                })()}
+                <defs>
+                  {/* Glow filter for the teal line */}
+                  <filter id="lineGlow" x="-20%" y="-20%" width="140%" height="140%">
+                    <feGaussianBlur in="SourceGraphic" stdDeviation="4" result="blur" />
+                    <feMerge>
+                      <feMergeNode in="blur" />
+                      <feMergeNode in="SourceGraphic" />
+                    </feMerge>
+                  </filter>
+                  {/* Glow for the orb */}
+                  <filter id="orbGlow" x="-100%" y="-100%" width="300%" height="300%">
+                    <feGaussianBlur in="SourceGraphic" stdDeviation="8" result="blur" />
+                    <feMerge>
+                      <feMergeNode in="blur" />
+                      <feMergeNode in="blur" />
+                      <feMergeNode in="SourceGraphic" />
+                    </feMerge>
+                  </filter>
+                </defs>
+
+                {/* Teal line — only visible up to scroll progress */}
+                {totalProgress > 0.005 && (
+                  <path
+                    d={svgPathD.current}
+                    stroke="#00D4AA"
+                    strokeWidth="2.5"
+                    strokeLinecap="round"
+                    strokeDasharray={pathLen}
+                    strokeDashoffset={dashOffset}
+                    filter="url(#lineGlow)"
+                    style={{ transition: 'stroke-dashoffset 0.12s ease-out' }}
+                  />
+                )}
+
+                {/* Orb — leading dot */}
+                {totalProgress > 0.005 && totalProgress < 0.995 && (
+                  <g>
+                    <circle cx={orb.x} cy={orb.y} r="8" fill="#00D4AA" filter="url(#orbGlow)" />
+                    <circle cx={orb.x} cy={orb.y} r="4" fill="#ffffff" />
+                    {/* Pulsing ring */}
+                    <circle cx={orb.x} cy={orb.y} r="12" fill="none" stroke="#00D4AA" strokeWidth="1.5" opacity="0.3">
+                      <animate attributeName="r" from="10" to="22" dur="1.5s" repeatCount="indefinite" />
+                      <animate attributeName="opacity" from="0.4" to="0" dur="1.5s" repeatCount="indefinite" />
+                    </circle>
+                  </g>
+                )}
               </svg>
 
-              {/* Pipeline blocks */}
+              {/* Pipeline blocks — absolutely positioned over the SVG */}
               {PIPELINE_STEPS.map((step, i) => {
-                const pos = BLOCK_POSITIONS[i];
+                const pos = NODE_POS[i];
                 const stepThreshold = i / TOTAL_STEPS;
                 const isReached = totalProgress >= stepThreshold;
                 const isActive = currentStep === i;
@@ -171,33 +224,48 @@ export default function SplinePipelineSection() {
                 return (
                   <div
                     key={step.label}
-                    className="absolute flex flex-col items-center text-center transition-all duration-500"
+                    className="absolute flex flex-col items-center text-center"
                     style={{
-                      left: `${pos.x}%`,
-                      top: `${pos.y}%`,
+                      left: `${(pos.x / VB_W) * 100}%`,
+                      top: `${(pos.y / VB_H) * 100}%`,
                       transform: 'translate(-50%, -50%)',
-                      opacity: isReached ? 1 : 0.25,
+                      transition: 'opacity 0.6s ease, transform 0.6s ease',
+                      opacity: isReached ? 1 : 0.15,
                     }}
                   >
-                    {/* Block */}
+                    {/* Block — bigger for wow */}
                     <div
-                      className="relative w-14 h-14 rounded-2xl flex items-center justify-center border transition-all duration-500"
+                      className="relative rounded-2xl flex items-center justify-center border"
                       style={{
-                        background: isReached ? 'rgba(0,212,170,0.1)' : 'rgba(255,255,255,0.03)',
-                        borderColor: isActive ? 'rgba(0,212,170,0.5)' : isReached ? 'rgba(0,212,170,0.2)' : 'rgba(255,255,255,0.08)',
-                        boxShadow: isActive ? '0 0 20px rgba(0,212,170,0.2), 0 0 40px rgba(0,212,170,0.1)' : 'none',
+                        width: '72px',
+                        height: '72px',
+                        background: isReached ? 'rgba(0,212,170,0.08)' : 'rgba(255,255,255,0.02)',
+                        borderColor: isActive
+                          ? 'rgba(0,212,170,0.6)'
+                          : isReached
+                            ? 'rgba(0,212,170,0.2)'
+                            : 'rgba(255,255,255,0.06)',
+                        boxShadow: isActive
+                          ? '0 0 30px rgba(0,212,170,0.25), 0 0 60px rgba(0,212,170,0.1)'
+                          : 'none',
+                        transition: 'all 0.6s ease',
                       }}
                     >
                       <step.Icon
-                        className="w-6 h-6 transition-colors duration-500"
-                        style={{ color: isReached ? '#00D4AA' : 'rgba(255,255,255,0.2)' }}
-                      />
-                      {/* Step number */}
-                      <div
-                        className="absolute -top-2 -right-2 w-5 h-5 rounded-full text-[9px] font-bold flex items-center justify-center transition-all duration-500"
+                        className="transition-colors duration-500"
                         style={{
-                          background: isReached ? '#00D4AA' : 'rgba(255,255,255,0.1)',
-                          color: isReached ? '#0F1419' : 'rgba(255,255,255,0.3)',
+                          width: '30px',
+                          height: '30px',
+                          color: isReached ? '#00D4AA' : 'rgba(255,255,255,0.15)',
+                        }}
+                      />
+                      {/* Step number badge */}
+                      <div
+                        className="absolute -top-2.5 -right-2.5 w-6 h-6 rounded-full text-[10px] font-bold flex items-center justify-center"
+                        style={{
+                          background: isReached ? '#00D4AA' : 'rgba(255,255,255,0.08)',
+                          color: isReached ? '#0F1419' : 'rgba(255,255,255,0.2)',
+                          transition: 'all 0.5s ease',
                         }}
                       >
                         {i + 1}
@@ -206,18 +274,22 @@ export default function SplinePipelineSection() {
 
                     {/* Label */}
                     <span
-                      className="text-xs font-semibold mt-2 whitespace-nowrap transition-colors duration-500"
-                      style={{ color: isReached ? '#ffffff' : 'rgba(255,255,255,0.25)' }}
+                      className="text-sm font-semibold mt-3 whitespace-nowrap"
+                      style={{
+                        color: isReached ? '#ffffff' : 'rgba(255,255,255,0.15)',
+                        transition: 'color 0.5s ease',
+                      }}
                     >
                       {step.label}
                     </span>
 
                     {/* Description */}
                     <span
-                      className="text-[10px] mt-1 max-w-[120px] leading-tight transition-all duration-500"
+                      className="text-xs mt-1.5 max-w-[140px] leading-relaxed"
                       style={{
-                        color: isReached ? 'rgba(255,255,255,0.5)' : 'rgba(255,255,255,0.1)',
-                        transform: isReached ? 'translateY(0)' : 'translateY(4px)',
+                        color: isReached ? 'rgba(255,255,255,0.5)' : 'rgba(255,255,255,0.06)',
+                        transform: isReached ? 'translateY(0)' : 'translateY(6px)',
+                        transition: 'all 0.6s ease',
                       }}
                     >
                       {step.desc}
@@ -227,22 +299,23 @@ export default function SplinePipelineSection() {
               })}
             </div>
 
-            {/* Bottom progress indicator */}
-            <div className="flex flex-col items-center gap-3 mt-8">
-              <div className="w-64 h-1 bg-white/[0.06] rounded-full overflow-hidden">
+            {/* Bottom progress */}
+            <div className="flex flex-col items-center gap-3 mt-10">
+              <div className="w-72 h-[3px] bg-white/[0.05] rounded-full overflow-hidden">
                 <div
-                  className="h-full bg-[#00D4AA] rounded-full"
+                  className="h-full rounded-full"
                   style={{
                     width: `${totalProgress * 100}%`,
-                    transition: 'width 0.15s ease-out',
-                    boxShadow: '0 0 8px rgba(0,212,170,0.4)',
+                    background: 'linear-gradient(90deg, #00D4AA, #00E4BA)',
+                    transition: 'width 0.12s ease-out',
+                    boxShadow: '0 0 12px rgba(0,212,170,0.5)',
                   }}
                 />
               </div>
-              {totalProgress < 0.05 && (
-                <div className="flex flex-col items-center gap-1 animate-bounce">
-                  <span className="text-[10px] text-gray-600 uppercase tracking-wider">Scroll to explore</span>
-                  <svg className="w-3 h-3 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              {totalProgress < 0.03 && (
+                <div className="flex flex-col items-center gap-1.5 animate-bounce mt-1">
+                  <span className="text-[10px] text-gray-600 uppercase tracking-[0.15em]">Scroll to explore</span>
+                  <svg className="w-3.5 h-3.5 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
                   </svg>
                 </div>

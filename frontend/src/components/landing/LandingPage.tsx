@@ -5,6 +5,7 @@ import {
 } from 'lucide-react';
 import StaticGlobe from '../3d/fallbacks/StaticGlobe';
 import { StatsCards } from '../home/StatsCards';
+import SplinePipelineSection from './SplinePipelineSection';
 
 const GlobeVisualization = lazy(() => import('../3d/GlobeVisualization'));
 
@@ -140,13 +141,10 @@ function HowItWorks() {
             <div className="max-w-5xl mx-auto px-6">
                 <h2 className="text-3xl font-bold text-white text-center mb-12">How It Works</h2>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    {STEPS.map((step, i) => (
+                    {STEPS.map((step) => (
                         <div key={step.title} className="relative group text-center">
                             <div className="w-16 h-16 mx-auto rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center mb-4 group-hover:-translate-y-1 transition-transform">
                                 <step.Icon className="w-7 h-7 text-[#00D4AA]" />
-                            </div>
-                            <div className="absolute -top-2 -left-2 w-7 h-7 rounded-full bg-[#00D4AA] text-[#0F1419] text-xs font-bold flex items-center justify-center md:relative md:mx-auto md:-mt-10 md:mb-4">
-                                {i + 1}
                             </div>
                             <h3 className="text-lg font-semibold text-white">{step.title}</h3>
                             <p className="text-sm text-gray-400 mt-2 leading-relaxed">{step.desc}</p>
@@ -154,6 +152,7 @@ function HowItWorks() {
                     ))}
                 </div>
             </div>
+            <SplinePipelineSection />
         </section>
     );
 }

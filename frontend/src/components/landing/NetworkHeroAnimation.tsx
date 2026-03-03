@@ -6,25 +6,24 @@ const COLORS = {
   safe: '#22c55e',
   risk: '#f97316',
   teal: '#00D4AA',
-  edge: '#9ca3af',
 };
 
 const NODE_COLORS = [COLORS.base, COLORS.base, COLORS.safe, COLORS.safe, COLORS.risk, COLORS.teal];
 
 // ── Configuration ─────────────────────────────────────────────
-const SEED_COUNT = 8;
-const MAX_NODES_DESKTOP = 50;
-const MAX_NODES_MOBILE = 22;
-const SPAWN_INTERVAL_MIN = 250;
-const SPAWN_INTERVAL_MAX = 700;
-const MOUSE_REPEL_RADIUS = 120;
-const MOUSE_REPEL_FORCE = 0.8;
+const SOFT_CAP = 80;          // start culling oldest beyond this
+const HARD_CAP = 120;         // absolute max before force-cull
+const MOUSE_RADIUS = 130;
+const MOUSE_FORCE = 0.7;
 const DRIFT_SPEED = 0.15;
 const DAMPING = 0.98;
-const POP_DURATION = 250; // ms
+const POP_DURATION = 220;     // ms
+const FADE_OUT = 600;         // ms for dying nodes
+const CLUSTER_COUNT = 4;      // simultaneous spawn clusters
 
 // ── Types ─────────────────────────────────────────────────────
 interface Node {
+  id: number;
   x: number;
   y: number;
   vx: number;
@@ -33,14 +32,27 @@ interface Node {
   color: string;
   birthTime: number;
   opacity: number;
+  dying: boolean;
+  deathTime: number;
+  mouseAffinity: number; // -1 = repel, +1 = attract
 }
 
 interface Edge {
-  from: number;
-  to: number;
+  fromId: number;
+  toId: number;
   opacity: number;
   birthTime: number;
 }
+
+interface SpawnCluster {
+  cx: number;          // center x (fraction of width)
+  cy: number;          // center y (fraction of height)
+  interval: number;    // ms between spawns for this cluster
+  lastSpawn: number;   // timestamp
+  spread: number;      // spawn radius in px
+}
+
+let nextNodeId = 0;
 
 function randomBetween(a: number, b: number) {
   return a + Math.random() * (b - a);
@@ -50,8 +62,35 @@ function pickRandom<T>(arr: T[]): T {
   return arr[Math.floor(Math.random() * arr.length)];
 }
 
-function distance(a: { x: number; y: number }, b: { x: number; y: number }) {
+function dist(a: { x: number; y: number }, b: { x: number; y: number }) {
   return Math.hypot(a.x - b.x, a.y - b.y);
+}
+
+function hexToRgba(hex: string, alpha: number): string {
+  const r = parseInt(hex.slice(1, 3), 16);
+  const g = parseInt(hex.slice(3, 5), 16);
+  const b = parseInt(hex.slice(5, 7), 16);
+  return `rgba(${r},${g},${b},${alpha})`;
+}
+
+function easeOutBack(t: number): number {
+  const c = 1.2;
+  return 1 + (c + 1) * Math.pow(t - 1, 3) + c * Math.pow(t - 1, 2);
+}
+
+// ── Build spawn clusters scattered across the right side ──
+function buildClusters(): SpawnCluster[] {
+  const clusters: SpawnCluster[] = [];
+  for (let i = 0; i < CLUSTER_COUNT; i++) {
+    clusters.push({
+      cx: randomBetween(0.35, 0.95),
+      cy: randomBetween(0.1, 0.9),
+      interval: randomBetween(180, 900), // each cluster has its own speed
+      lastSpawn: performance.now() - randomBetween(0, 500), // stagger start
+      spread: randomBetween(50, 140),
+    });
+  }
+  return clusters;
 }
 
 export default function NetworkHeroAnimation({ className = '' }: { className?: string }) {
@@ -60,110 +99,130 @@ export default function NetworkHeroAnimation({ className = '' }: { className?: s
   const edgesRef = useRef<Edge[]>([]);
   const mouseRef = useRef({ x: -9999, y: -9999 });
   const rafRef = useRef<number>(0);
-  const lastSpawnRef = useRef(0);
-  const nextSpawnDelay = useRef(randomBetween(SPAWN_INTERVAL_MIN, SPAWN_INTERVAL_MAX));
+  const clustersRef = useRef<SpawnCluster[]>([]);
+  const dimsRef = useRef({ w: 0, h: 0 });
 
-  // ── Helpers ───────────────────────────────────────────────
-  const getMaxNodes = useCallback(() => {
-    return (canvasRef.current?.width ?? 1024) < 768 ? MAX_NODES_MOBILE : MAX_NODES_DESKTOP;
-  }, []);
-
-  const createSeedNodes = useCallback((w: number, h: number) => {
+  // ── Spawn a single node near a position ─────────────────
+  const spawnAt = useCallback((x: number, y: number, w: number, h: number) => {
+    const nodes = nodesRef.current;
+    const edges = edgesRef.current;
     const now = performance.now();
-    const nodes: Node[] = [];
-    // Distribute seeds biased toward the right half of the canvas
-    for (let i = 0; i < SEED_COUNT; i++) {
-      nodes.push({
-        x: randomBetween(w * 0.4, w * 0.95),
-        y: randomBetween(h * 0.1, h * 0.9),
-        vx: randomBetween(-DRIFT_SPEED, DRIFT_SPEED),
-        vy: randomBetween(-DRIFT_SPEED, DRIFT_SPEED),
-        radius: randomBetween(3, 6),
-        color: pickRandom(NODE_COLORS),
-        birthTime: now - POP_DURATION, // already fully popped
-        opacity: 1,
-      });
-    }
-    // Connect seeds
-    const edges: Edge[] = [];
-    for (let i = 1; i < nodes.length; i++) {
-      edges.push({ from: i, to: Math.floor(Math.random() * i), opacity: 0.3, birthTime: now - POP_DURATION });
-    }
-    return { nodes, edges };
-  }, []);
 
-  const spawnNode = useCallback((nodes: Node[], edges: Edge[], w: number, h: number) => {
-    if (nodes.length >= getMaxNodes()) return;
+    const nx = Math.max(10, Math.min(w - 10, x + randomBetween(-60, 60)));
+    const ny = Math.max(10, Math.min(h - 10, y + randomBetween(-60, 60)));
 
-    const now = performance.now();
-    // Prefer spawning near right-side nodes (bias toward right half)
-    const rightBiased = nodes.filter(n => n.x > w * 0.35);
-    const pool = rightBiased.length > 0 ? rightBiased : nodes;
-    const parent = pool[Math.floor(Math.random() * pool.length)];
-    const angle = Math.random() * Math.PI * 2;
-    const dist = randomBetween(35, 100);
-    let nx = parent.x + Math.cos(angle) * dist;
-    let ny = parent.y + Math.sin(angle) * dist;
-    // Nudge toward right if spawning too far left
-    if (nx < w * 0.3) nx = randomBetween(w * 0.4, w * 0.7);
-    nx = Math.max(10, Math.min(w - 10, nx));
-    ny = Math.max(10, Math.min(h - 10, ny));
-
-    const newNode: Node = {
+    const node: Node = {
+      id: nextNodeId++,
       x: nx,
       y: ny,
       vx: randomBetween(-DRIFT_SPEED, DRIFT_SPEED),
       vy: randomBetween(-DRIFT_SPEED, DRIFT_SPEED),
-      radius: randomBetween(2.5, 6),
+      radius: randomBetween(2.5, 6.5),
       color: pickRandom(NODE_COLORS),
       birthTime: now,
       opacity: 0,
+      dying: false,
+      deathTime: 0,
+      mouseAffinity: Math.random() < 0.4 ? 1 : -1, // 40% attract, 60% repel
     };
-    nodes.push(newNode);
+    nodes.push(node);
 
-    const newIdx = nodes.length - 1;
-    // Connect to 1-2 nearby nodes
-    const sorted = nodes
-      .map((n, i) => ({ i, d: distance(n, newNode) }))
-      .filter((e) => e.i !== newIdx)
+    // Connect to 1–2 nearest alive nodes
+    const alive = nodes.filter(n => !n.dying && n.id !== node.id);
+    const sorted = alive
+      .map(n => ({ id: n.id, d: dist(n, node) }))
       .sort((a, b) => a.d - b.d);
 
-    const connectCount = Math.random() > 0.4 ? 2 : 1;
-    for (let c = 0; c < Math.min(connectCount, sorted.length); c++) {
+    const count = Math.random() > 0.35 ? 2 : 1;
+    for (let c = 0; c < Math.min(count, sorted.length); c++) {
       edges.push({
-        from: newIdx,
-        to: sorted[c].i,
-        opacity: randomBetween(0.15, 0.35),
+        fromId: node.id,
+        toId: sorted[c].id,
+        opacity: randomBetween(0.15, 0.4),
         birthTime: now,
       });
     }
-  }, [getMaxNodes]);
+  }, []);
 
-  // ── Main animation loop ───────────────────────────────────
-  const animate = useCallback((ctx: CanvasRenderingContext2D, w: number, h: number) => {
+  // ── Cull oldest nodes when over soft cap ────────────────
+  const cull = useCallback(() => {
+    const nodes = nodesRef.current;
     const now = performance.now();
+
+    if (nodes.length > SOFT_CAP) {
+      // Mark oldest non-dying nodes for death
+      const alive = nodes.filter(n => !n.dying);
+      const excess = alive.length - SOFT_CAP;
+      if (excess > 0) {
+        alive.sort((a, b) => a.birthTime - b.birthTime);
+        for (let i = 0; i < excess; i++) {
+          alive[i].dying = true;
+          alive[i].deathTime = now;
+        }
+      }
+    }
+
+    // Hard remove nodes that finished fading out
+    const toRemove = new Set<number>();
+    for (const n of nodes) {
+      if (n.dying && now - n.deathTime > FADE_OUT) {
+        toRemove.add(n.id);
+      }
+    }
+    if (toRemove.size > 0) {
+      nodesRef.current = nodes.filter(n => !toRemove.has(n.id));
+      edgesRef.current = edgesRef.current.filter(
+        e => !toRemove.has(e.fromId) && !toRemove.has(e.toId)
+      );
+    }
+
+    // Force cull if way over hard cap
+    if (nodesRef.current.length > HARD_CAP) {
+      const sorted = [...nodesRef.current].sort((a, b) => a.birthTime - b.birthTime);
+      const killIds = new Set(sorted.slice(0, nodesRef.current.length - SOFT_CAP).map(n => n.id));
+      nodesRef.current = nodesRef.current.filter(n => !killIds.has(n.id));
+      edgesRef.current = edgesRef.current.filter(
+        e => !killIds.has(e.fromId) && !killIds.has(e.toId)
+      );
+    }
+  }, []);
+
+  // ── Main animation loop ─────────────────────────────────
+  const animate = useCallback((ctx: CanvasRenderingContext2D) => {
+    const now = performance.now();
+    const { w, h } = dimsRef.current;
     const nodes = nodesRef.current;
     const edges = edgesRef.current;
     const mouse = mouseRef.current;
 
-    // Spawn new nodes periodically
-    if (now - lastSpawnRef.current > nextSpawnDelay.current) {
-      spawnNode(nodes, edges, w, h);
-      lastSpawnRef.current = now;
-      nextSpawnDelay.current = randomBetween(SPAWN_INTERVAL_MIN, SPAWN_INTERVAL_MAX);
+    // Each cluster spawns independently at its own speed
+    for (const cluster of clustersRef.current) {
+      if (now - cluster.lastSpawn > cluster.interval) {
+        const sx = cluster.cx * w + randomBetween(-cluster.spread, cluster.spread);
+        const sy = cluster.cy * h + randomBetween(-cluster.spread, cluster.spread);
+        spawnAt(sx, sy, w, h);
+        cluster.lastSpawn = now;
+        // Slightly vary interval each time for organic feel
+        cluster.interval = cluster.interval * randomBetween(0.85, 1.15);
+        cluster.interval = Math.max(120, Math.min(1200, cluster.interval));
+      }
     }
+
+    // Cull old nodes
+    cull();
 
     // Clear
     ctx.clearRect(0, 0, w, h);
 
     // Update nodes
     for (const node of nodes) {
-      // Pop-in animation
+      // Pop-in / fade-out
       const age = now - node.birthTime;
-      if (age < POP_DURATION) {
-        const t = age / POP_DURATION;
-        // Ease out cubic
-        node.opacity = 1 - Math.pow(1 - t, 3);
+      if (node.dying) {
+        const deathAge = now - node.deathTime;
+        node.opacity = Math.max(0, 1 - deathAge / FADE_OUT);
+      } else if (age < POP_DURATION) {
+        node.opacity = 1 - Math.pow(1 - age / POP_DURATION, 3);
       } else {
         node.opacity = 1;
       }
@@ -172,24 +231,25 @@ export default function NetworkHeroAnimation({ className = '' }: { className?: s
       node.vx += randomBetween(-0.02, 0.02);
       node.vy += randomBetween(-0.02, 0.02);
 
-      // Mouse repulsion
+      // Mouse interaction — mixed attract/repel based on affinity
       const dx = node.x - mouse.x;
       const dy = node.y - mouse.y;
-      const dist = Math.hypot(dx, dy);
-      if (dist < MOUSE_REPEL_RADIUS && dist > 0) {
-        const force = (1 - dist / MOUSE_REPEL_RADIUS) * MOUSE_REPEL_FORCE;
-        node.vx += (dx / dist) * force;
-        node.vy += (dy / dist) * force;
+      const d = Math.hypot(dx, dy);
+      if (d < MOUSE_RADIUS && d > 1) {
+        const strength = (1 - d / MOUSE_RADIUS) * MOUSE_FORCE;
+        // affinity: -1 repels (push away from cursor), +1 attracts (pull toward cursor)
+        const dir = node.mouseAffinity;
+        node.vx += (dx / d) * strength * (-dir);
+        node.vy += (dy / d) * strength * (-dir);
       }
 
       // Soft boundary repulsion
-      const margin = 30;
-      if (node.x < margin) node.vx += 0.1;
-      if (node.x > w - margin) node.vx -= 0.1;
-      if (node.y < margin) node.vy += 0.1;
-      if (node.y > h - margin) node.vy -= 0.1;
+      const margin = 20;
+      if (node.x < margin) node.vx += 0.12;
+      if (node.x > w - margin) node.vx -= 0.12;
+      if (node.y < margin) node.vy += 0.12;
+      if (node.y > h - margin) node.vy -= 0.12;
 
-      // Apply velocity
       node.vx *= DAMPING;
       node.vy *= DAMPING;
       node.x += node.vx;
@@ -198,13 +258,14 @@ export default function NetworkHeroAnimation({ className = '' }: { className?: s
 
     // Draw edges
     for (const edge of edges) {
-      const a = nodes[edge.from];
-      const b = nodes[edge.to];
+      const a = nodes.find(n => n.id === edge.fromId);
+      const b = nodes.find(n => n.id === edge.toId);
       if (!a || !b) continue;
 
       const edgeAge = now - edge.birthTime;
       const fadeIn = Math.min(1, edgeAge / POP_DURATION);
       const alpha = edge.opacity * fadeIn * Math.min(a.opacity, b.opacity);
+      if (alpha < 0.01) continue;
 
       ctx.beginPath();
       ctx.moveTo(a.x, a.y);
@@ -216,15 +277,15 @@ export default function NetworkHeroAnimation({ className = '' }: { className?: s
 
     // Draw nodes
     for (const node of nodes) {
-      if (node.opacity <= 0) continue;
+      if (node.opacity <= 0.01) continue;
 
-      const r = node.radius * (node.opacity < 1 ? easeOutBack(node.opacity) : 1);
+      const r = node.radius * (node.opacity < 1 && !node.dying ? easeOutBack(Math.min(1, node.opacity)) : 1) * (node.dying ? node.opacity : 1);
 
       // Glow
       ctx.beginPath();
-      ctx.arc(node.x, node.y, r + 4, 0, Math.PI * 2);
-      const glow = ctx.createRadialGradient(node.x, node.y, r, node.x, node.y, r + 4);
-      glow.addColorStop(0, hexToRgba(node.color, 0.25 * node.opacity));
+      ctx.arc(node.x, node.y, r + 5, 0, Math.PI * 2);
+      const glow = ctx.createRadialGradient(node.x, node.y, r, node.x, node.y, r + 5);
+      glow.addColorStop(0, hexToRgba(node.color, 0.3 * node.opacity));
       glow.addColorStop(1, hexToRgba(node.color, 0));
       ctx.fillStyle = glow;
       ctx.fill();
@@ -238,12 +299,12 @@ export default function NetworkHeroAnimation({ className = '' }: { className?: s
       // Highlight
       ctx.beginPath();
       ctx.arc(node.x - r * 0.25, node.y - r * 0.25, r * 0.35, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(255,255,255,${0.3 * node.opacity})`;
+      ctx.fillStyle = `rgba(255,255,255,${0.25 * node.opacity})`;
       ctx.fill();
     }
 
-    rafRef.current = requestAnimationFrame(() => animate(ctx, w, h));
-  }, [spawnNode]);
+    rafRef.current = requestAnimationFrame(() => animate(ctx));
+  }, [spawnAt, cull]);
 
   // ── Setup & resize ────────────────────────────────────────
   useEffect(() => {
@@ -259,13 +320,7 @@ export default function NetworkHeroAnimation({ className = '' }: { className?: s
       canvas.width = rect.width * dpr;
       canvas.height = rect.height * dpr;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-
-      // Reinitialize nodes if empty
-      if (nodesRef.current.length === 0) {
-        const { nodes, edges } = createSeedNodes(rect.width, rect.height);
-        nodesRef.current = nodes;
-        edgesRef.current = edges;
-      }
+      dimsRef.current = { w: rect.width, h: rect.height };
     };
 
     resize();
@@ -282,16 +337,31 @@ export default function NetworkHeroAnimation({ className = '' }: { className?: s
     canvas.addEventListener('mousemove', onMouseMove);
     canvas.addEventListener('mouseleave', onMouseLeave);
 
-    // Burst: immediately spawn a cluster of nodes so it looks populated from the start
-    const rect = canvas.getBoundingClientRect();
-    const burstCount = rect.width < 768 ? 8 : 18;
+    const { w, h } = dimsRef.current;
+
+    // Build spawn clusters
+    clustersRef.current = buildClusters();
+
+    // Initial burst — populate immediately
+    const burstCount = w < 768 ? 12 : 28;
     for (let i = 0; i < burstCount; i++) {
-      spawnNode(nodesRef.current, edgesRef.current, rect.width, rect.height);
+      const cluster = pickRandom(clustersRef.current);
+      const sx = cluster.cx * w + randomBetween(-cluster.spread, cluster.spread);
+      const sy = cluster.cy * h + randomBetween(-cluster.spread, cluster.spread);
+      spawnAt(sx, sy, w, h);
+    }
+    // Mark burst nodes as already popped
+    const now = performance.now();
+    for (const n of nodesRef.current) {
+      n.birthTime = now - POP_DURATION;
+      n.opacity = 1;
+    }
+    for (const e of edgesRef.current) {
+      e.birthTime = now - POP_DURATION;
     }
 
     // Start animation
-    lastSpawnRef.current = performance.now();
-    rafRef.current = requestAnimationFrame(() => animate(ctx, rect.width, rect.height));
+    rafRef.current = requestAnimationFrame(() => animate(ctx));
 
     return () => {
       cancelAnimationFrame(rafRef.current);
@@ -299,7 +369,7 @@ export default function NetworkHeroAnimation({ className = '' }: { className?: s
       canvas.removeEventListener('mousemove', onMouseMove);
       canvas.removeEventListener('mouseleave', onMouseLeave);
     };
-  }, [animate, createSeedNodes]);
+  }, [animate, spawnAt]);
 
   return (
     <canvas
@@ -308,18 +378,4 @@ export default function NetworkHeroAnimation({ className = '' }: { className?: s
       style={{ width: '100%', height: '100%', display: 'block', background: 'transparent' }}
     />
   );
-}
-
-// ── Utilities ───────────────────────────────────────────────
-
-function hexToRgba(hex: string, alpha: number): string {
-  const r = parseInt(hex.slice(1, 3), 16);
-  const g = parseInt(hex.slice(3, 5), 16);
-  const b = parseInt(hex.slice(5, 7), 16);
-  return `rgba(${r},${g},${b},${alpha})`;
-}
-
-function easeOutBack(t: number): number {
-  const c = 1.2;
-  return 1 + (c + 1) * Math.pow(t - 1, 3) + c * Math.pow(t - 1, 2);
 }

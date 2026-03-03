@@ -12,16 +12,16 @@ const COLORS = {
 const NODE_COLORS = [COLORS.base, COLORS.base, COLORS.safe, COLORS.safe, COLORS.risk, COLORS.teal];
 
 // ── Configuration ─────────────────────────────────────────────
-const SEED_COUNT = 5;
-const MAX_NODES_DESKTOP = 45;
-const MAX_NODES_MOBILE = 20;
-const SPAWN_INTERVAL_MIN = 800;
-const SPAWN_INTERVAL_MAX = 2200;
+const SEED_COUNT = 8;
+const MAX_NODES_DESKTOP = 50;
+const MAX_NODES_MOBILE = 22;
+const SPAWN_INTERVAL_MIN = 250;
+const SPAWN_INTERVAL_MAX = 700;
 const MOUSE_REPEL_RADIUS = 120;
 const MOUSE_REPEL_FORCE = 0.8;
 const DRIFT_SPEED = 0.15;
 const DAMPING = 0.98;
-const POP_DURATION = 400; // ms
+const POP_DURATION = 250; // ms
 
 // ── Types ─────────────────────────────────────────────────────
 interface Node {
@@ -71,11 +71,11 @@ export default function NetworkHeroAnimation({ className = '' }: { className?: s
   const createSeedNodes = useCallback((w: number, h: number) => {
     const now = performance.now();
     const nodes: Node[] = [];
-    // Distribute seeds in the right portion of the canvas (hero right side)
+    // Distribute seeds biased toward the right half of the canvas
     for (let i = 0; i < SEED_COUNT; i++) {
       nodes.push({
-        x: randomBetween(w * 0.15, w * 0.85),
-        y: randomBetween(h * 0.15, h * 0.85),
+        x: randomBetween(w * 0.4, w * 0.95),
+        y: randomBetween(h * 0.1, h * 0.9),
         vx: randomBetween(-DRIFT_SPEED, DRIFT_SPEED),
         vy: randomBetween(-DRIFT_SPEED, DRIFT_SPEED),
         radius: randomBetween(3, 6),
@@ -96,12 +96,18 @@ export default function NetworkHeroAnimation({ className = '' }: { className?: s
     if (nodes.length >= getMaxNodes()) return;
 
     const now = performance.now();
-    // Spawn near an existing node
-    const parent = nodes[Math.floor(Math.random() * nodes.length)];
+    // Prefer spawning near right-side nodes (bias toward right half)
+    const rightBiased = nodes.filter(n => n.x > w * 0.35);
+    const pool = rightBiased.length > 0 ? rightBiased : nodes;
+    const parent = pool[Math.floor(Math.random() * pool.length)];
     const angle = Math.random() * Math.PI * 2;
-    const dist = randomBetween(40, 120);
-    const nx = Math.max(10, Math.min(w - 10, parent.x + Math.cos(angle) * dist));
-    const ny = Math.max(10, Math.min(h - 10, parent.y + Math.sin(angle) * dist));
+    const dist = randomBetween(35, 100);
+    let nx = parent.x + Math.cos(angle) * dist;
+    let ny = parent.y + Math.sin(angle) * dist;
+    // Nudge toward right if spawning too far left
+    if (nx < w * 0.3) nx = randomBetween(w * 0.4, w * 0.7);
+    nx = Math.max(10, Math.min(w - 10, nx));
+    ny = Math.max(10, Math.min(h - 10, ny));
 
     const newNode: Node = {
       x: nx,
@@ -276,8 +282,14 @@ export default function NetworkHeroAnimation({ className = '' }: { className?: s
     canvas.addEventListener('mousemove', onMouseMove);
     canvas.addEventListener('mouseleave', onMouseLeave);
 
-    // Start animation
+    // Burst: immediately spawn a cluster of nodes so it looks populated from the start
     const rect = canvas.getBoundingClientRect();
+    const burstCount = rect.width < 768 ? 8 : 18;
+    for (let i = 0; i < burstCount; i++) {
+      spawnNode(nodesRef.current, edgesRef.current, rect.width, rect.height);
+    }
+
+    // Start animation
     lastSpawnRef.current = performance.now();
     rafRef.current = requestAnimationFrame(() => animate(ctx, rect.width, rect.height));
 

@@ -1,13 +1,11 @@
-import { useState, useEffect, useRef, Suspense, lazy } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import {
     Shield, ShieldAlert, Search, Zap, FileText, ArrowRight,
     Database, Globe, Radar, Users, Newspaper, Brain, Network, ScanLine,
 } from 'lucide-react';
-import StaticGlobe from '../3d/fallbacks/StaticGlobe';
 import { StatsCards } from '../home/StatsCards';
 import SplinePipelineSection from './SplinePipelineSection';
-
-const GlobeVisualization = lazy(() => import('../3d/GlobeVisualization'));
+import NetworkHeroAnimation from './NetworkHeroAnimation';
 
 /* ------------------------------------------------------------------ */
 /*  Section 1 — Hero                                                   */
@@ -32,9 +30,14 @@ function HeroSection({ onAccessDemo, onSearch }: LandingPageProps) {
 
     return (
         <section className="relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #0F1419 0%, #1A1F2E 100%)' }}>
-            <div className="max-w-7xl mx-auto px-6 py-20 lg:py-28 flex flex-col lg:flex-row items-center gap-12">
+            {/* Network animation — full bleed background */}
+            <div className="absolute inset-0 z-0 opacity-60">
+                <NetworkHeroAnimation />
+            </div>
+
+            <div className="relative z-10 max-w-7xl mx-auto px-6 py-24 lg:py-32 flex flex-col lg:flex-row items-center gap-12">
                 {/* Left: Text + Search */}
-                <div className="flex-1 text-center lg:text-left z-10">
+                <div className="flex-1 text-center lg:text-left">
                     <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-white leading-tight">
                         One Search.<br />
                         <span className="text-[#00D4AA]">Complete Intelligence.</span>
@@ -55,12 +58,8 @@ function HeroSection({ onAccessDemo, onSearch }: LandingPageProps) {
                         </button>
                     </form>
                 </div>
-                {/* Right: Globe */}
-                <div className="flex-1 w-full h-[400px] hidden lg:block">
-                    <Suspense fallback={<StaticGlobe className="w-full h-full" />}>
-                        <GlobeVisualization className="w-full h-full" />
-                    </Suspense>
-                </div>
+                {/* Right: spacer for layout balance on desktop */}
+                <div className="flex-1 hidden lg:block" />
             </div>
         </section>
     );

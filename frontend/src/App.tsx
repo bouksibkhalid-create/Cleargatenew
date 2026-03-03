@@ -3,7 +3,6 @@
  */
 
 import { Shield } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 import SearchSection from './components/search/SearchSection';
 import ResultsList from './components/results/ResultsList';
 import ErrorState from './components/results/ErrorState';
@@ -127,26 +126,7 @@ function App() {
                     <SearchSection onSearch={handleSearch} isLoading={isLoading} />
                   </div>
 
-                  {/* Examples */}
-                  <div className="mt-12">
-                    <p className="text-sm text-gray-500 mb-4">
-                      Try searching for:
-                    </p>
-                    <div className="flex gap-3 justify-center flex-wrap">
-                      {['Vladimir Putin', 'Oleg Deripaska', 'Mossack Fonseca'].map((example) => (
-                        <Button
-                          key={example}
-                          variant="outline"
-                          size="sm"
-                          onClick={() => search(example, 'fuzzy')}
-                          disabled={isLoading}
-                          className="bg-white/5 border-white/10 text-gray-300 hover:bg-white/10 hover:text-white transition-colors"
-                        >
-                          {example}
-                        </Button>
-                      ))}
-                    </div>
-                  </div>
+                  
                 </div>
               </section>
 

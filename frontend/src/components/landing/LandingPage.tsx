@@ -4,6 +4,7 @@ import {
     Database, Globe, Radar, Users, Newspaper, Brain, Network, ScanLine,
 } from 'lucide-react';
 import StaticGlobe from '../3d/fallbacks/StaticGlobe';
+import { StatsCards } from '../home/StatsCards';
 
 const GlobeVisualization = lazy(() => import('../3d/GlobeVisualization'));
 
@@ -322,6 +323,7 @@ export default function LandingPage({ onAccessDemo, onSearch }: LandingPageProps
 
             <HeroSection onAccessDemo={onAccessDemo} onSearch={onSearch} />
             <StatsBar />
+            <StatsCards />
             <HowItWorks />
             <DataSourcesGrid />
             <CapabilitiesSection />

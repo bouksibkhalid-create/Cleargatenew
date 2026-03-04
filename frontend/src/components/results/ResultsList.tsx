@@ -3,6 +3,7 @@
  */
 
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import type { SearchResponse } from '../../types/search';
 import type { Entity } from '../../types/entity';
 import { toUnifiedEntity } from '../../types/entity';
@@ -17,10 +18,11 @@ interface ResultsListProps {
 }
 
 export default function ResultsList({ data, onViewProfile }: ResultsListProps) {
+    const { t } = useTranslation();
     const [activeTab, setActiveTab] = useState<'sanctions' | 'intelligence_graph'>('sanctions');
 
     if (data.total_results === 0 && data.sources_failed.length === 0 && !data.offshore_connections_found) {
-        return <EmptyState query={data.query} />;
+        return <EmptyState query={data.query} sourcesSearched={data.sources_succeeded} />;
     }
 
     // Get results for active tab
@@ -66,15 +68,15 @@ export default function ResultsList({ data, onViewProfile }: ResultsListProps) {
             {/* Summary */}
             <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-4 mb-6 shadow-sm dark:shadow-none">
                 <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-50 mb-2">
-                    Search Results for "{data.query}"
+                    {t('results.searchResultsFor', { query: data.query })}
                 </h2>
                 <p className="text-sm text-slate-500 dark:text-slate-400">
-                    found <strong className="text-slate-900 dark:text-slate-100">{data.total_results}</strong>{' '}
-                    {data.total_results === 1 ? 'result' : 'results'}
+                    {t('results.foundResults')} <strong className="text-slate-900 dark:text-slate-100">{data.total_results}</strong>{' '}
+                    {data.total_results === 1 ? t('results.result') : t('results.resultPlural')}
                     {data.total_sanctioned > 0 && (
                         <>
                             {' '}• <span className="text-red-400 font-semibold">
-                                {data.total_sanctioned} sanctioned
+                                {data.total_sanctioned} {t('results.sanctioned')}
                             </span>
                         </>
                     )}
@@ -94,7 +96,7 @@ export default function ResultsList({ data, onViewProfile }: ResultsListProps) {
             {visibleResults.length === 0 ? (
                 <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-8 text-center shadow-sm dark:shadow-none">
                     <p className="text-slate-400 dark:text-slate-500">
-                        No results in this source
+                        {t('results.noResultsInSource')}
                     </p>
                 </div>
             ) : (

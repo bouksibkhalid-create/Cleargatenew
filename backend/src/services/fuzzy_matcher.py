@@ -35,6 +35,12 @@ class FuzzyMatcher:
         """
         Calculate fuzzy match score between query and candidate
         
+        Uses a weighted approach:
+        - token_sort_ratio: primary scorer, handles word-order differences
+        - token_set_ratio: handles extra/missing tokens
+        - partial_ratio: only trusted when query/candidate lengths are similar
+          (prevents "khalid" matching "pio abogne de vera" at 50%+)
+        
         Args:
             query: Search query string
             candidate: Candidate string to compare against
@@ -46,21 +52,40 @@ class FuzzyMatcher:
         query_normalized = self._normalize(query)
         candidate_normalized = self._normalize(candidate)
         
-        # Calculate multiple scores and take the best one:
-        # 1. token_sort_ratio - handles word order differences
-        # 2. partial_ratio - handles partial/substring matches like "putin" in "vladimir putin"
-        token_score = fuzz.token_sort_ratio(query_normalized, candidate_normalized)
-        partial_score = fuzz.partial_ratio(query_normalized, candidate_normalized)
+        if not query_normalized or not candidate_normalized:
+            return 0
         
-        # Use the higher of the two scores
-        score = max(token_score, partial_score)
+        # Primary: token_sort_ratio — handles word order (e.g. "Putin Vladimir" vs "Vladimir Putin")
+        token_sort = fuzz.token_sort_ratio(query_normalized, candidate_normalized)
+        
+        # Secondary: token_set_ratio — handles extra/missing words
+        token_set = fuzz.token_set_ratio(query_normalized, candidate_normalized)
+        
+        # Tertiary: partial_ratio — only trust it when lengths are comparable
+        # This prevents short queries from inflating scores on long unrelated names
+        partial = fuzz.partial_ratio(query_normalized, candidate_normalized)
+        
+        len_q = len(query_normalized)
+        len_c = len(candidate_normalized)
+        length_ratio = min(len_q, len_c) / max(len_q, len_c) if max(len_q, len_c) > 0 else 0
+        
+        # Penalize partial_ratio when lengths differ a lot
+        # e.g. "khalid bouksib" (14 chars) vs "pio abogne de vera" (18 chars) → ratio ~0.78 → mild penalty
+        # e.g. "khalid" (6 chars) vs "khalid al-barnawi" (17 chars) → ratio ~0.35 → heavy penalty
+        adjusted_partial = int(partial * length_ratio)
+        
+        # Take the best of the reliable scores
+        score = max(token_sort, token_set, adjusted_partial)
         
         logger.debug(
             "fuzzy_score_calculated",
             query=query,
             candidate=candidate,
-            token_score=token_score,
-            partial_score=partial_score,
+            token_sort=token_sort,
+            token_set=token_set,
+            partial=partial,
+            adjusted_partial=adjusted_partial,
+            length_ratio=round(length_ratio, 2),
             final_score=score
         )
         

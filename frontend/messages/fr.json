@@ -270,5 +270,22 @@
     "generating": "Génération...",
     "downloadPDF": "Télécharger PDF",
     "downloadIntelligenceReport": "Télécharger le rapport de renseignement"
+  },
+  "emptyState": {
+    "title": "Aucun résultat trouvé",
+    "noRecordsFor": "Aucune correspondance trouvée pour « {{query}} » dans l'ensemble des bases de données.",
+    "sourcesChecked": "Sources vérifiées",
+    "sourceOpenSanctions": "Sanctions mondiales",
+    "sourceSanctionsIo": "Listes OFAC / UE",
+    "sourceOffshore": "Fuites offshore",
+    "disclaimer": "Ce résultat ne garantit pas que l'entité est exempte de risques. Effectuez toujours une due diligence complète avant de prendre des décisions de conformité."
+  },
+  "results": {
+    "searchResultsFor": "Résultats de recherche pour « {{query}} »",
+    "foundResults": "trouvé",
+    "result": "résultat",
+    "resultPlural": "résultats",
+    "sanctioned": "sanctionné(s)",
+    "noResultsInSource": "Aucun résultat dans cette source"
   }
 }

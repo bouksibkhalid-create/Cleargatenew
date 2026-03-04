@@ -22,7 +22,7 @@ export function useSearch(): UseSearchReturn {
     const search = useCallback(
         async (
             query: string,
-            searchType: SearchType = 'exact',
+            searchType: SearchType = 'fuzzy',
             sources: SourceType[] = ['opensanctions', 'sanctions_io', 'offshore_leaks']
         ) => {
             if (query.trim().length < 2) {

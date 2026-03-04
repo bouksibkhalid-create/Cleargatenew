@@ -1,7 +1,61 @@
 from http.server import BaseHTTPRequestHandler
 import json
 import os
+import re
 from datetime import datetime
+
+# ---------------------------------------------------------------------------
+# Lightweight fuzzy scoring (mirrors backend FuzzyMatcher logic)
+# ---------------------------------------------------------------------------
+
+_TITLES = ["mr.", "mrs.", "ms.", "miss", "dr.", "prof.", "professor",
+           "sir", "lord", "lady", "hon.", "rev.", "fr.", "sr."]
+_SUFFIXES = ["jr.", "sr.", "ii", "iii", "iv", "esq."]
+
+
+def _normalize(text: str) -> str:
+    """Normalize a name for comparison."""
+    text = text.lower()
+    for t in _TITLES:
+        text = text.replace(t, "")
+    for s in _SUFFIXES:
+        text = text.replace(s, "")
+    text = ''.join(c if c.isalnum() or c.isspace() else ' ' for c in text)
+    return ' '.join(text.split()).strip()
+
+
+def _calculate_match_score(query: str, candidate: str) -> int:
+    """
+    Calculate a fuzzy match score (0-100) between *query* and *candidate*.
+
+    Uses rapidfuzz when available (should be in requirements.txt).
+    Falls back to a simple token-overlap heuristic otherwise.
+    """
+    q = _normalize(query)
+    c = _normalize(candidate)
+    if not q or not c:
+        return 0
+
+    try:
+        from rapidfuzz import fuzz
+        token_sort = fuzz.token_sort_ratio(q, c)
+        token_set = fuzz.token_set_ratio(q, c)
+        partial = fuzz.partial_ratio(q, c)
+
+        len_q, len_c = len(q), len(c)
+        length_ratio = min(len_q, len_c) / max(len_q, len_c) if max(len_q, len_c) > 0 else 0
+        adjusted_partial = int(partial * length_ratio)
+
+        return int(max(token_sort, token_set, adjusted_partial))
+    except ImportError:
+        # Fallback: simple token overlap ratio
+        q_tokens = set(q.split())
+        c_tokens = set(c.split())
+        if not q_tokens or not c_tokens:
+            return 0
+        overlap = q_tokens & c_tokens
+        return int(len(overlap) / max(len(q_tokens), len(c_tokens)) * 100)
+
 
 class handler(BaseHTTPRequestHandler):
     def do_OPTIONS(self):
@@ -19,6 +73,8 @@ class handler(BaseHTTPRequestHandler):
             body = json.loads(body_str) if body_str else {}
             
             query = body.get('query', '')
+            search_type = body.get('search_type', 'fuzzy')
+            fuzzy_threshold = body.get('fuzzy_threshold', 80)
             
             # Try to use Supabase
             try:
@@ -32,7 +88,7 @@ class handler(BaseHTTPRequestHandler):
                 
                 client = create_client(supabase_url, supabase_key)
                 
-                # Search using RPC function
+                # Search using RPC function — cast a wider net, then filter locally
                 response = client.rpc(
                     'search_sanctions',
                     {
@@ -44,12 +100,29 @@ class handler(BaseHTTPRequestHandler):
                 
                 results = response.data or []
                 
-                # Convert to expected format
+                # Convert to expected format AND re-score with proper fuzzy matching
                 entities = []
                 for r in results:
+                    name = r.get('name', 'Unknown')
+                    
+                    # Re-calculate score with proper fuzzy logic
+                    score = _calculate_match_score(query, name)
+                    
+                    # Also check aliases for a better score
+                    for alias in (r.get('aliases') or []):
+                        alias_score = _calculate_match_score(query, alias)
+                        if alias_score > score:
+                            score = alias_score
+                    
+                    # Apply filtering based on search type
+                    if search_type == 'exact' and score < 95:
+                        continue
+                    if search_type == 'fuzzy' and score < fuzzy_threshold:
+                        continue
+                    
                     entities.append({
                         "id": r.get('source_id', r.get('id', '')),
-                        "name": r.get('name', 'Unknown'),
+                        "name": name,
                         "schema": "Person",
                         "aliases": r.get('aliases', []),
                         "birth_date": None,
@@ -70,9 +143,12 @@ class handler(BaseHTTPRequestHandler):
                         "first_seen": r.get('date_added'),
                         "last_seen": None,
                         "url": r.get('source_url', 'https://supabase.co'),
-                        "match_score": int(r.get('match_score', 0.5) * 100),
+                        "match_score": score,
                         "source": "opensanctions"
                     })
+                
+                # Sort by score descending
+                entities.sort(key=lambda e: e['match_score'], reverse=True)
                 
                 supabase_error = None
                 

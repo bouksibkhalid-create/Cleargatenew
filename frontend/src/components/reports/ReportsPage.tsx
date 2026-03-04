@@ -46,14 +46,22 @@ export default function ReportsPage() {
       setDownloading(entity.id);
       setOpenMenu(null);
       const lang = i18n.language?.startsWith('fr') ? 'fr' : 'en';
+      // If we have a full profile, send it directly (Option A).
+      // Otherwise, send query + entity_type so the backend fetches it (Option B).
+      const payload: Record<string, unknown> = {
+        language: lang,
+        classification: 'CONFIDENTIEL',
+      };
+      if (entity.profile_data && Object.keys(entity.profile_data).length > 2) {
+        payload.profile = entity.profile_data;
+      } else {
+        payload.query = entity.entity_name;
+        payload.entity_type = entity.entity_type || 'individual';
+      }
       const res = await fetch(`${API_BASE}/api/report`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          profile: entity.profile_data || { name: entity.entity_name, entity_type: entity.entity_type },
-          language: lang,
-          classification: 'CONFIDENTIEL',
-        }),
+        body: JSON.stringify(payload),
       });
       if (!res.ok) {
         const err = await res.json().catch(() => ({ message: res.statusText }));

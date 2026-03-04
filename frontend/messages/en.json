@@ -270,5 +270,22 @@
     "generating": "Generating...",
     "downloadPDF": "Download PDF",
     "downloadIntelligenceReport": "Download Intelligence Report"
+  },
+  "emptyState": {
+    "title": "No Records Found",
+    "noRecordsFor": "No matching records found for \"{{query}}\" across all databases.",
+    "sourcesChecked": "Sources checked",
+    "sourceOpenSanctions": "Global Sanctions",
+    "sourceSanctionsIo": "OFAC / EU Lists",
+    "sourceOffshore": "Offshore Leaks",
+    "disclaimer": "This result does not guarantee the entity is risk-free. Always perform comprehensive due diligence before making compliance decisions."
+  },
+  "results": {
+    "searchResultsFor": "Search Results for \"{{query}}\"",
+    "foundResults": "found",
+    "result": "result",
+    "resultPlural": "results",
+    "sanctioned": "sanctioned",
+    "noResultsInSource": "No results in this source"
   }
 }

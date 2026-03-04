@@ -61,14 +61,15 @@ export const OSINT_TIMING: OSINTConfig = {
     alertDuration: 3000,
 };
 
-export const SEARCH_SOURCES: SourceStatus[] = [
+// Step 1: Sanctions Check sources
+export const SANCTIONS_SOURCES: SourceStatus[] = [
     {
         id: 'ofac',
         name: 'OFAC SDN Database',
         icon: '🇺🇸',
         status: 'queued',
         progress: 0,
-        weight: 30,
+        weight: 20,
     },
     {
         id: 'eu',
@@ -76,7 +77,7 @@ export const SEARCH_SOURCES: SourceStatus[] = [
         icon: '🇪🇺',
         status: 'queued',
         progress: 0,
-        weight: 25,
+        weight: 20,
     },
     {
         id: 'un',
@@ -103,11 +104,58 @@ export const SEARCH_SOURCES: SourceStatus[] = [
         weight: 10,
     },
     {
-        id: 'graphs',
-        name: 'Relationship Graph Analysis',
+        id: 'offshore',
+        name: 'Offshore Leaks (ICIJ)',
         icon: '🌐',
         status: 'queued',
         progress: 0,
-        weight: 30,
+        weight: 15,
     },
 ];
+
+// Step 2: Internet Monitoring sources
+export const INTERNET_SOURCES: SourceStatus[] = [
+    {
+        id: 'google_dorking',
+        name: 'Google Deep Search',
+        icon: '🔍',
+        status: 'queued',
+        progress: 0,
+        weight: 25,
+    },
+    {
+        id: 'adverse_media',
+        name: 'Adverse Media Scan',
+        icon: '📰',
+        status: 'queued',
+        progress: 0,
+        weight: 25,
+    },
+    {
+        id: 'court_records',
+        name: 'Court Records & Filings',
+        icon: '⚖️',
+        status: 'queued',
+        progress: 0,
+        weight: 20,
+    },
+    {
+        id: 'corporate_registry',
+        name: 'Corporate Registries',
+        icon: '�',
+        status: 'queued',
+        progress: 0,
+        weight: 15,
+    },
+    {
+        id: 'social_profiles',
+        name: 'Social & Public Profiles',
+        icon: '👤',
+        status: 'queued',
+        progress: 0,
+        weight: 15,
+    },
+];
+
+// Kept for backward compatibility
+export const SEARCH_SOURCES: SourceStatus[] = SANCTIONS_SOURCES;

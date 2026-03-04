@@ -22,7 +22,7 @@ interface RecentSearch {
 
 export default function NewCheckPage() {
   const { t } = useTranslation();
-  const { data, isLoading, error, search, reset } = useSearch();
+  const { data, rawData, isLoading, error, search, reset } = useSearch();
   const [currentQuery, setCurrentQuery] = useState('');
   const [recentSearches, setRecentSearches] = useState<RecentSearch[]>([]);
   const [view, setView] = useState<'search' | 'loading' | 'results' | 'profile'>('search');
@@ -227,7 +227,7 @@ export default function NewCheckPage() {
           subtitle={`${t('check.searching')} "${currentQuery}"...`}
         />
         <div className="mt-4">
-          <OSINTLoader query={currentQuery} searchType="fuzzy" />
+          <OSINTLoader query={currentQuery} searchType="fuzzy" searchResults={rawData} />
         </div>
       </div>
     );

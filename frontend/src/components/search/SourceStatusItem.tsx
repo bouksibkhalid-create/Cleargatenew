@@ -28,9 +28,15 @@ export function SourceStatusItem({ source }: SourceStatusItemProps) {
                         <Badge className="bg-green-100 text-green-700 hover:bg-green-100">
                             COMPLETE
                         </Badge>
-                        <span className="text-sm font-semibold text-green-600">
-                            {source.matchCount} matches
-                        </span>
+                        {(source.matchCount ?? 0) > 0 ? (
+                            <span className="text-sm font-semibold text-green-600">
+                                {source.matchCount} {source.matchCount === 1 ? 'match' : 'matches'}
+                            </span>
+                        ) : (
+                            <span className="text-sm font-medium text-gray-400">
+                                no match
+                            </span>
+                        )}
                     </div>
                 );
             case 'scanning':

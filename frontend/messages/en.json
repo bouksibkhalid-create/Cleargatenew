@@ -287,5 +287,21 @@
     "resultPlural": "results",
     "sanctioned": "sanctioned",
     "noResultsInSource": "No results in this source"
+  },
+  "osint": {
+    "header": "Intelligence Gathering",
+    "searchingFor": "Searching for:",
+    "step": "Step",
+    "stepSanctions": "Sanctions Check",
+    "stepInternet": "Internet Monitoring",
+    "summary": "Intelligence Summary",
+    "crossRef": "Cross-referencing {{count}} international databases",
+    "analyzing": "Analyzing 2,100,000 entity records",
+    "fuzzyEnabled": "Fuzzy matching enabled ({{threshold}}% threshold)",
+    "complianceCheck": "Compliance check in progress",
+    "deepWebScan": "Deep web scanning in progress",
+    "adverseMedia": "Scanning adverse media sources",
+    "publicRecords": "Checking public records & registries",
+    "eddScreening": "Enhanced due diligence screening"
   }
 }

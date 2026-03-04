@@ -8,6 +8,8 @@ import type { SearchRequest, SearchResponse, SearchType, SourceType } from '../t
 
 interface UseSearchReturn {
     data: SearchResponse | null;
+    /** Raw result available as soon as the API responds (before MIN_LOADER_TIME) */
+    rawData: SearchResponse | null;
     isLoading: boolean;
     error: string | null;
     search: (query: string, searchType?: SearchType, sources?: SourceType[]) => Promise<void>;
@@ -16,6 +18,7 @@ interface UseSearchReturn {
 
 export function useSearch(): UseSearchReturn {
     const [data, setData] = useState<SearchResponse | null>(null);
+    const [rawData, setRawData] = useState<SearchResponse | null>(null);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
@@ -35,7 +38,7 @@ export function useSearch(): UseSearchReturn {
 
             // Track start time for minimum display duration
             const startTime = Date.now();
-            const MIN_LOADER_TIME = 3000; // 3 seconds minimum
+            const MIN_LOADER_TIME = 12000; // 12 seconds — allows both animation phases to complete
 
             try {
                 const request: SearchRequest = {
@@ -47,6 +50,9 @@ export function useSearch(): UseSearchReturn {
                 };
 
                 const result = await apiClient.search(request);
+
+                // Make raw data available immediately for the animation
+                setRawData(result);
 
                 // Calculate remaining time to meet minimum display duration
                 const elapsed = Date.now() - startTime;
@@ -75,8 +81,9 @@ export function useSearch(): UseSearchReturn {
 
     const reset = useCallback(() => {
         setData(null);
+        setRawData(null);
         setError(null);
     }, []);
 
-    return { data, isLoading, error, search, reset };
+    return { data, rawData, isLoading, error, search, reset };
 }

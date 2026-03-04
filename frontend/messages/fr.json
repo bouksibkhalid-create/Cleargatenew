@@ -287,5 +287,21 @@
     "resultPlural": "résultats",
     "sanctioned": "sanctionné(s)",
     "noResultsInSource": "Aucun résultat dans cette source"
+  },
+  "osint": {
+    "header": "Collecte de renseignements",
+    "searchingFor": "Recherche en cours :",
+    "step": "Étape",
+    "stepSanctions": "Vérification des sanctions",
+    "stepInternet": "Surveillance Internet",
+    "summary": "Synthèse du renseignement",
+    "crossRef": "Recoupement de {{count}} bases de données internationales",
+    "analyzing": "Analyse de 2 100 000 fiches d'entités",
+    "fuzzyEnabled": "Correspondance floue activée (seuil {{threshold}} %)",
+    "complianceCheck": "Vérification de conformité en cours",
+    "deepWebScan": "Analyse approfondie du web en cours",
+    "adverseMedia": "Recherche de médias défavorables",
+    "publicRecords": "Vérification des registres publics",
+    "eddScreening": "Filtrage de due diligence renforcée"
   }
 }

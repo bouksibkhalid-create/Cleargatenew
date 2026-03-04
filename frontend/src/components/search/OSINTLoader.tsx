@@ -97,14 +97,13 @@ export function OSINTLoader({ query, searchType = 'fuzzy', threshold = 80, searc
                 await new Promise((r) => setTimeout(r, 600 + Math.random() * 800));
                 if (cancelledRef.current) return;
 
-                // Complete — use real count if available, else 0 (truthful)
+                // Complete — use real count if available, else leave undefined (still loading)
                 const counts = getRealCounts();
-                let matchCount = 0;
+                let matchCount: number | undefined = undefined;
                 if (counts) {
                     if (srcList[i].id === 'offshore') {
                         matchCount = counts.offshore;
                     } else {
-                        // Distribute evenly among first 5 sanctions sources
                         matchCount = Math.floor(counts.totalSanctions / 5) + (i === 0 ? counts.totalSanctions % 5 : 0);
                     }
                 }

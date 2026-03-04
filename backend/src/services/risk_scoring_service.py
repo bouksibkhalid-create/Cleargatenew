@@ -16,13 +16,15 @@ class RiskScoringService:
     # ------------------------------------------------------------------
     # Scoring weights — class-level constants for easy tuning
     # ------------------------------------------------------------------
-    SANCTIONS_BASE = 40
+    SANCTIONS_BASE = 50
     SANCTIONS_ADDITIONAL_PER_LIST = 5
-    SANCTIONS_ADDITIONAL_CAP = 15
+    SANCTIONS_ADDITIONAL_CAP = 25
+    SANCTIONS_PER_HIT = 1
+    SANCTIONS_HIT_CAP = 15
 
     PEP_BASE = 15
     PEP_ADDITIONAL_PER_HIT = 3
-    PEP_ADDITIONAL_CAP = 9
+    PEP_ADDITIONAL_CAP = 10
 
     MEDIA_HIGH_PER_HIT = 8
     MEDIA_HIGH_CAP = 24
@@ -86,6 +88,12 @@ class RiskScoringService:
             sanctions_score += min(
                 extra_lists * self.SANCTIONS_ADDITIONAL_PER_LIST,
                 self.SANCTIONS_ADDITIONAL_CAP,
+            )
+            # Per-hit bonus (rewards breadth of sanctions exposure)
+            extra_hits = max(0, input_data.sanctions_hits - 1)
+            sanctions_score += min(
+                extra_hits * self.SANCTIONS_PER_HIT,
+                self.SANCTIONS_HIT_CAP,
             )
         breakdown["sanctions"] = sanctions_score
 

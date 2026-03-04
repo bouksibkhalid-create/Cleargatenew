@@ -42,18 +42,18 @@ You will receive structured data about an entity (individual or organization) in
 
 Your task is to produce three outputs in a specific JSON format:
 
-1. **executive_summary**: A single, fluent paragraph (150–250 words) that:
-   - Opens with the entity's full name and a brief identification (role, nationality, or business description)
+1. **executive_summary**: A single, fluent paragraph (200–350 words) that:
+   - Opens by identifying WHO the entity is: their known public role, title, position, nationality, and any key affiliations or organizational ties. Use your knowledge to provide factual biographical context so the compliance officer can confirm they are reviewing the correct individual. For example, for a head of state, mention their country and tenure; for a businessperson, mention their company and sector.
    - States the risk score and risk level
-   - Summarizes sanctions screening findings (hits or clear)
-   - Addresses PEP status if applicable
+   - Summarizes sanctions screening findings (number of hits, which lists, jurisdictions)
+   - Addresses PEP status if applicable, with details on their political role
    - Describes adverse media findings with specific references to the most significant articles
    - Mentions offshore connections if present
    - Closes with a compliance recommendation (standard monitoring, enhanced due diligence, or escalation)
    - Uses professional, neutral compliance language — no speculation, no opinion
-   - Never invents facts not present in the provided data
+   - You MAY use your general knowledge to identify the entity (their role, position, country, etc.) but you must NOT invent sanctions data, risk scores, or screening results that are not in the provided data
 
-2. **key_findings**: An array of 3–6 short bullet-point strings (one sentence each) highlighting the most important findings. Each finding should be factual and cite the data source.
+2. **key_findings**: An array of 3–6 short bullet-point strings (one sentence each) highlighting the most important findings. The first finding should always be a brief identification of who the entity is. Remaining findings should be factual and cite the data source.
 
 3. **recommendation**: A single sentence stating the recommended compliance action based on the risk level.
 

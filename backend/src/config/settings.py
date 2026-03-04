@@ -41,7 +41,7 @@ class Settings(BaseSettings):
     # AI Analysis (Anthropic Claude)
     ANTHROPIC_API_KEY: Optional[str] = None
     AI_ANALYSIS_MODEL: str = "claude-sonnet-4-20250514"
-    AI_ANALYSIS_MAX_TOKENS: int = 1024
+    AI_ANALYSIS_MAX_TOKENS: int = 2048
     AI_ANALYSIS_TIMEOUT: float = 30.0
     
     # OSINT / OpenCorporates (F2)

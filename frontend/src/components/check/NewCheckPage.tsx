@@ -49,10 +49,23 @@ export default function NewCheckPage() {
     loadRecent();
   }, []);
 
-  // Track search completion
+  // Track search completion — auto-navigate to profile for non-sanctioned entities
   useEffect(() => {
     if (data && !isLoading) {
-      setView('results');
+      const sanctionsCount =
+        (data.results_by_source?.opensanctions?.results?.length || 0) +
+        (data.results_by_source?.sanctions_io?.results?.length || 0);
+
+      if (sanctionsCount === 0 && currentQuery.trim()) {
+        // No sanctions hits → go straight to OSINT profiling
+        setProfileTarget({
+          name: currentQuery.trim(),
+          entityType: 'individual',
+        });
+        setView('profile');
+      } else {
+        setView('results');
+      }
     }
   }, [data, isLoading]);
 
@@ -133,7 +146,18 @@ export default function NewCheckPage() {
 
   const handleBack = () => {
     if (view === 'profile') {
-      setView('results');
+      // If we auto-navigated to profile (0 sanctions), go back to search
+      const sanctionsCount = data
+        ? (data.results_by_source?.opensanctions?.results?.length || 0) +
+          (data.results_by_source?.sanctions_io?.results?.length || 0)
+        : 0;
+      if (sanctionsCount === 0) {
+        reset();
+        setView('search');
+        setCurrentQuery('');
+      } else {
+        setView('results');
+      }
     } else {
       reset();
       setView('search');

@@ -440,4 +440,12 @@ def assemble_report_data(
         osint_court_records=getattr(profile, "osint_court_records", []),
         osint_gov_filings=getattr(profile, "osint_gov_filings", []),
         osint_social_profiles=getattr(profile, "osint_social_profiles", []),
+
+        # OSINT Synthesis (non-sanctioned entities)
+        is_sanctioned=profile.is_sanctioned,
+        osint_biography=getattr(profile, "osint_biography", None),
+        osint_adverse_summary=getattr(profile, "osint_adverse_summary", None),
+        osint_risk_assessment=getattr(profile, "osint_risk_assessment", None),
+        osint_risk_rationale=getattr(profile, "osint_risk_rationale", None),
+        osint_sources_investigated=getattr(profile, "osint_sources_investigated", []),
     )

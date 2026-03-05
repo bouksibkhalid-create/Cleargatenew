@@ -222,7 +222,8 @@
     "save": "Enregistrer",
     "saved": "Enregistré",
     "monitor": "Surveiller",
-    "download": "Télécharger"
+    "download": "Télécharger",
+    "notSanctioned": "Non sanctionné"
   },
   "sidebar": {
     "expandSidebar": "Développer la barre latérale",
@@ -303,5 +304,18 @@
     "adverseMedia": "Recherche de médias défavorables",
     "publicRecords": "Vérification des registres publics",
     "eddScreening": "Filtrage de due diligence renforcée"
+  },
+  "osintProfile": {
+    "noData": "Aucune donnée OSINT disponible",
+    "noDataDesc": "Le profilage OSINT est uniquement disponible pour les entités non trouvées sur les listes de sanctions.",
+    "clearStatus": "NON SANCTIONNÉ — Aucune correspondance trouvée sur les listes de surveillance",
+    "clearSubtitle": "Vérifié contre OFAC SDN, UE Consolidée, Conseil de sécurité ONU, Sanctions UK, Canada SEMA",
+    "riskAssessment": "Évaluation du risque OSINT",
+    "biography": "Biographie",
+    "adverseSummary": "Médias défavorables & Réputation",
+    "analysisWarning": "Avertissement d'analyse",
+    "sourcesInvestigated": "Sources examinées",
+    "failed": "échoué",
+    "generatedBy": "Généré par"
   }
 }

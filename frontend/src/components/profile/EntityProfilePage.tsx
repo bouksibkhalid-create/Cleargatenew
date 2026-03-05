@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useProfile } from '../../hooks/useProfile';
 import ProfileHeader from './ProfileHeader';
 import RiskScoreGauge from './RiskScoreGauge';
@@ -22,6 +23,7 @@ export default function EntityProfilePage({
   country,
   onBack,
 }: EntityProfilePageProps) {
+  const { i18n } = useTranslation();
   const { profile, loading, error, generateProfile } = useProfile();
 
   useEffect(() => {
@@ -29,6 +31,7 @@ export default function EntityProfilePage({
       name: entityName,
       entity_type: entityType as 'individual' | 'organization',
       country,
+      lang: i18n.language?.startsWith('fr') ? 'fr' : 'en',
     });
   }, [entityName, entityType, country]);
 
@@ -103,6 +106,7 @@ function EntityProfileContent({
         <ProfileHeader
           entity={profile.entity}
           riskLevel={profile.risk_level}
+          isSanctioned={profile.is_sanctioned}
           onBack={onBack}
           onDownloadReport={() => {}}
           reportButton={

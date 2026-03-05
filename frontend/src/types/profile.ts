@@ -6,6 +6,7 @@ export interface EntityProfileRequest {
   include_ai_analysis?: boolean;
   include_adverse_media?: boolean;
   max_adverse_media?: number;
+  lang?: string;
 }
 
 export interface EntityProfile {
@@ -44,6 +45,14 @@ export interface EntityProfile {
   sources_succeeded: string[];
   sources_failed: string[];
   pipeline_version: string;
+  // OSINT Synthesis (non-sanctioned entities)
+  osint_biography: string | null;
+  osint_adverse_summary: string | null;
+  osint_risk_assessment: "low" | "medium" | "high" | null;
+  osint_risk_rationale: string | null;
+  osint_sources_investigated: OSINTSourceInvestigated[];
+  osint_synthesis_model: string | null;
+  osint_synthesis_error: string | null;
 }
 
 export interface EntityInfo {
@@ -61,6 +70,14 @@ export interface SourceItem {
   source_name?: string;
   published_date?: string;
   severity?: "high" | "medium" | "low";
+}
+
+export interface OSINTSourceInvestigated {
+  url: string;
+  title: string;
+  text_length: number;
+  success: boolean;
+  error: string | null;
 }
 
 export interface AdverseMediaHit {

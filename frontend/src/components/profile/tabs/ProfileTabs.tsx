@@ -1,4 +1,4 @@
-import { LayoutDashboard, Shield, Crown, Newspaper, Network, Clock } from 'lucide-react';
+import { LayoutDashboard, Shield, Crown, Newspaper, Network, Clock, Globe } from 'lucide-react';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import type { EntityProfile } from '../../../types/profile';
 import OverviewTab from './OverviewTab';
@@ -7,12 +7,14 @@ import PEPTab from './PEPTab';
 import AdverseMediaTab from './AdverseMediaTab';
 import RelationshipsTab from './RelationshipsTab';
 import TimelineTab from './TimelineTab';
+import OSINTProfileTab from './OSINTProfileTab';
 
 export type ProfileTabId =
   | 'overview'
   | 'sanctions'
   | 'pep'
   | 'adverse-media'
+  | 'osint-profile'
   | 'relationships'
   | 'timeline';
 
@@ -24,6 +26,7 @@ interface ProfileTabsProps {
 
 export default function ProfileTabs({ profile, activeTab, onTabChange }: ProfileTabsProps) {
   const offshoreCount = (profile.offshore_results ?? []).length;
+  const hasOSINT = !profile.is_sanctioned;
   const hasTimeline =
     (profile.adverse_media_hits ?? []).some((h) => h.published_date) ||
     profile.is_sanctioned ||
@@ -57,6 +60,14 @@ export default function ProfileTabs({ profile, activeTab, onTabChange }: Profile
             label="Adverse Media"
             count={profile.adverse_news_count}
           />
+          {hasOSINT && (
+            <TabTriggerWithBadge
+              id="osint-profile"
+              icon={Globe}
+              label="OSINT Profile"
+              variant="neutral"
+            />
+          )}
           {offshoreCount > 0 && (
             <TabTriggerWithBadge
               id="relationships"
@@ -90,6 +101,11 @@ export default function ProfileTabs({ profile, activeTab, onTabChange }: Profile
       <TabsContent value="adverse-media" className="mt-6">
         <AdverseMediaTab profile={profile} />
       </TabsContent>
+      {hasOSINT && (
+        <TabsContent value="osint-profile" className="mt-6">
+          <OSINTProfileTab profile={profile} />
+        </TabsContent>
+      )}
       {offshoreCount > 0 && (
         <TabsContent value="relationships" className="mt-6">
           <RelationshipsTab profile={profile} />

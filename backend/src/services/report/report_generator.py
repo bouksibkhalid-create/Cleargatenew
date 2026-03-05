@@ -41,6 +41,7 @@ from .pages.reputation_page import build_reputation_flowables
 from .pages.synthesis_page import build_synthesis_flowables
 from .pages.recommendation_page import build_recommendation_flowables
 from .pages.disclaimer_page import build_disclaimer_flowables
+from .pages.osint_profile_page import build_osint_profile_flowables
 from .pages.cover_page import CoverPage
 
 
@@ -220,6 +221,13 @@ def generate_pdf(
     # --- Page 3: Executive Summary ---
     story.extend(build_executive_summary_flowables(data))
     story.append(PageBreak())
+
+    # --- Page 3b: OSINT Profile (non-sanctioned entities only) ---
+    if not data.is_sanctioned:
+        osint_flowables = build_osint_profile_flowables(data)
+        if osint_flowables:
+            story.extend(osint_flowables)
+            story.append(PageBreak())
 
     # --- Page 4: Identity ---
     story.extend(build_identity_flowables(data))

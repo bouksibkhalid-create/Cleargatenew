@@ -15,6 +15,7 @@ class EntityProfileRequest(BaseModel):
     include_ai_analysis: bool = True
     include_adverse_media: bool = True
     max_adverse_media: int = Field(default=10, ge=1, le=50)
+    lang: str = "en"  # "en" or "fr" — controls OSINT synthesis language
 
     @field_validator("name")
     @classmethod
@@ -112,6 +113,15 @@ class EntityProfile(BaseModel):
     osint_court_records: List[Dict] = Field(default_factory=list)
     osint_gov_filings: List[Dict] = Field(default_factory=list)
     osint_social_profiles: List[Dict] = Field(default_factory=list)
+
+    # === OSINT SYNTHESIS PROFILE (for non-sanctioned entities) ===
+    osint_biography: Optional[str] = None
+    osint_adverse_summary: Optional[str] = None
+    osint_risk_assessment: Optional[str] = None       # "low" | "medium" | "high"
+    osint_risk_rationale: Optional[str] = None
+    osint_sources_investigated: List[Dict] = Field(default_factory=list)
+    osint_synthesis_model: Optional[str] = None
+    osint_synthesis_error: Optional[str] = None
 
     # === PIPELINE METADATA ===
     pipeline_version: str = "2.0"

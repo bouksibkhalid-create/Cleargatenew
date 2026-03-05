@@ -162,3 +162,11 @@ class ReportData:
     osint_court_records: List[Dict] = field(default_factory=list)
     osint_gov_filings: List[Dict] = field(default_factory=list)
     osint_social_profiles: List[Dict] = field(default_factory=list)
+
+    # --- OSINT Synthesis (non-sanctioned entities) ---
+    is_sanctioned: bool = False
+    osint_biography: Optional[str] = None
+    osint_adverse_summary: Optional[str] = None
+    osint_risk_assessment: Optional[str] = None
+    osint_risk_rationale: Optional[str] = None
+    osint_sources_investigated: List[Dict] = field(default_factory=list)

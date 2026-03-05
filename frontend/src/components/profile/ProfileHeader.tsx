@@ -1,10 +1,12 @@
 import type { ReactNode } from 'react';
-import { ArrowLeft, Download } from 'lucide-react';
+import { ArrowLeft, Download, ShieldCheck } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import type { EntityInfo } from '../../types/profile';
 
 interface ProfileHeaderProps {
   entity: EntityInfo;
   riskLevel: string;
+  isSanctioned: boolean;
   onBack: () => void;
   onDownloadReport: () => void;
   reportButton?: ReactNode;
@@ -27,10 +29,12 @@ const AVATAR_STYLES: Record<string, { bg: string; text: string }> = {
 export default function ProfileHeader({
   entity,
   riskLevel,
+  isSanctioned,
   onBack,
   onDownloadReport,
   reportButton,
 }: ProfileHeaderProps) {
+  const { t } = useTranslation();
   const badgeStyle = RISK_BADGE_STYLES[riskLevel] || RISK_BADGE_STYLES.low;
   const avatarStyle = AVATAR_STYLES[riskLevel] || AVATAR_STYLES.low;
   const initial = entity.name.charAt(0).toUpperCase();
@@ -83,6 +87,13 @@ export default function ProfileHeader({
               <Download className="w-4 h-4" />
               Download Report
             </button>
+          )}
+
+          {!isSanctioned && (
+            <span className="rounded-full px-4 py-1.5 text-sm font-medium border bg-emerald-500/15 border-emerald-500/30 text-emerald-400 flex items-center gap-1.5">
+              <ShieldCheck className="w-4 h-4" />
+              {t('profile.notSanctioned', 'Not Sanctioned')}
+            </span>
           )}
 
           <span

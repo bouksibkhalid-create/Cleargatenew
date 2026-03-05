@@ -87,6 +87,13 @@ class EntityProfileOrchestrator:
             )
             ai_result = await self.ai_analysis_service.analyze(ai_input)
 
+        # Step 4b: OSINT Synthesis for non-sanctioned entities
+        osint_synthesis = None
+        if not signals.is_sanctioned:
+            osint_synthesis = await self._run_osint_synthesis(
+                request, collection
+            )
+
         # Step 5: Build source items list
         sources = self._build_sources_list(collection)
 
@@ -101,6 +108,7 @@ class EntityProfileOrchestrator:
             signals=signals,
             sources=sources,
             duration_ms=duration_ms,
+            osint_synthesis=osint_synthesis,
         )
 
     # ------------------------------------------------------------------
@@ -362,6 +370,63 @@ class EntityProfileOrchestrator:
             logger.warning("osint_failed", error=str(exc))
             return None
 
+    async def _run_osint_synthesis(
+        self,
+        request: EntityProfileRequest,
+        collection: CollectionResults,
+    ):
+        """For non-sanctioned entities: scrape dorking URLs → Claude synthesis."""
+        try:
+            from src.services.scraping_service import ScrapingService
+            from src.services.osint_synthesis_service import OSINTSynthesisService
+
+            # Gather dorking URLs
+            dorking_urls: List[Dict] = []
+            if collection.dorking and hasattr(collection.dorking, "all_results_dicts"):
+                for r in collection.dorking.all_results_dicts():
+                    dorking_urls.append({
+                        "url": r.get("url", ""),
+                        "snippet": r.get("snippet", ""),
+                        "title": r.get("title", ""),
+                    })
+
+            if not dorking_urls:
+                logger.info("osint_synthesis_skipped", reason="no dorking URLs")
+                # Still return a synthesis with no-sources fallback
+                synth = OSINTSynthesisService(self.settings)
+                return await synth.synthesize(
+                    entity_name=request.name,
+                    entity_type=request.entity_type,
+                    country=request.country or "",
+                    scraped_context="",
+                    source_count=0,
+                    lang=request.lang,
+                )
+
+            # Scrape top 10 URLs
+            scraper = ScrapingService()
+            pages = await scraper.scrape_urls(dorking_urls, max_urls=10)
+            context = scraper.build_context(pages)
+
+            # Synthesize via Claude
+            synth = OSINTSynthesisService(self.settings)
+            result = await synth.synthesize(
+                entity_name=request.name,
+                entity_type=request.entity_type,
+                country=request.country or "",
+                scraped_context=context,
+                source_count=len(pages),
+                lang=request.lang,
+            )
+
+            # Attach source metadata
+            result.sources_investigated = [p.to_dict() for p in pages]
+            return result
+
+        except Exception as exc:
+            logger.error("osint_synthesis_pipeline_failed", error=str(exc))
+            return None
+
     # ------------------------------------------------------------------
     # Step 2: Signal extraction
     # ------------------------------------------------------------------
@@ -552,6 +617,7 @@ class EntityProfileOrchestrator:
         signals: RiskScoringInput,
         sources: List[SourceItem],
         duration_ms: int,
+        osint_synthesis=None,
     ) -> EntityProfile:
         """Package everything into the final EntityProfile."""
         sanctions_data = collection.sanctions or {}
@@ -683,6 +749,29 @@ class EntityProfileOrchestrator:
             ),
             osint_social_profiles=(
                 collection.osint.social_profiles if collection.osint else []
+            ),
+            # OSINT Synthesis (for non-sanctioned entities)
+            osint_biography=(
+                osint_synthesis.biography if osint_synthesis else None
+            ),
+            osint_adverse_summary=(
+                osint_synthesis.adverse_summary if osint_synthesis else None
+            ),
+            osint_risk_assessment=(
+                osint_synthesis.risk_assessment if osint_synthesis else None
+            ),
+            osint_risk_rationale=(
+                osint_synthesis.risk_rationale if osint_synthesis else None
+            ),
+            osint_sources_investigated=(
+                getattr(osint_synthesis, "sources_investigated", [])
+                if osint_synthesis else []
+            ),
+            osint_synthesis_model=(
+                osint_synthesis.model_used if osint_synthesis else None
+            ),
+            osint_synthesis_error=(
+                osint_synthesis.error if osint_synthesis else None
             ),
             # Check metadata
             check_id=check_id,

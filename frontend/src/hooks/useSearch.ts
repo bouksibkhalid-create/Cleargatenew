@@ -54,13 +54,22 @@ export function useSearch(): UseSearchReturn {
                 // Make raw data available immediately for the animation
                 setRawData(result);
 
-                // Calculate remaining time to meet minimum display duration
-                const elapsed = Date.now() - startTime;
-                const remaining = Math.max(0, MIN_LOADER_TIME - elapsed);
+                // Check if there are sanctions hits — if 0, skip the long
+                // loader wait because we'll auto-navigate to the profile page
+                // which has its own loading animation.
+                const sanctionsCount =
+                    (result.results_by_source?.opensanctions?.results?.length || 0) +
+                    (result.results_by_source?.sanctions_io?.results?.length || 0);
 
-                // Wait for remaining time if search completed too quickly
-                if (remaining > 0) {
-                    await new Promise(resolve => setTimeout(resolve, remaining));
+                if (sanctionsCount > 0) {
+                    // Calculate remaining time to meet minimum display duration
+                    const elapsed = Date.now() - startTime;
+                    const remaining = Math.max(0, MIN_LOADER_TIME - elapsed);
+
+                    // Wait for remaining time if search completed too quickly
+                    if (remaining > 0) {
+                        await new Promise(resolve => setTimeout(resolve, remaining));
+                    }
                 }
 
                 setData(result);

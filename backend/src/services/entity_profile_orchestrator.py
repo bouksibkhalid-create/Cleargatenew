@@ -24,6 +24,7 @@ from src.models.entity_profile import (
 from src.models.risk_scoring import RiskScoringInput
 from src.services.adverse_media_service import AdverseMediaService
 from src.services.ai_analysis_service import AIAnalysisService
+from src.services.fuzzy_matcher import FuzzyMatcher
 from src.services.opensanctions_service import OpenSanctionsService
 from src.services.risk_scoring_service import RiskScoringService
 from src.utils.logger import get_logger
@@ -178,7 +179,13 @@ class EntityProfileOrchestrator:
     # ------------------------------------------------------------------
 
     async def _search_sanctions(self, request: EntityProfileRequest) -> Dict:
-        """Search OpenSanctions for sanctions and PEP data."""
+        """Search OpenSanctions for sanctions and PEP data.
+
+        Uses FuzzyMatcher to filter out false-positive results whose names
+        do not genuinely match the queried entity (e.g. "Zunyi WEI" should
+        NOT match "David Beckham").
+        """
+        matcher = FuzzyMatcher(threshold=75)
         results: Dict[str, Any] = {
             "opensanctions_results": [],
             "supabase_results": [],
@@ -194,12 +201,33 @@ class EntityProfileOrchestrator:
         try:
             supabase_results = await self._search_supabase(request.name)
             if supabase_results:
-                results["supabase_results"] = supabase_results
+                # Filter by name similarity to avoid false positives
+                verified = []
                 for r in supabase_results:
-                    results["is_sanctioned"] = True
-                    results["sanctions_hits"] += 1
-                    programs = r.get("programs") or r.get("sanction_lists") or []
-                    results["sanctions_lists"].extend(programs)
+                    candidate_name = (
+                        r.get("name") or r.get("full_name") or ""
+                    )
+                    is_match, score = matcher.is_match(
+                        request.name, candidate_name
+                    )
+                    if is_match:
+                        verified.append(r)
+                        results["is_sanctioned"] = True
+                        results["sanctions_hits"] += 1
+                        programs = (
+                            r.get("programs")
+                            or r.get("sanction_lists")
+                            or []
+                        )
+                        results["sanctions_lists"].extend(programs)
+                    else:
+                        logger.info(
+                            "supabase_false_positive_filtered",
+                            query=request.name,
+                            candidate=candidate_name,
+                            score=score,
+                        )
+                results["supabase_results"] = verified
         except Exception as exc:
             logger.warning("supabase_search_failed", error=str(exc))
 
@@ -209,14 +237,30 @@ class EntityProfileOrchestrator:
                 request.name, limit=10
             )
             if os_entities:
-                # Convert Pydantic models to dicts for storage
+                # Filter by name similarity
+                verified_entities = []
+                for entity in os_entities:
+                    is_match, score = matcher.is_match(
+                        request.name, entity.name
+                    )
+                    if not is_match:
+                        logger.info(
+                            "opensanctions_false_positive_filtered",
+                            query=request.name,
+                            candidate=entity.name,
+                            score=score,
+                        )
+                        continue
+                    verified_entities.append(entity)
+
+                # Convert verified entities to dicts for storage
                 raw_list = [
                     e.model_dump(by_alias=True) if hasattr(e, "model_dump") else (e.dict(by_alias=True) if hasattr(e, "dict") else e)
-                    for e in os_entities
+                    for e in verified_entities
                 ]
                 results["opensanctions_results"] = raw_list
 
-                for entity in os_entities:
+                for entity in verified_entities:
                     topics = entity.properties.get("topics", []) or []
                     datasets = entity.datasets or []
 

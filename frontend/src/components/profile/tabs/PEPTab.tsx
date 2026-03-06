@@ -91,7 +91,7 @@ export default function PEPTab({ profile }: PEPTabProps) {
           </p>
         </div>
         <div className="flex items-center gap-2 text-sm text-slate-500 dark:text-gray-400">
-          <CheckCircle className="w-4 h-4 text-[#931CF5] shrink-0" />
+          <CheckCircle className="w-4 h-4 text-[#9E59EF] shrink-0" />
           <span>OpenSanctions PEP Database — {profile.pep_hits} hit(s)</span>
         </div>
       </div>

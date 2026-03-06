@@ -5,14 +5,14 @@ const DARK_COLORS = {
   base: '#1f2937',
   safe: '#22c55e',
   risk: '#f97316',
-  teal: '#931CF5',
+  teal: '#9E59EF',
 };
 
 const LIGHT_COLORS = {
   base: '#94a3b8',
   safe: '#16a34a',
   risk: '#ea580c',
-  teal: '#7B16D0',
+  teal: '#8A3FE0',
 };
 
 function getNodeColors(isDark: boolean) {

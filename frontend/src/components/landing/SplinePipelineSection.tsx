@@ -126,12 +126,12 @@ export default function SplinePipelineSection() {
           {PIPELINE_STEP_KEYS.map((step, i) => (
             <div
               key={step.labelKey}
-              className="flex flex-col items-center text-center p-5 rounded-2xl border border-[#931CF5]/15 bg-[#931CF5]/5"
+              className="flex flex-col items-center text-center p-5 rounded-2xl border border-[#9E59EF]/15 bg-[#9E59EF]/5"
             >
-              <div className="w-12 h-12 rounded-xl bg-[#931CF5]/10 flex items-center justify-center mb-3">
-                <step.Icon className="w-6 h-6 text-[#931CF5]" />
+              <div className="w-12 h-12 rounded-xl bg-[#9E59EF]/10 flex items-center justify-center mb-3">
+                <step.Icon className="w-6 h-6 text-[#9E59EF]" />
               </div>
-              <span className="text-[10px] font-bold text-[#931CF5] mb-1">{t('pipeline.step', { number: i + 1 })}</span>
+              <span className="text-[10px] font-bold text-[#9E59EF] mb-1">{t('pipeline.step', { number: i + 1 })}</span>
               <h4 className="text-sm font-semibold text-slate-900 dark:text-white">{t(step.labelKey)}</h4>
               <p className="text-[11px] text-slate-500 dark:text-gray-500 mt-1">{t(step.descKey)}</p>
             </div>
@@ -194,7 +194,7 @@ export default function SplinePipelineSection() {
                 {totalProgress > 0.005 && (
                   <path
                     d={svgPathD.current}
-                    stroke="#931CF5"
+                    stroke="#9E59EF"
                     strokeWidth="2.5"
                     strokeLinecap="round"
                     strokeDasharray={pathLen}
@@ -207,10 +207,10 @@ export default function SplinePipelineSection() {
                 {/* Orb — leading dot */}
                 {totalProgress > 0.005 && totalProgress < 0.995 && (
                   <g>
-                    <circle cx={orb.x} cy={orb.y} r="8" fill="#931CF5" filter="url(#orbGlow)" />
+                    <circle cx={orb.x} cy={orb.y} r="8" fill="#9E59EF" filter="url(#orbGlow)" />
                     <circle cx={orb.x} cy={orb.y} r="4" fill="#ffffff" />
                     {/* Pulsing ring */}
-                    <circle cx={orb.x} cy={orb.y} r="12" fill="none" stroke="#931CF5" strokeWidth="1.5" opacity="0.3">
+                    <circle cx={orb.x} cy={orb.y} r="12" fill="none" stroke="#9E59EF" strokeWidth="1.5" opacity="0.3">
                       <animate attributeName="r" from="10" to="22" dur="1.5s" repeatCount="indefinite" />
                       <animate attributeName="opacity" from="0.4" to="0" dur="1.5s" repeatCount="indefinite" />
                     </circle>
@@ -260,14 +260,14 @@ export default function SplinePipelineSection() {
                         style={{
                           width: '30px',
                           height: '30px',
-                          color: isReached ? '#931CF5' : isDark ? 'rgba(255,255,255,0.15)' : 'rgba(0,0,0,0.15)',
+                          color: isReached ? '#9E59EF' : isDark ? 'rgba(255,255,255,0.15)' : 'rgba(0,0,0,0.15)',
                         }}
                       />
                       {/* Step number badge */}
                       <div
                         className="absolute -top-2.5 -right-2.5 w-6 h-6 rounded-full text-[10px] font-bold flex items-center justify-center"
                         style={{
-                          background: isReached ? '#931CF5' : isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.08)',
+                          background: isReached ? '#9E59EF' : isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.08)',
                           color: isReached ? '#ffffff' : isDark ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.2)',
                           transition: 'all 0.5s ease',
                         }}
@@ -310,7 +310,7 @@ export default function SplinePipelineSection() {
                   className="h-full rounded-full"
                   style={{
                     width: `${totalProgress * 100}%`,
-                    background: 'linear-gradient(90deg, #931CF5, #A855F7)',
+                    background: 'linear-gradient(90deg, #9E59EF, #B57FF5)',
                     transition: 'width 0.12s ease-out',
                     boxShadow: '0 0 12px rgba(147,28,245,0.5)',
                   }}

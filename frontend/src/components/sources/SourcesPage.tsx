@@ -39,7 +39,7 @@ export default function SourcesPage() {
   return (
     <div>
       <PageHeader
-        icon={<Database className="w-6 h-6 text-[#931CF5]" />}
+        icon={<Database className="w-6 h-6 text-[#9E59EF]" />}
         title={t('sources.title')}
         subtitle={t('sources.subtitle')}
       />
@@ -80,7 +80,7 @@ export default function SourcesPage() {
         {DATA_SOURCES.map((ds) => (
           <div
             key={ds.name}
-            className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-5 hover:shadow-md dark:hover:shadow-none hover:border-[#931CF5]/30 transition-all"
+            className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-5 hover:shadow-md dark:hover:shadow-none hover:border-[#9E59EF]/30 transition-all"
           >
             <div className="text-2xl mb-3">{ds.flag}</div>
             <h4 className="text-sm font-semibold text-slate-900 dark:text-slate-100 mb-1">{ds.name}</h4>

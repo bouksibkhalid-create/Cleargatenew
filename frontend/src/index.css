@@ -11,13 +11,13 @@
     --card-foreground: 222 47% 11%;
     --popover: 0 0% 100%;
     --popover-foreground: 222 47% 11%;
-    --primary: 166 100% 41%;            /* #931CF5 */
+    --primary: 268 82% 64%;             /* #9E59EF */
     --primary-foreground: 222 47% 11%;
     --secondary: 210 40% 96%;           /* #f1f5f9 */
     --secondary-foreground: 222 47% 11%;
     --muted: 210 40% 96%;
     --muted-foreground: 215 16% 47%;    /* #64748b */
-    --accent: 166 100% 41%;
+    --accent: 268 82% 64%;
     --accent-foreground: 222 47% 11%;
     --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 100%;
@@ -29,8 +29,8 @@
     /* Semantic tokens — Light */
     --cg-bg-primary: #ffffff;
     --cg-bg-secondary: #f8fafc;
-    --cg-accent: #931CF5;
-    --cg-accent-hover: #00C49A;
+    --cg-accent: #9E59EF;
+    --cg-accent-hover: #8A3FE0;
     --cg-text-primary: #0f172a;
     --cg-text-secondary: #475569;
     --cg-text-muted: #94a3b8;
@@ -54,13 +54,13 @@
     --card-foreground: 210 40% 98%;
     --popover: 222 25% 14%;
     --popover-foreground: 210 40% 98%;
-    --primary: 166 100% 41%;             /* #931CF5 */
+    --primary: 268 82% 64%;              /* #9E59EF */
     --primary-foreground: 222 47% 6%;
     --secondary: 217 33% 17%;            /* #1e293b */
     --secondary-foreground: 210 40% 98%;
     --muted: 217 33% 17%;
     --muted-foreground: 215 20% 65%;     /* #94a3b8 */
-    --accent: 166 100% 41%;
+    --accent: 268 82% 64%;
     --accent-foreground: 222 47% 6%;
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
@@ -71,8 +71,8 @@
     /* Semantic tokens — Dark */
     --cg-bg-primary: #0f172a;
     --cg-bg-secondary: #1e293b;
-    --cg-accent: #931CF5;
-    --cg-accent-hover: #A855F7;
+    --cg-accent: #9E59EF;
+    --cg-accent-hover: #B57FF5;
     --cg-text-primary: #f8fafc;
     --cg-text-secondary: #94a3b8;
     --cg-text-muted: #64748b;
@@ -239,7 +239,7 @@
   }
 
   .modern-entity-card:hover {
-    @apply border-[#931CF5]/30 shadow-md;
+    @apply border-[#9E59EF]/30 shadow-md;
   }
 
   :is(.dark) .modern-entity-card:hover {
@@ -258,9 +258,9 @@
 
   .match-score-badge {
     @apply inline-flex items-center gap-2;
-    @apply text-xs font-bold tracking-wide text-[#931CF5];
-    @apply bg-[#931CF5]/10 px-3 py-1.5 rounded-full;
-    border: 1px solid rgba(147, 28, 245, 0.3);
+    @apply text-xs font-bold tracking-wide text-[#9E59EF];
+    @apply bg-[#9E59EF]/10 px-3 py-1.5 rounded-full;
+    border: 1px solid rgba(158, 89, 239, 0.3);
   }
 
   .header-badges-modern {
@@ -323,7 +323,7 @@
 
   .info-icon-modern {
     @apply flex items-center justify-center w-8 h-8;
-    @apply bg-[#931CF5]/10 rounded-lg text-[#931CF5] flex-shrink-0;
+    @apply bg-[#9E59EF]/10 rounded-lg text-[#9E59EF] flex-shrink-0;
   }
 
   .info-content-modern {
@@ -364,7 +364,7 @@
   }
 
   .aliases-toggle-modern:hover {
-    @apply bg-[#931CF5]/5 border-[#931CF5]/50 text-[#931CF5];
+    @apply bg-[#9E59EF]/5 border-[#9E59EF]/50 text-[#9E59EF];
   }
 
   .aliases-list-modern {
@@ -443,7 +443,7 @@
   .view-intelligence-btn-modern {
     @apply flex items-center justify-between w-full px-6 py-4;
     @apply bg-transparent border-t border-[#E5E7EB];
-    @apply text-[#931CF5] font-semibold text-sm;
+    @apply text-[#9E59EF] font-semibold text-sm;
     @apply cursor-pointer transition-all;
   }
 
@@ -452,7 +452,7 @@
   }
 
   .view-intelligence-btn-modern:hover {
-    @apply bg-[#931CF5]/5 text-[#A855F7];
+    @apply bg-[#9E59EF]/5 text-[#B57FF5];
   }
 
   .view-intelligence-btn-modern svg {
@@ -510,18 +510,18 @@
   min-width: 200px;
   padding: 1rem;
   background: linear-gradient(135deg, #1A1F2E 0%, #0F1419 100%);
-  border: 1px solid rgba(147, 28, 245, 0.5);
+  border: 1px solid rgba(158, 89, 239, 0.5);
   border-radius: 1rem;
   color: white;
-  box-shadow: 0 0 20px rgba(147, 28, 245, 0.1);
+  box-shadow: 0 0 20px rgba(158, 89, 239, 0.1);
   cursor: pointer;
   transition: all 0.2s;
 }
 
 .central-graph-node:hover {
   transform: scale(1.05);
-  box-shadow: 0 0 30px rgba(147, 28, 245, 0.2);
-  border-color: #931CF5;
+  box-shadow: 0 0 30px rgba(158, 89, 239, 0.2);
+  border-color: #9E59EF;
 }
 
 .central-node-icon {
@@ -530,10 +530,10 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(147, 28, 245, 0.1);
+  background: rgba(158, 89, 239, 0.1);
   border-radius: 0.75rem;
   margin-bottom: 0.75rem;
-  color: #931CF5;
+  color: #9E59EF;
 }
 
 .central-node-content {
@@ -569,7 +569,7 @@
 
 .graph-node:hover {
   transform: scale(1.05);
-  border-color: rgba(147, 28, 245, 0.5);
+  border-color: rgba(158, 89, 239, 0.5);
   background: rgba(255, 255, 255, 0.08);
   z-index: 10;
 }
@@ -667,9 +667,9 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(147, 28, 245, 0.1);
+  background: rgba(158, 89, 239, 0.1);
   border-radius: 0.75rem;
-  color: #931CF5;
+  color: #9E59EF;
   flex-shrink: 0;
 }
 
@@ -780,14 +780,14 @@
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  color: #931CF5;
+  color: #9E59EF;
   font-size: 0.875rem;
   text-decoration: none;
   transition: color 0.2s;
 }
 
 .source-link:hover {
-  color: #A855F7;
+  color: #B57FF5;
   text-decoration: underline;
 }
 
@@ -864,8 +864,8 @@
 
 .control-button-wide:hover {
   background: rgba(255, 255, 255, 0.05);
-  border-color: rgba(147, 28, 245, 0.3);
-  color: #931CF5;
+  border-color: rgba(158, 89, 239, 0.3);
+  color: #9E59EF;
 }
 
 .control-search {

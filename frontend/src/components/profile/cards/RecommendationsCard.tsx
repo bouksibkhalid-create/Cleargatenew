@@ -26,8 +26,8 @@ export default function RecommendationsCard({ recommendation, keyFindings }: Rec
         </ul>
       )}
 
-      <div className="bg-[#931CF5]/10 border border-[#931CF5]/30 rounded-lg p-3">
-        <p className="text-sm text-[#931CF5] font-medium">{recommendation}</p>
+      <div className="bg-[#9E59EF]/10 border border-[#9E59EF]/30 rounded-lg p-3">
+        <p className="text-sm text-[#9E59EF] font-medium">{recommendation}</p>
       </div>
     </div>
   );

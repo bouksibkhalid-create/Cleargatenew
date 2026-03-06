@@ -64,7 +64,7 @@ export default function OSINTProfileTab({ profile }: OSINTProfileTabProps) {
       {profile.osint_biography && (
         <div className="bg-white dark:bg-[#1A1F2E] rounded-xl border border-slate-200 dark:border-white/10 p-6">
           <div className="flex items-center gap-2 mb-4">
-            <User className="w-4 h-4 text-[#931CF5]" />
+            <User className="w-4 h-4 text-[#9E59EF]" />
             <p className="text-xs font-medium uppercase tracking-wider text-slate-500 dark:text-gray-500">
               {t('osintProfile.biography', 'Biography')}
             </p>
@@ -105,7 +105,7 @@ export default function OSINTProfileTab({ profile }: OSINTProfileTabProps) {
       {sources.length > 0 && (
         <div className="bg-white dark:bg-[#1A1F2E] rounded-xl border border-slate-200 dark:border-white/10 p-6">
           <div className="flex items-center gap-2 mb-4">
-            <Globe className="w-4 h-4 text-[#931CF5]" />
+            <Globe className="w-4 h-4 text-[#9E59EF]" />
             <p className="text-xs font-medium uppercase tracking-wider text-slate-500 dark:text-gray-500">
               {t('osintProfile.sourcesInvestigated', 'Sources Investigated')} ({sources.length})
             </p>
@@ -134,7 +134,7 @@ export default function OSINTProfileTab({ profile }: OSINTProfileTabProps) {
                     href={src.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-[#931CF5] hover:text-[#A855F7] transition-colors"
+                    className="text-[#9E59EF] hover:text-[#B57FF5] transition-colors"
                   >
                     <ExternalLink className="w-3.5 h-3.5" />
                   </a>

@@ -237,7 +237,7 @@ export default function NewCheckPage() {
     return (
       <div>
         <PageHeader
-          icon={<Search className="w-6 h-6 text-[#931CF5]" />}
+          icon={<Search className="w-6 h-6 text-[#9E59EF]" />}
           title={t('check.title')}
           subtitle={t('check.subtitle')}
         />
@@ -278,7 +278,7 @@ export default function NewCheckPage() {
     return (
       <div>
         <PageHeader
-          icon={<Search className="w-6 h-6 text-[#931CF5]" />}
+          icon={<Search className="w-6 h-6 text-[#9E59EF]" />}
           title={t('check.title')}
           subtitle={`${t('check.searching')} "${currentQuery}"...`}
         />
@@ -293,7 +293,7 @@ export default function NewCheckPage() {
   return (
     <div>
       <PageHeader
-        icon={<Search className="w-6 h-6 text-[#931CF5]" />}
+        icon={<Search className="w-6 h-6 text-[#9E59EF]" />}
         title={t('check.title')}
         subtitle={currentQuery ? `${t('check.resultsFor')} "${currentQuery}"` : undefined}
       />

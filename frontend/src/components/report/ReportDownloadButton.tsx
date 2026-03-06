@@ -64,7 +64,7 @@ export default function ReportDownloadButton({
 
   const baseClasses =
     variant === 'primary'
-      ? 'bg-[#931CF5] text-white hover:bg-[#7B16D0]'
+      ? 'bg-[#9E59EF] text-white hover:bg-[#8A3FE0]'
       : 'bg-slate-100 dark:bg-white/10 border border-slate-200 dark:border-white/20 text-slate-900 dark:text-white hover:bg-slate-200 dark:hover:bg-white/20';
 
   return (

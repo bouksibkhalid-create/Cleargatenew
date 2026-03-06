@@ -21,7 +21,7 @@ export function DataSources() {
                     <Card className="bg-slate-50 dark:bg-[#1A1F2E] border-slate-200 dark:border-white/10 text-slate-900 dark:text-white">
                         <CardHeader>
                             <h3 className="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                                <Globe className="w-5 h-5 text-[#931CF5]" />
+                                <Globe className="w-5 h-5 text-[#9E59EF]" />
                                 Official Sanctions List Sources
                             </h3>
                             <p className="text-sm text-slate-500 dark:text-gray-400 mt-1">Free and public sources</p>

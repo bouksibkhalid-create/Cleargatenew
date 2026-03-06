@@ -57,9 +57,9 @@ export default {
                     dark: '#0F1419',
                     darker: '#0A0F14',
                     card: '#1A1F2E',
-                    accent: '#931CF5',
-                    'accent-hover': '#7B16D0',
-                    'accent-light': '#A855F7',
+                    accent: '#9E59EF',
+                    'accent-hover': '#8A3FE0',
+                    'accent-light': '#B57FF5',
                 },
                 // Custom Phase 2 colors
                 purple: {

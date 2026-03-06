@@ -20,9 +20,9 @@ const EVENT_CONFIG: Record<string, { icon: typeof Search; color: string; bg: str
   search: { icon: Search, color: '#3B82F6', bg: '#EFF6FF' },
   report_download: { icon: FileText, color: '#8B5CF6', bg: '#F5F3FF' },
   entity_saved: { icon: Bookmark, color: '#10B981', bg: '#ECFDF5' },
-  monitoring_enabled: { icon: Eye, color: '#931CF5', bg: '#ECFDF5' },
+  monitoring_enabled: { icon: Eye, color: '#9E59EF', bg: '#ECFDF5' },
   monitoring_disabled: { icon: Eye, color: '#6B7280', bg: '#F3F4F6' },
-  monitoring_update: { icon: Bell, color: '#931CF5', bg: '#ECFDF5' },
+  monitoring_update: { icon: Bell, color: '#9E59EF', bg: '#ECFDF5' },
 };
 
 const DATE_FILTER_KEYS = [
@@ -117,14 +117,14 @@ export default function TimelinePage() {
   return (
     <div>
       <PageHeader
-        icon={<Clock className="w-6 h-6 text-[#931CF5]" />}
+        icon={<Clock className="w-6 h-6 text-[#9E59EF]" />}
         title={t('timeline.title')}
         subtitle={t('timeline.subtitle')}
         action={
           <button
             onClick={() => setShowFilters(!showFilters)}
             className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg border transition-colors min-h-[36px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2563eb] ${
-              showFilters ? 'bg-[#931CF5]/10 border-[#931CF5]/30 text-[#931CF5]' : 'border-slate-200 dark:border-slate-600 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+              showFilters ? 'bg-[#9E59EF]/10 border-[#9E59EF]/30 text-[#9E59EF]' : 'border-slate-200 dark:border-slate-600 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
             }`}
           >
             <Filter className="w-3.5 h-3.5" />
@@ -141,7 +141,7 @@ export default function TimelinePage() {
             <select
               value={typeFilter}
               onChange={(e) => setTypeFilter(e.target.value)}
-              className="px-3 py-1.5 text-sm border border-slate-200 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-[#931CF5]/40"
+              className="px-3 py-1.5 text-sm border border-slate-200 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-[#9E59EF]/40"
             >
               {EVENT_TYPE_FILTER_KEYS.map((f) => (
                 <option key={f.value} value={f.value}>{t(f.labelKey)}</option>
@@ -153,7 +153,7 @@ export default function TimelinePage() {
             <select
               value={dateFilter}
               onChange={(e) => setDateFilter(Number(e.target.value))}
-              className="px-3 py-1.5 text-sm border border-slate-200 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-[#931CF5]/40"
+              className="px-3 py-1.5 text-sm border border-slate-200 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-[#9E59EF]/40"
             >
               {DATE_FILTER_KEYS.map((f) => (
                 <option key={f.days} value={f.days}>{t(f.labelKey)}</option>
@@ -198,7 +198,7 @@ export default function TimelinePage() {
                         <div className="flex items-center gap-2">
                           <span className="text-sm font-medium text-slate-900 dark:text-slate-100">{translateEventTitle(ev)}</span>
                           {!ev.is_read && (
-                            <span className="text-[9px] bg-[#931CF5] text-white font-bold px-1.5 py-0.5 rounded-full uppercase">{t('timeline.new')}</span>
+                            <span className="text-[9px] bg-[#9E59EF] text-white font-bold px-1.5 py-0.5 rounded-full uppercase">{t('timeline.new')}</span>
                           )}
                         </div>
                         {ev.description && (

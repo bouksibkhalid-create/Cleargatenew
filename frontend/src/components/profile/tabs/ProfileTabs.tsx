@@ -147,7 +147,7 @@ function TabTriggerWithBadge({
   return (
     <TabsTrigger
       value={id}
-      className="inline-flex items-center gap-1.5 px-4 py-3 text-sm font-medium text-slate-500 dark:text-gray-400 border-b-2 border-transparent rounded-none data-[state=active]:border-[#931CF5] data-[state=active]:text-slate-900 dark:data-[state=active]:text-white data-[state=active]:shadow-none data-[state=active]:bg-transparent hover:text-slate-700 dark:hover:text-gray-300 transition-colors whitespace-nowrap"
+      className="inline-flex items-center gap-1.5 px-4 py-3 text-sm font-medium text-slate-500 dark:text-gray-400 border-b-2 border-transparent rounded-none data-[state=active]:border-[#9E59EF] data-[state=active]:text-slate-900 dark:data-[state=active]:text-white data-[state=active]:shadow-none data-[state=active]:bg-transparent hover:text-slate-700 dark:hover:text-gray-300 transition-colors whitespace-nowrap"
     >
       <Icon className="w-4 h-4" />
       <span>{label}</span>

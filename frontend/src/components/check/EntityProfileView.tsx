@@ -99,7 +99,7 @@ export default function EntityProfileView({ source }: EntityProfileViewProps) {
     return (
       <div className="text-center py-12">
         <p className="text-sm text-[#9CA3AF]">Entity not found.</p>
-        <button onClick={handleBack} className="mt-4 text-sm text-[#931CF5] hover:underline">
+        <button onClick={handleBack} className="mt-4 text-sm text-[#9E59EF] hover:underline">
           Go back
         </button>
       </div>

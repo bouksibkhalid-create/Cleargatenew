@@ -143,7 +143,7 @@ export default function ReportsPage() {
   return (
     <div>
       <PageHeader
-        icon={<FileText className="w-6 h-6 text-[#931CF5]" />}
+        icon={<FileText className="w-6 h-6 text-[#9E59EF]" />}
         title={t('reports.title')}
         subtitle={t('reports.subtitle')}
       />
@@ -156,7 +156,7 @@ export default function ReportsPage() {
             value={filterText}
             onChange={(e) => setFilterText(e.target.value)}
             placeholder={t('reports.searchPlaceholder')}
-            className="w-full pl-9 pr-3 py-2 text-sm border border-slate-200 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-[#931CF5]/40"
+            className="w-full pl-9 pr-3 py-2 text-sm border border-slate-200 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-[#9E59EF]/40"
           />
         </div>
       </div>
@@ -199,7 +199,7 @@ export default function ReportsPage() {
                       <td className="px-4 py-3">
                         <div className="font-semibold text-slate-900 dark:text-slate-100">{entity.entity_name}</div>
                         {entity.is_monitored && (
-                          <span className="inline-flex items-center gap-1 text-[10px] text-[#931CF5] font-medium mt-0.5">
+                          <span className="inline-flex items-center gap-1 text-[10px] text-[#9E59EF] font-medium mt-0.5">
                             <Eye className="w-3 h-3" /> {t('reports.monitored')}
                           </span>
                         )}

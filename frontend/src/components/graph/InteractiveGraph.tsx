@@ -98,7 +98,7 @@ export default function InteractiveGraph({
                         style: {
                             background: isCentral ? '#1A1F2E' : '#2A3040',
                             color: '#ffffff',
-                            border: isCentral ? '2px solid #931CF5' : '1px solid rgba(255,255,255,0.2)',
+                            border: isCentral ? '2px solid #9E59EF' : '1px solid rgba(255,255,255,0.2)',
                             borderRadius: '8px',
                             padding: '12px 16px',
                             fontSize: '14px',
@@ -204,7 +204,7 @@ export default function InteractiveGraph({
         return (
             <div className="flex items-center justify-center w-full h-full bg-[#0F1419]">
                 <div className="text-center">
-                    <div className="w-16 h-16 border-4 border-[#931CF5] border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+                    <div className="w-16 h-16 border-4 border-[#9E59EF] border-t-transparent rounded-full animate-spin mx-auto mb-4" />
                     <p className="text-gray-400 font-medium">Loading relationship graph...</p>
                     <p className="text-gray-500 text-sm mt-1">{initialEntityName}</p>
                 </div>
@@ -275,7 +275,7 @@ export default function InteractiveGraph({
             <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-[#1A1F2E] px-6 py-3 rounded-lg shadow-lg border border-white/10 z-10">
                 <div className="flex items-center gap-6 text-sm">
                     <div className="flex items-center gap-2">
-                        <div className="w-4 h-4 rounded bg-[#1A1F2E] border-2 border-[#931CF5]" />
+                        <div className="w-4 h-4 rounded bg-[#1A1F2E] border-2 border-[#9E59EF]" />
                         <span className="text-gray-300">Central Entity</span>
                     </div>
                     <div className="flex items-center gap-2">

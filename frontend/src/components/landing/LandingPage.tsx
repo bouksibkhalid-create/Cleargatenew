@@ -47,7 +47,7 @@ function HeroSection({ onAccessDemo, onSearch }: LandingPageProps) {
                 <div className="flex-1 text-center lg:text-left">
                     <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-slate-900 dark:text-white leading-tight">
                         {t('landing.heroTitle1')}<br />
-                        <span className="text-[#931CF5]">{t('landing.heroTitle2')}</span>
+                        <span className="text-[#9E59EF]">{t('landing.heroTitle2')}</span>
                     </h1>
                     <p className="text-lg text-slate-600 dark:text-gray-400 mt-6 max-w-xl leading-relaxed">
                         {t('landing.heroSubtitle')}
@@ -58,9 +58,9 @@ function HeroSection({ onAccessDemo, onSearch }: LandingPageProps) {
                             value={query}
                             onChange={(e) => setQuery(e.target.value)}
                             placeholder={t('landing.searchPlaceholder')}
-                            className="flex-1 px-5 py-3 rounded-full bg-white dark:bg-white/10 border border-slate-300 dark:border-white/20 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-gray-500 text-sm focus:outline-none focus:ring-2 focus:ring-[#931CF5]/50"
+                            className="flex-1 px-5 py-3 rounded-full bg-white dark:bg-white/10 border border-slate-300 dark:border-white/20 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-gray-500 text-sm focus:outline-none focus:ring-2 focus:ring-[#9E59EF]/50"
                         />
-                        <button type="submit" className="px-6 py-3 bg-[#931CF5] text-white font-semibold rounded-full text-sm hover:bg-[#7B16D0] transition-colors">
+                        <button type="submit" className="px-6 py-3 bg-[#9E59EF] text-white font-semibold rounded-full text-sm hover:bg-[#8A3FE0] transition-colors">
                             {t('landing.searchButton')}
                         </button>
                     </form>
@@ -122,7 +122,7 @@ function StatsBar() {
             <div className="max-w-7xl mx-auto px-6 grid grid-cols-2 md:grid-cols-5 gap-8 text-center">
                 {STAT_KEYS.map((s) => (
                     <div key={s.labelKey} className="flex flex-col items-center gap-2">
-                        <s.Icon className="w-5 h-5 text-[#931CF5] mb-1" />
+                        <s.Icon className="w-5 h-5 text-[#9E59EF] mb-1" />
                         <AnimatedCounter target={s.value} suffix={s.suffix} />
                         <span className="text-xs text-slate-500 dark:text-gray-500 uppercase tracking-wide">{t(s.labelKey)}</span>
                     </div>
@@ -152,7 +152,7 @@ function HowItWorks() {
                     {STEP_KEYS.map((step) => (
                         <div key={step.titleKey} className="relative group text-center">
                             <div className="w-16 h-16 mx-auto rounded-2xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 flex items-center justify-center mb-4 group-hover:-translate-y-1 transition-transform">
-                                <step.Icon className="w-7 h-7 text-[#931CF5]" />
+                                <step.Icon className="w-7 h-7 text-[#9E59EF]" />
                             </div>
                             <h3 className="text-lg font-semibold text-slate-900 dark:text-white">{t(step.titleKey)}</h3>
                             <p className="text-sm text-slate-600 dark:text-gray-400 mt-2 leading-relaxed">{t(step.descKey)}</p>
@@ -189,12 +189,12 @@ function DataSourcesGrid() {
                 <p className="text-slate-600 dark:text-gray-400 text-center mb-12 max-w-2xl mx-auto">{t('landing.dataCoverageSubtitle')}</p>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     {DATA_SOURCES.map((ds) => (
-                        <div key={ds.name} className="p-5 bg-slate-50 dark:bg-white/5 rounded-xl border border-slate-200 dark:border-white/10 hover:border-[#931CF5]/40 hover:bg-slate-100 dark:hover:bg-white/[0.08] transition-all">
+                        <div key={ds.name} className="p-5 bg-slate-50 dark:bg-white/5 rounded-xl border border-slate-200 dark:border-white/10 hover:border-[#9E59EF]/40 hover:bg-slate-100 dark:hover:bg-white/[0.08] transition-all">
                             <div className="text-2xl mb-2">{ds.flag}</div>
                             <h4 className="text-sm font-semibold text-slate-900 dark:text-white">{ds.name}</h4>
                             <p className="text-xs text-slate-500 dark:text-gray-400 mt-1">{ds.count} {t('landing.entities')}</p>
                             <div className="flex items-center gap-1.5 mt-2">
-                                <span className="w-1.5 h-1.5 rounded-full bg-[#931CF5]" />
+                                <span className="w-1.5 h-1.5 rounded-full bg-[#9E59EF]" />
                                 <span className="text-xs text-slate-400 dark:text-gray-500">{ds.freq}</span>
                             </div>
                         </div>
@@ -226,8 +226,8 @@ function CapabilitiesSection() {
                 <h2 className="text-3xl font-bold text-slate-900 dark:text-white text-center mb-12">{t('landing.capabilities')}</h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                     {CAP_KEYS.map((cap) => (
-                        <div key={cap.titleKey} className="p-6 rounded-xl bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 hover:border-[#931CF5]/30 hover:bg-slate-50 dark:hover:bg-white/[0.08] transition-all group shadow-sm dark:shadow-none">
-                            <cap.Icon className="w-8 h-8 text-[#931CF5] mb-4 group-hover:scale-110 transition-transform" />
+                        <div key={cap.titleKey} className="p-6 rounded-xl bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 hover:border-[#9E59EF]/30 hover:bg-slate-50 dark:hover:bg-white/[0.08] transition-all group shadow-sm dark:shadow-none">
+                            <cap.Icon className="w-8 h-8 text-[#9E59EF] mb-4 group-hover:scale-110 transition-transform" />
                             <h3 className="text-base font-semibold text-slate-900 dark:text-white">{t(cap.titleKey)}</h3>
                             <p className="text-sm text-slate-600 dark:text-gray-400 mt-2 leading-relaxed">{t(cap.descKey)}</p>
                         </div>
@@ -254,11 +254,11 @@ function ReportPreview({ onAccessDemo }: { onAccessDemo: () => void }) {
                         style={{ transform: 'perspective(1000px) rotateY(-5deg)', background: 'linear-gradient(135deg, #0F1419, #1A1F2E)' }}
                     >
                         <div className="p-6 flex flex-col h-full">
-                            <div className="text-[#931CF5] text-xs font-semibold tracking-wider uppercase">{t('landing.reportMockHeader')}</div>
+                            <div className="text-[#9E59EF] text-xs font-semibold tracking-wider uppercase">{t('landing.reportMockHeader')}</div>
                             <div className="text-gray-500 text-[10px] mt-1">{t('landing.reportMockSubheader')}</div>
                             <div className="flex-1 flex flex-col items-center justify-center">
-                                <div className="w-12 h-[2px] bg-[#931CF5] mb-6" />
-                                <div className="text-[#931CF5] text-xs font-medium uppercase tracking-wider">{t('landing.reportMockLabel')}</div>
+                                <div className="w-12 h-[2px] bg-[#9E59EF] mb-6" />
+                                <div className="text-[#9E59EF] text-xs font-medium uppercase tracking-wider">{t('landing.reportMockLabel')}</div>
                                 <div className="text-white text-lg font-bold mt-4 text-center">{t('landing.reportMockSubject')}</div>
                                 <div className="text-gray-400 text-xs mt-2">{t('landing.reportMockEntityLocation')}</div>
                             </div>
@@ -270,7 +270,7 @@ function ReportPreview({ onAccessDemo }: { onAccessDemo: () => void }) {
                                     t('landing.reportMockCoverage'),
                                 ].map((label) => (
                                     <div key={label} className="bg-white/5 rounded p-2 text-center">
-                                        <div className="text-[#931CF5] text-sm font-bold">—</div>
+                                        <div className="text-[#9E59EF] text-sm font-bold">—</div>
                                         <div className="text-gray-500 text-[8px] mt-0.5">{label}</div>
                                     </div>
                                 ))}
@@ -286,7 +286,7 @@ function ReportPreview({ onAccessDemo }: { onAccessDemo: () => void }) {
                     </p>
                     <button
                         onClick={onAccessDemo}
-                        className="mt-8 inline-flex items-center gap-2 px-8 py-3 bg-[#931CF5] text-white font-semibold rounded-full text-sm hover:bg-[#7B16D0] transition-colors"
+                        className="mt-8 inline-flex items-center gap-2 px-8 py-3 bg-[#9E59EF] text-white font-semibold rounded-full text-sm hover:bg-[#8A3FE0] transition-colors"
                     >
                         {t('landing.generateReport')}
                         <ArrowRight className="w-4 h-4" />
@@ -325,7 +325,7 @@ export default function LandingPage({ onAccessDemo, onSearch }: LandingPageProps
             <nav className="sticky top-0 z-50 bg-white/95 dark:bg-[#0F1419]/95 backdrop-blur-sm border-b border-slate-200 dark:border-white/10">
                 <div className="flex items-center justify-between px-6 py-4 max-w-7xl mx-auto">
                     <div className="flex items-center gap-2">
-                        <Shield className="w-6 h-6 text-[#931CF5]" />
+                        <Shield className="w-6 h-6 text-[#9E59EF]" />
                         <span className="text-lg font-bold tracking-wide text-slate-900 dark:text-white uppercase">{t('brand.name')}</span>
                     </div>
                     <div className="flex items-center gap-3">
@@ -333,7 +333,7 @@ export default function LandingPage({ onAccessDemo, onSearch }: LandingPageProps
                         <ThemeToggle />
                         <button
                             onClick={onAccessDemo}
-                            className="inline-flex items-center gap-2 px-6 py-2.5 bg-[#931CF5] text-white text-sm font-semibold rounded-full hover:bg-[#7B16D0] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#2563eb]"
+                            className="inline-flex items-center gap-2 px-6 py-2.5 bg-[#9E59EF] text-white text-sm font-semibold rounded-full hover:bg-[#8A3FE0] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#2563eb]"
                         >
                             {t('landing.accessDemo')}
                             <ArrowRight className="w-4 h-4" />

@@ -50,7 +50,7 @@ export default function Sidebar({ collapsed, onToggle, onClose }: SidebarProps) 
       {/* Header */}
       <div className={`flex items-center h-16 px-4 border-b border-slate-200 dark:border-slate-700 ${collapsed ? 'justify-center' : 'justify-between'}`}>
         <Link to="/dashboard" className="flex items-center gap-2 min-w-0" onClick={handleNavClick}>
-          <div className="w-8 h-8 rounded-lg bg-[#931CF5] flex items-center justify-center flex-shrink-0">
+          <div className="w-8 h-8 rounded-lg bg-[#9E59EF] flex items-center justify-center flex-shrink-0">
             <Shield className="w-4 h-4 text-white" />
           </div>
           {!collapsed && (
@@ -87,7 +87,7 @@ export default function Sidebar({ collapsed, onToggle, onClose }: SidebarProps) 
                     focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2563eb]
                     ${collapsed ? 'justify-center px-2 py-2.5' : 'px-3 py-2.5'}
                     ${isActive
-                      ? 'bg-purple-50 dark:bg-[rgba(147,28,245,0.08)] text-[#931CF5] border-l-[3px] border-[#931CF5]'
+                      ? 'bg-purple-50 dark:bg-[rgba(147,28,245,0.08)] text-[#9E59EF] border-l-[3px] border-[#9E59EF]'
                       : 'text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-white/5 hover:text-slate-900 dark:hover:text-white border-l-[3px] border-transparent'
                     }
                   `}
@@ -97,7 +97,7 @@ export default function Sidebar({ collapsed, onToggle, onClose }: SidebarProps) 
                     <>
                       <span className="truncate">{t(item.labelKey)}</span>
                       {item.badge && reportsCount > 0 && (
-                        <span className="ml-auto bg-[#931CF5] text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[18px] text-center">
+                        <span className="ml-auto bg-[#9E59EF] text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[18px] text-center">
                           {reportsCount}
                         </span>
                       )}
@@ -116,7 +116,7 @@ export default function Sidebar({ collapsed, onToggle, onClose }: SidebarProps) 
           <div className="flex flex-col items-center gap-2">
             <ThemeToggle className="!min-w-[32px] !min-h-[32px]" />
             <LanguageToggle />
-            <div className="w-8 h-8 rounded-full bg-[#931CF5] flex items-center justify-center text-white text-xs font-bold">
+            <div className="w-8 h-8 rounded-full bg-[#9E59EF] flex items-center justify-center text-white text-xs font-bold">
               K
             </div>
             <button
@@ -134,7 +134,7 @@ export default function Sidebar({ collapsed, onToggle, onClose }: SidebarProps) 
               <ThemeToggle />
             </div>
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-full bg-[#931CF5] flex items-center justify-center text-white text-xs font-bold flex-shrink-0">
+              <div className="w-8 h-8 rounded-full bg-[#9E59EF] flex items-center justify-center text-white text-xs font-bold flex-shrink-0">
                 K
               </div>
               <div className="min-w-0 flex-1">

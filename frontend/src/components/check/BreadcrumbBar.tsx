@@ -23,7 +23,7 @@ export default function BreadcrumbBar({
   return (
     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6 pb-4 border-b border-slate-200 dark:border-slate-700">
       <div className="flex items-center gap-1.5 text-sm">
-        <Link to={basePath} className="text-slate-500 dark:text-slate-400 hover:text-[#931CF5] transition-colors">
+        <Link to={basePath} className="text-slate-500 dark:text-slate-400 hover:text-[#9E59EF] transition-colors">
           {baseLabel}
         </Link>
         <ChevronRight className="w-3.5 h-3.5 text-slate-400 dark:text-slate-500" />
@@ -45,7 +45,7 @@ export default function BreadcrumbBar({
             disabled={isSaved || saving}
             className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg transition-colors ${
               isSaved
-                ? 'bg-[#931CF5]/10 text-[#931CF5] border border-[#931CF5]/30 cursor-default'
+                ? 'bg-[#9E59EF]/10 text-[#9E59EF] border border-[#9E59EF]/30 cursor-default'
                 : 'border border-slate-200 dark:border-slate-600 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-700'
             }`}
           >
@@ -58,7 +58,7 @@ export default function BreadcrumbBar({
           onClick={onToggleMonitor}
           className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg transition-colors ${
             isMonitored
-              ? 'bg-[#931CF5]/10 text-[#931CF5] border border-[#931CF5]/30'
+              ? 'bg-[#9E59EF]/10 text-[#9E59EF] border border-[#9E59EF]/30'
               : 'border border-slate-200 dark:border-slate-600 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-700'
           }`}
         >

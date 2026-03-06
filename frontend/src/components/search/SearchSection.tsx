@@ -29,13 +29,13 @@ export default function SearchSection({ onSearch, isLoading }: SearchSectionProp
     return (
         <form onSubmit={handleSubmit} className="simple-search-form">
             <div className="search-input-wrapper relative">
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#931CF5]" />
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#9E59EF]" />
                 <input
                     type="text"
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
                     placeholder={t('check.subtitle')}
-                    className="w-full pl-12 pr-12 py-3 text-base border border-slate-200 dark:border-slate-600 rounded-full bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-[#931CF5]/50 focus:border-transparent transition-all"
+                    className="w-full pl-12 pr-12 py-3 text-base border border-slate-200 dark:border-slate-600 rounded-full bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-[#9E59EF]/50 focus:border-transparent transition-all"
                     autoFocus
                     disabled={isLoading}
                 />
@@ -53,7 +53,7 @@ export default function SearchSection({ onSearch, isLoading }: SearchSectionProp
             <button
                 type="submit"
                 disabled={!query.trim() || isLoading}
-                className="mt-4 w-full sm:w-auto px-8 py-3 bg-[#931CF5] text-white font-semibold rounded-full hover:bg-[#7B16D0] disabled:bg-slate-100 dark:disabled:bg-slate-700 disabled:text-slate-400 dark:disabled:text-slate-500 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2 min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#2563eb]"
+                className="mt-4 w-full sm:w-auto px-8 py-3 bg-[#9E59EF] text-white font-semibold rounded-full hover:bg-[#8A3FE0] disabled:bg-slate-100 dark:disabled:bg-slate-700 disabled:text-slate-400 dark:disabled:text-slate-500 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2 min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#2563eb]"
             >
                 {isLoading ? (
                     <>

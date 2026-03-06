@@ -42,15 +42,15 @@ export default function ExportButton({ data, disabled = false }: ExportButtonPro
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-slate-100">
                 <DropdownMenuItem onClick={() => handleExport('pdf')} className="hover:bg-slate-50 dark:hover:bg-slate-700 focus:bg-slate-50 dark:focus:bg-slate-700 cursor-pointer">
-                    <FileText className="h-4 w-4 mr-2 text-[#931CF5]" />
+                    <FileText className="h-4 w-4 mr-2 text-[#9E59EF]" />
                     Export to PDF
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => handleExport('csv')} className="hover:bg-slate-50 dark:hover:bg-slate-700 focus:bg-slate-50 dark:focus:bg-slate-700 cursor-pointer">
-                    <Table className="h-4 w-4 mr-2 text-[#931CF5]" />
+                    <Table className="h-4 w-4 mr-2 text-[#9E59EF]" />
                     Export to CSV
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => handleExport('json')} className="hover:bg-slate-50 dark:hover:bg-slate-700 focus:bg-slate-50 dark:focus:bg-slate-700 cursor-pointer">
-                    <Code className="h-4 w-4 mr-2 text-[#931CF5]" />
+                    <Code className="h-4 w-4 mr-2 text-[#9E59EF]" />
                     Export to JSON
                 </DropdownMenuItem>
             </DropdownMenuContent>

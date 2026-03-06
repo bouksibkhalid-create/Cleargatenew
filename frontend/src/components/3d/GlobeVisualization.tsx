@@ -43,7 +43,7 @@ function DotGrid({ radius = 2.02, count = 1500 }: { radius?: number; count?: num
     <Points positions={positions} stride={3}>
       <PointMaterial
         transparent
-        color="#931CF5"
+        color="#9E59EF"
         size={0.015}
         sizeAttenuation
         depthWrite={false}
@@ -53,7 +53,7 @@ function DotGrid({ radius = 2.02, count = 1500 }: { radius?: number; count?: num
   )
 }
 
-function ArcLine({ from, to, color = '#931CF5', radius = 2 }: {
+function ArcLine({ from, to, color = '#9E59EF', radius = 2 }: {
   from: number[]; to: number[]; color?: string; radius?: number
 }) {
   const lineObj = useMemo(() => {

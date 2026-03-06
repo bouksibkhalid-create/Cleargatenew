@@ -18,7 +18,7 @@ const EVENT_ICONS: Record<string, { icon: typeof Search; color: string }> = {
   search: { icon: Search, color: '#3B82F6' },
   report_download: { icon: FileText, color: '#8B5CF6' },
   entity_saved: { icon: FileText, color: '#10B981' },
-  monitoring_enabled: { icon: Eye, color: '#931CF5' },
+  monitoring_enabled: { icon: Eye, color: '#9E59EF' },
   monitoring_disabled: { icon: Eye, color: '#6B7280' },
 };
 
@@ -85,14 +85,14 @@ export default function DashboardPage() {
 
   const metricCards = [
     { icon: Search, label: t('dashboard.searchesThisMonth'), value: stats.searchesThisMonth, color: '#3B82F6' },
-    { icon: Eye, label: t('dashboard.monitoredEntities'), value: stats.monitoredEntities, color: '#931CF5' },
+    { icon: Eye, label: t('dashboard.monitoredEntities'), value: stats.monitoredEntities, color: '#9E59EF' },
     { icon: FileText, label: t('dashboard.reportsProduced'), value: stats.reportsProduced, color: '#8B5CF6' },
     { icon: Users, label: t('dashboard.membersActive'), value: stats.membersActive, color: '#F59E0B' },
   ];
 
   return (
     <div>
-      <PageHeader icon={<BarChart3 className="w-6 h-6 text-[#931CF5]" />} title={t('dashboard.title')} subtitle={t('dashboard.subtitle')} />
+      <PageHeader icon={<BarChart3 className="w-6 h-6 text-[#9E59EF]" />} title={t('dashboard.title')} subtitle={t('dashboard.subtitle')} />
 
       {/* Key Metrics */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
@@ -135,7 +135,7 @@ export default function DashboardPage() {
         <CgCard
           title={t('dashboard.recentActivity')}
           subtitle={t('dashboard.latestEvents')}
-          action={<Link to="/timeline" className="text-xs text-[#931CF5] hover:underline font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2563eb] rounded">{t('dashboard.viewAll')}</Link>}
+          action={<Link to="/timeline" className="text-xs text-[#9E59EF] hover:underline font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2563eb] rounded">{t('dashboard.viewAll')}</Link>}
         >
           {recentActivity.length > 0 ? (
             <div className="space-y-3 max-h-[200px] overflow-y-auto">
@@ -177,7 +177,7 @@ export default function DashboardPage() {
       <CgCard
         title={t('dashboard.monitoringAlerts')}
         subtitle={t('dashboard.monitoringAlertsSub')}
-        action={<span className="text-xs bg-[#931CF5] text-white font-bold px-2 py-0.5 rounded-full">{t('dashboard.demo')}</span>}
+        action={<span className="text-xs bg-[#9E59EF] text-white font-bold px-2 py-0.5 rounded-full">{t('dashboard.demo')}</span>}
         className="mb-6"
       >
         <div className="space-y-3">
@@ -236,12 +236,12 @@ export default function DashboardPage() {
             {t('dashboard.deepInvestigationDesc')}
           </div>
           <div className="flex flex-col gap-3">
-            <select className="w-full px-3 py-2 text-sm border border-slate-200 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-[#931CF5]/40">
+            <select className="w-full px-3 py-2 text-sm border border-slate-200 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-[#9E59EF]/40">
               <option value="">{t('dashboard.selectEntity')}</option>
             </select>
             <button
               onClick={() => alert('Deep investigation request submitted — our team will contact you within 24 hours')}
-              className="flex items-center justify-center gap-2 px-4 py-2.5 bg-[#931CF5] text-white text-sm font-semibold rounded-lg hover:bg-[#7B16D0] transition-colors min-h-[36px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2563eb]"
+              className="flex items-center justify-center gap-2 px-4 py-2.5 bg-[#9E59EF] text-white text-sm font-semibold rounded-lg hover:bg-[#8A3FE0] transition-colors min-h-[36px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2563eb]"
             >
               <Briefcase className="w-4 h-4" />
               {t('dashboard.requestQuote')}

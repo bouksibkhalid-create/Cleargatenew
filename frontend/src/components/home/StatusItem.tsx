@@ -27,9 +27,9 @@ export function StatusItem({
             <div className="flex items-center gap-4 text-right">
                 {status === 'modified' ? (
                     <>
-                        <CheckCircle className="text-[#931CF5] w-5 h-5 flex-shrink-0" />
+                        <CheckCircle className="text-[#9E59EF] w-5 h-5 flex-shrink-0" />
                         <div className="flex flex-col gap-1">
-                            <span className="text-sm font-medium text-[#931CF5]">
+                            <span className="text-sm font-medium text-[#9E59EF]">
                                 {modificationsCount} modifications
                             </span>
                             <p className="text-xs text-slate-400 dark:text-gray-500">Verified {verifiedAgo}</p>

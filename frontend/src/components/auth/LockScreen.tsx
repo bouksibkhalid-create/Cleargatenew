@@ -43,7 +43,7 @@ const LockScreen: React.FC<LockScreenProps> = ({ onUnlock }) => {
             <div className="lock-screen-v2-content">
                 {/* Logo */}
                 <div className="flex flex-col items-center gap-3 mb-2">
-                    <div className="w-14 h-14 rounded-2xl bg-[#931CF5] flex items-center justify-center">
+                    <div className="w-14 h-14 rounded-2xl bg-[#9E59EF] flex items-center justify-center">
                         <Shield className="w-7 h-7 text-white" />
                     </div>
                     <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white uppercase">
@@ -68,7 +68,7 @@ const LockScreen: React.FC<LockScreenProps> = ({ onUnlock }) => {
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                                 placeholder={t('lock.passwordPlaceholder')}
-                                className="w-full pl-11 pr-11 py-3 text-base border border-slate-300 dark:border-white/20 rounded-xl bg-slate-50 dark:bg-white/10 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-[#931CF5]/50 focus:border-transparent transition-all"
+                                className="w-full pl-11 pr-11 py-3 text-base border border-slate-300 dark:border-white/20 rounded-xl bg-slate-50 dark:bg-white/10 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-[#9E59EF]/50 focus:border-transparent transition-all"
                                 autoFocus
                                 autoComplete="off"
                                 aria-label={t('lock.passwordPlaceholder')}
@@ -93,7 +93,7 @@ const LockScreen: React.FC<LockScreenProps> = ({ onUnlock }) => {
 
                     <button
                         type="submit"
-                        className="w-full inline-flex items-center justify-center gap-2 py-3 bg-[#931CF5] text-white font-semibold rounded-full hover:bg-[#7B16D0] transition-colors"
+                        className="w-full inline-flex items-center justify-center gap-2 py-3 bg-[#9E59EF] text-white font-semibold rounded-full hover:bg-[#8A3FE0] transition-colors"
                     >
                         {t('lock.accessPlatform')}
                         <ArrowRight className="w-4 h-4" />

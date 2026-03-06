@@ -53,7 +53,7 @@ export default function MonitorToggle({ entityName, entityData }: MonitorToggleP
       onClick={toggle}
       className={`inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
         isMonitored
-          ? 'bg-[#931CF5]/10 text-[#931CF5] border border-[#931CF5]/30 hover:bg-[#931CF5]/20'
+          ? 'bg-[#9E59EF]/10 text-[#9E59EF] border border-[#9E59EF]/30 hover:bg-[#9E59EF]/20'
           : 'bg-slate-100 dark:bg-white/5 text-slate-500 dark:text-gray-400 border border-slate-200 dark:border-white/10 hover:bg-slate-200 dark:hover:bg-white/10 hover:text-slate-900 dark:hover:text-white'
       }`}
     >

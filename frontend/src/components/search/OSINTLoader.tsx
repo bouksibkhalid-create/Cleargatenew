@@ -194,11 +194,11 @@ export function OSINTLoader({ query, searchType = 'fuzzy', threshold = 80, searc
             exit={{ opacity: 0, scale: 0.95 }}
             transition={{ duration: 0.3 }}
         >
-            <div className="bg-white/5 rounded-xl overflow-hidden border border-white/10">
+            <div className="bg-white dark:bg-white/5 rounded-xl overflow-hidden border border-slate-200 dark:border-white/10">
                 {/* Header */}
-                <div className="bg-[#1A1F2E] border-b border-white/10 text-white p-6">
+                <div className="bg-slate-50 dark:bg-[#1A1F2E] border-b border-slate-200 dark:border-white/10 text-slate-900 dark:text-white p-6">
                     <div className="flex items-center justify-between mb-4">
-                        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#931CF5]/10 border border-[#931CF5]/30">
+                        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#931CF5]/10 border border-[#931CF5]/20 dark:border-[#931CF5]/30">
                             <Radar className="w-4 h-4 text-[#931CF5] animate-spin" style={{ animationDuration: '3s' }} />
                             <span className="text-sm font-semibold text-[#931CF5] uppercase tracking-wide">
                                 {t('osint.header', 'Intelligence Gathering')}
@@ -209,8 +209,8 @@ export function OSINTLoader({ query, searchType = 'fuzzy', threshold = 80, searc
                             <span className={`inline-flex items-center justify-center w-6 h-6 rounded-full text-xs font-bold ${step === 'sanctions' ? 'bg-[#931CF5] text-white' : 'bg-green-500 text-white'}`}>
                                 {step === 'internet' ? <CheckCircle2 className="w-4 h-4" /> : '1'}
                             </span>
-                            <div className="w-6 h-0.5 bg-white/20" />
-                            <span className={`inline-flex items-center justify-center w-6 h-6 rounded-full text-xs font-bold ${step === 'internet' ? 'bg-[#931CF5] text-white' : 'bg-white/10 text-white/40'}`}>
+                            <div className="w-6 h-0.5 bg-slate-300 dark:bg-white/20" />
+                            <span className={`inline-flex items-center justify-center w-6 h-6 rounded-full text-xs font-bold ${step === 'internet' ? 'bg-[#931CF5] text-white' : 'bg-slate-200 dark:bg-white/10 text-slate-400 dark:text-white/40'}`}>
                                 2
                             </span>
                         </div>
@@ -224,7 +224,7 @@ export function OSINTLoader({ query, searchType = 'fuzzy', threshold = 80, searc
                 </div>
 
                 {/* Step label + Progress Bar */}
-                <div className="p-6 bg-[#1A1F2E] border-b border-white/10">
+                <div className="p-6 bg-slate-50 dark:bg-[#1A1F2E] border-b border-slate-200 dark:border-white/10">
                     <AnimatePresence mode="wait">
                         <motion.div
                             key={step}
@@ -239,20 +239,19 @@ export function OSINTLoader({ query, searchType = 'fuzzy', threshold = 80, searc
                             ) : (
                                 <Globe className="w-4 h-4 text-[#931CF5]" />
                             )}
-                            <span className="text-sm font-semibold text-white/80 uppercase tracking-wide">
+                            <span className="text-sm font-semibold text-slate-600 dark:text-white/80 uppercase tracking-wide">
                                 {t('osint.step', 'Step')} {stepNumber}: {stepLabel}
                             </span>
                         </motion.div>
                     </AnimatePresence>
 
                     <div className="flex items-center gap-4">
-                        <div className="flex-1 h-3 bg-white/10 rounded-full overflow-hidden relative">
+                        <div className="flex-1 h-3 bg-slate-200 dark:bg-white/10 rounded-full overflow-hidden relative">
                             <motion.div
-                                className={`h-full rounded-full relative ${
-                                    step === 'sanctions'
-                                        ? 'bg-gradient-to-r from-[#931CF5] to-[#A855F7]'
-                                        : 'bg-gradient-to-r from-cyan-500 to-blue-500'
-                                }`}
+                                className={`h-full rounded-full relative ${step === 'sanctions'
+                                    ? 'bg-gradient-to-r from-[#931CF5] to-[#A855F7]'
+                                    : 'bg-gradient-to-r from-cyan-500 to-blue-500'
+                                    }`}
                                 initial={{ width: 0 }}
                                 animate={{ width: `${progress}%` }}
                                 transition={{ duration: 0.3 }}
@@ -267,7 +266,7 @@ export function OSINTLoader({ query, searchType = 'fuzzy', threshold = 80, searc
                 </div>
 
                 {/* Source List */}
-                <div className="p-6 bg-white/5 space-y-3">
+                <div className="p-6 bg-white dark:bg-white/5 space-y-3">
                     <AnimatePresence mode="wait">
                         <motion.div
                             key={step}
@@ -285,8 +284,8 @@ export function OSINTLoader({ query, searchType = 'fuzzy', threshold = 80, searc
                 </div>
 
                 {/* Intelligence Summary */}
-                <div className="p-6 bg-[#1A1F2E] border-t border-white/10">
-                    <h3 className="flex items-center gap-2 text-base font-bold text-white mb-4">
+                <div className="p-6 bg-slate-50 dark:bg-[#1A1F2E] border-t border-slate-200 dark:border-white/10">
+                    <h3 className="flex items-center gap-2 text-base font-bold text-slate-900 dark:text-white mb-4">
                         <BarChart3 className="w-5 h-5 text-[#931CF5]" />
                         {t('osint.summary', 'Intelligence Summary')}
                     </h3>
@@ -294,40 +293,40 @@ export function OSINTLoader({ query, searchType = 'fuzzy', threshold = 80, searc
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                         {step === 'sanctions' ? (
                             <>
-                                <div className="flex items-center gap-2 text-sm text-gray-400">
+                                <div className="flex items-center gap-2 text-sm text-slate-500 dark:text-gray-400">
                                     <Database className="w-4 h-4 text-[#931CF5] flex-shrink-0" />
                                     <span>{t('osint.crossRef', { count: sanctionsSources.length, defaultValue: 'Cross-referencing {{count}} international databases' })}</span>
                                 </div>
-                                <div className="flex items-center gap-2 text-sm text-gray-400">
+                                <div className="flex items-center gap-2 text-sm text-slate-500 dark:text-gray-400">
                                     <Users className="w-4 h-4 text-[#931CF5] flex-shrink-0" />
                                     <span>{t('osint.analyzing', 'Analyzing 2,100,000 entity records')}</span>
                                 </div>
                                 {searchType === 'fuzzy' && (
-                                    <div className="flex items-center gap-2 text-sm text-gray-400">
+                                    <div className="flex items-center gap-2 text-sm text-slate-500 dark:text-gray-400">
                                         <Sparkles className="w-4 h-4 text-[#931CF5] flex-shrink-0" />
                                         <span>{t('osint.fuzzyEnabled', { threshold, defaultValue: 'Fuzzy matching enabled ({{threshold}}% threshold)' })}</span>
                                     </div>
                                 )}
-                                <div className="flex items-center gap-2 text-sm text-gray-400">
+                                <div className="flex items-center gap-2 text-sm text-slate-500 dark:text-gray-400">
                                     <Shield className="w-4 h-4 text-[#931CF5] flex-shrink-0" />
                                     <span>{t('osint.complianceCheck', 'Compliance check in progress')}</span>
                                 </div>
                             </>
                         ) : (
                             <>
-                                <div className="flex items-center gap-2 text-sm text-gray-400">
+                                <div className="flex items-center gap-2 text-sm text-slate-500 dark:text-gray-400">
                                     <Globe className="w-4 h-4 text-cyan-400 flex-shrink-0" />
                                     <span>{t('osint.deepWebScan', 'Deep web scanning in progress')}</span>
                                 </div>
-                                <div className="flex items-center gap-2 text-sm text-gray-400">
+                                <div className="flex items-center gap-2 text-sm text-slate-500 dark:text-gray-400">
                                     <Database className="w-4 h-4 text-cyan-400 flex-shrink-0" />
                                     <span>{t('osint.adverseMedia', 'Scanning adverse media sources')}</span>
                                 </div>
-                                <div className="flex items-center gap-2 text-sm text-gray-400">
+                                <div className="flex items-center gap-2 text-sm text-slate-500 dark:text-gray-400">
                                     <Users className="w-4 h-4 text-cyan-400 flex-shrink-0" />
                                     <span>{t('osint.publicRecords', 'Checking public records & registries')}</span>
                                 </div>
-                                <div className="flex items-center gap-2 text-sm text-gray-400">
+                                <div className="flex items-center gap-2 text-sm text-slate-500 dark:text-gray-400">
                                     <Shield className="w-4 h-4 text-cyan-400 flex-shrink-0" />
                                     <span>{t('osint.eddScreening', 'Enhanced due diligence screening')}</span>
                                 </div>

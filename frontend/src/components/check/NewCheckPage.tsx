@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Search, Clock, ArrowRight } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { useSearchParams } from 'react-router-dom';
 import SearchSection from '../search/SearchSection';
 import { OSINTLoader } from '../search/OSINTLoader';
 import ResultsList from '../results/ResultsList';
@@ -12,6 +13,7 @@ import { useSearch } from '../../hooks/useSearch';
 import { supabase } from '../../lib/supabase';
 import { activityLogger } from '../../services/activityLogger';
 import { saveEntity, getSavedEntityByName, toggleMonitoring } from '../../services/savedEntitiesService';
+import type { PreSearchData } from '../../types/profile';
 
 interface RecentSearch {
   id: string;
@@ -23,14 +25,28 @@ interface RecentSearch {
 export default function NewCheckPage() {
   const { t } = useTranslation();
   const { data, rawData, isLoading, error, search, reset } = useSearch();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [currentQuery, setCurrentQuery] = useState('');
   const [recentSearches, setRecentSearches] = useState<RecentSearch[]>([]);
   const [view, setView] = useState<'search' | 'loading' | 'results' | 'profile'>('search');
-  const [profileTarget, setProfileTarget] = useState<{ name: string; entityType: string; country?: string } | null>(null);
+  const [profileTarget, setProfileTarget] = useState<{ name: string; entityType: string; country?: string; preSearchData?: PreSearchData } | null>(null);
   const [isSaved, setIsSaved] = useState(false);
   const [isMonitored, setIsMonitored] = useState(false);
   const [savedEntityId, setSavedEntityId] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
+  const autoSearchFired = useRef(false);
+
+  // Auto-search from URL query parameter (e.g. /check?q=Vladimir+Putin)
+  useEffect(() => {
+    const q = searchParams.get('q');
+    if (q && q.trim() && !autoSearchFired.current) {
+      autoSearchFired.current = true;
+      // Clear the param from the URL so a refresh doesn't re-trigger
+      setSearchParams({}, { replace: true });
+      // Fire the search
+      handleSearch(q.trim());
+    }
+  }, [searchParams]);
 
   // Load recent searches
   useEffect(() => {
@@ -90,7 +106,22 @@ export default function NewCheckPage() {
   };
 
   const handleViewProfile = async (entity: { name: string; entityType: string; country?: string }) => {
-    setProfileTarget(entity);
+    // Extract search results to pass to the profile pipeline so it
+    // doesn't re-fetch sanctions and offshore data.
+    let preSearchData: PreSearchData | undefined;
+    if (data) {
+      const sanctionsResults = [
+        ...data.results_by_source.opensanctions.results,
+        ...data.results_by_source.sanctions_io.results,
+      ];
+      const offshoreResults = data.results_by_source.offshore_leaks.results;
+      preSearchData = {
+        sanctions_results: sanctionsResults,
+        offshore_results: offshoreResults,
+        offshore_connections_count: offshoreResults.length,
+      };
+    }
+    setProfileTarget({ ...entity, preSearchData });
     setView('profile');
 
     // Check if already saved
@@ -149,7 +180,7 @@ export default function NewCheckPage() {
       // If we auto-navigated to profile (0 sanctions), go back to search
       const sanctionsCount = data
         ? (data.results_by_source?.opensanctions?.results?.length || 0) +
-          (data.results_by_source?.sanctions_io?.results?.length || 0)
+        (data.results_by_source?.sanctions_io?.results?.length || 0)
         : 0;
       if (sanctionsCount === 0) {
         reset();
@@ -194,6 +225,7 @@ export default function NewCheckPage() {
           entityName={profileTarget.name}
           entityType={profileTarget.entityType}
           country={profileTarget.country}
+          preSearchData={profileTarget.preSearchData}
           onBack={handleBack}
         />
       </div>

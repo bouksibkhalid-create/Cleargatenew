@@ -5,6 +5,18 @@ from typing import Dict, List, Optional
 from datetime import datetime
 
 
+class PreSearchData(BaseModel):
+    """Pre-fetched search results passed from the frontend search page.
+
+    When present, the orchestrator skips re-fetching sanctions and offshore
+    data and reuses these results instead (avoids duplicate API calls).
+    """
+
+    sanctions_results: List[Dict] = Field(default_factory=list)
+    offshore_results: List[Dict] = Field(default_factory=list)
+    offshore_connections_count: int = 0
+
+
 class EntityProfileRequest(BaseModel):
     """Input for generating a complete entity profile."""
 
@@ -16,6 +28,7 @@ class EntityProfileRequest(BaseModel):
     include_adverse_media: bool = True
     max_adverse_media: int = Field(default=10, ge=1, le=50)
     lang: str = "en"  # "en" or "fr" — controls OSINT synthesis language
+    pre_search_data: Optional[PreSearchData] = None
 
     @field_validator("name")
     @classmethod

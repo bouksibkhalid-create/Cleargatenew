@@ -1,3 +1,9 @@
+export interface PreSearchData {
+  sanctions_results: any[];
+  offshore_results: any[];
+  offshore_connections_count: number;
+}
+
 export interface EntityProfileRequest {
   name: string;
   entity_type?: "individual" | "organization";
@@ -7,6 +13,7 @@ export interface EntityProfileRequest {
   include_adverse_media?: boolean;
   max_adverse_media?: number;
   lang?: string;
+  pre_search_data?: PreSearchData;
 }
 
 export interface EntityProfile {

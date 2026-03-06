@@ -9,11 +9,13 @@ import ReportDownloadButton from '../report/ReportDownloadButton';
 import MonitorToggle from '../monitor/MonitorToggle';
 import ProfileTabs, { type ProfileTabId } from './tabs/ProfileTabs';
 import { AlertTriangle, RotateCcw, Info } from 'lucide-react';
+import type { PreSearchData } from '../../types/profile';
 
 interface EntityProfilePageProps {
   entityName: string;
   entityType: string;
   country?: string;
+  preSearchData?: PreSearchData;
   onBack: () => void;
 }
 
@@ -21,6 +23,7 @@ export default function EntityProfilePage({
   entityName,
   entityType,
   country,
+  preSearchData,
   onBack,
 }: EntityProfilePageProps) {
   const { i18n } = useTranslation();
@@ -32,12 +35,13 @@ export default function EntityProfilePage({
       entity_type: entityType as 'individual' | 'organization',
       country,
       lang: i18n.language?.startsWith('fr') ? 'fr' : 'en',
+      pre_search_data: preSearchData,
     });
   }, [entityName, entityType, country]);
 
   // Loading state
   if (loading) {
-    return <ProfileLoadingState entityName={entityName} />;
+    return <ProfileLoadingState entityName={entityName} hasPreSearchData={!!preSearchData} />;
   }
 
   // Error state

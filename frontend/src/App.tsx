@@ -1,14 +1,13 @@
 /**
  * ClearGate SaaS Application Shell
- * After lock screen auth, user enters a persistent workspace with sidebar navigation.
- * Landing page is purely marketing, lives before login.
+ * Landing page is purely marketing; clicking "Access Demo" goes straight to dashboard.
+ * Searching a name from the landing page navigates to /check with auto-search.
  */
 
-import { useState, useEffect } from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { useState, useEffect, useCallback } from 'react';
+import { BrowserRouter, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import { ThemeProvider } from './hooks/useTheme';
 import { ToastProvider } from './components/common/ToastProvider';
-import LockScreen from './components/auth/LockScreen';
 import LandingPage from './components/landing/LandingPage';
 import AppShell from './components/shell/AppShell';
 import DashboardPage from './components/dashboard/DashboardPage';
@@ -18,64 +17,63 @@ import ReportsPage from './components/reports/ReportsPage';
 import TimelinePage from './components/timeline/TimelinePage';
 import SourcesPage from './components/sources/SourcesPage';
 
+/**
+ * Inner component that lives inside BrowserRouter so it can use useNavigate.
+ */
+function AppRoutes({ showLanding, onDismissLanding }: { showLanding: boolean; onDismissLanding: () => void }) {
+  const navigate = useNavigate();
+
+  const handleAccessDemo = useCallback(() => {
+    onDismissLanding();
+    navigate('/dashboard', { replace: true });
+  }, [navigate, onDismissLanding]);
+
+  const handleSearch = useCallback((name: string) => {
+    onDismissLanding();
+    navigate(`/check?q=${encodeURIComponent(name)}`, { replace: true });
+  }, [navigate, onDismissLanding]);
+
+  if (showLanding) {
+    return <LandingPage onAccessDemo={handleAccessDemo} onSearch={handleSearch} />;
+  }
+
+  return (
+    <AppShell>
+      <Routes>
+        <Route path="/" element={<Navigate to="/dashboard" replace />} />
+        <Route path="/dashboard" element={<DashboardPage />} />
+        <Route path="/check" element={<NewCheckPage />} />
+        <Route path="/check/:entityId" element={<EntityProfileView source="check" />} />
+        <Route path="/reports" element={<ReportsPage />} />
+        <Route path="/reports/:entityId" element={<EntityProfileView source="reports" />} />
+        <Route path="/timeline" element={<TimelinePage />} />
+        <Route path="/sources" element={<SourcesPage />} />
+        <Route path="*" element={<Navigate to="/dashboard" replace />} />
+      </Routes>
+    </AppShell>
+  );
+}
+
 function App() {
-  const [isUnlocked, setIsUnlocked] = useState(false);
   const [showLanding, setShowLanding] = useState(true);
 
-  // Check session storage on mount
+  // If the user already dismissed the landing page in this session, skip it
   useEffect(() => {
-    const unlocked = sessionStorage.getItem('cleargate_unlocked');
-    if (unlocked === 'true') {
-      setIsUnlocked(true);
+    if (sessionStorage.getItem('cleargate_unlocked') === 'true') {
       setShowLanding(false);
     }
   }, []);
 
-  const handleAccessDemo = () => {
+  const handleDismissLanding = useCallback(() => {
     setShowLanding(false);
-  };
-
-  const handleUnlock = () => {
-    setIsUnlocked(true);
     sessionStorage.setItem('cleargate_unlocked', 'true');
-  };
+  }, []);
 
-  // Show landing page first (marketing, pre-login)
-  if (showLanding && !isUnlocked) {
-    return (
-      <ThemeProvider>
-        <LandingPage onAccessDemo={handleAccessDemo} />
-      </ThemeProvider>
-    );
-  }
-
-  // Show lock screen if not unlocked
-  if (!isUnlocked) {
-    return (
-      <ThemeProvider>
-        <LockScreen onUnlock={handleUnlock} />
-      </ThemeProvider>
-    );
-  }
-
-  // Authenticated app shell with sidebar navigation
   return (
     <ThemeProvider>
       <ToastProvider>
         <BrowserRouter>
-          <AppShell>
-            <Routes>
-              <Route path="/" element={<Navigate to="/dashboard" replace />} />
-              <Route path="/dashboard" element={<DashboardPage />} />
-              <Route path="/check" element={<NewCheckPage />} />
-              <Route path="/check/:entityId" element={<EntityProfileView source="check" />} />
-              <Route path="/reports" element={<ReportsPage />} />
-              <Route path="/reports/:entityId" element={<EntityProfileView source="reports" />} />
-              <Route path="/timeline" element={<TimelinePage />} />
-              <Route path="/sources" element={<SourcesPage />} />
-              <Route path="*" element={<Navigate to="/dashboard" replace />} />
-            </Routes>
-          </AppShell>
+          <AppRoutes showLanding={showLanding} onDismissLanding={handleDismissLanding} />
         </BrowserRouter>
       </ToastProvider>
     </ThemeProvider>

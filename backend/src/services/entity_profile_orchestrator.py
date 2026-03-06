@@ -119,13 +119,24 @@ class EntityProfileOrchestrator:
     async def _collect_data(
         self, request: EntityProfileRequest
     ) -> CollectionResults:
-        """Run all data source queries in parallel."""
-        tasks: Dict[str, Any] = {
-            "sanctions": self._search_sanctions(request),
-            "offshore": self._search_offshore(request),
-            "dorking": self._run_dorking(request),
-            "osint": self._run_osint(request),
-        }
+        """Run all data source queries in parallel.
+
+        When ``request.pre_search_data`` is provided, sanctions and offshore
+        searches are skipped — the pre-fetched results from the frontend
+        search page are reused instead (avoids duplicate API calls).
+        """
+        pre = request.pre_search_data
+        has_pre = pre is not None
+
+        tasks: Dict[str, Any] = {}
+
+        # Skip sanctions & offshore when pre-loaded from the search page
+        if not has_pre:
+            tasks["sanctions"] = self._search_sanctions(request)
+            tasks["offshore"] = self._search_offshore(request)
+        tasks["dorking"] = self._run_dorking(request)
+        tasks["osint"] = self._run_osint(request)
+
         if request.include_adverse_media:
             tasks["adverse_media"] = self._search_adverse_media(request)
 
@@ -143,6 +154,38 @@ class EntityProfileOrchestrator:
             results[name] = result
             if error:
                 errors[name] = error
+
+        # Inject pre-loaded data when available
+        if has_pre:
+            logger.info(
+                "using_pre_search_data",
+                sanctions_count=len(pre.sanctions_results),
+                offshore_count=len(pre.offshore_results),
+            )
+            # Build a sanctions dict matching _search_sanctions return shape
+            results["sanctions"] = {
+                "opensanctions_results": [],
+                "supabase_results": pre.sanctions_results,
+                "is_sanctioned": len(pre.sanctions_results) > 0,
+                "is_pep": False,
+                "sanctions_hits": len(pre.sanctions_results),
+                "pep_hits": 0,
+                "pep_details": None,
+                "sanctions_lists": [],
+            }
+            # Build an offshore dict matching _search_offshore return shape
+            results["offshore"] = {
+                "offshore_results": pre.offshore_results,
+                "connections_count": pre.offshore_connections_count,
+                "is_officer": any(
+                    r.get("relationship", "").lower() in ("officer of", "director of")
+                    for r in pre.offshore_results
+                ),
+                "is_beneficiary": any(
+                    "beneficiary" in r.get("relationship", "").lower()
+                    for r in pre.offshore_results
+                ),
+            }
 
         # Detect graceful failures (e.g., missing API key returns empty response with error field)
         media_result = results.get("adverse_media")

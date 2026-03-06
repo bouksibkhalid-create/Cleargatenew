@@ -30,11 +30,22 @@ def _calculate_match_score(query: str, candidate: str) -> int:
 
     Uses rapidfuzz when available (should be in requirements.txt).
     Falls back to a simple token-overlap heuristic otherwise.
+
+    Single-token queries (e.g. "Abramovich") use partial_ratio directly
+    so that substring matches against multi-word names score correctly.
+    A query that appears literally inside the candidate always scores >= 85.
     """
     q = _normalize(query)
     c = _normalize(candidate)
     if not q or not c:
         return 0
+
+    # Substring containment: if the query appears literally inside the
+    # candidate (or vice-versa), guarantee a high score regardless of
+    # fuzzy metrics.  This prevents filtering out "Abramovich" when the
+    # stored name is "Roman Arkadyevich Abramovich".
+    if q in c or c in q:
+        return max(85, int(len(q) / len(c) * 100) if len(c) > 0 else 85)
 
     try:
         from rapidfuzz import fuzz
@@ -42,9 +53,20 @@ def _calculate_match_score(query: str, candidate: str) -> int:
         token_set = fuzz.token_set_ratio(q, c)
         partial = fuzz.partial_ratio(q, c)
 
+        # For single-token queries, partial_ratio is the most meaningful
+        # metric (it finds the best substring alignment).  Do NOT penalise
+        # it with a length_ratio multiplier — that destroyed scores for
+        # queries like "Abramovich" vs "Roman Arkadyevich Abramovich".
+        q_tokens = q.split()
+        if len(q_tokens) == 1:
+            return int(max(token_sort, token_set, partial))
+
+        # For multi-token queries, apply a mild length adjustment to
+        # partial_ratio to reduce false positives from very short queries
+        # matching long candidate names.
         len_q, len_c = len(q), len(c)
         length_ratio = min(len_q, len_c) / max(len_q, len_c) if max(len_q, len_c) > 0 else 0
-        adjusted_partial = int(partial * length_ratio)
+        adjusted_partial = int(partial * (0.5 + 0.5 * length_ratio))
 
         return int(max(token_sort, token_set, adjusted_partial))
     except ImportError:

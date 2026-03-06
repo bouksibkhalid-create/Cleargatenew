@@ -9,7 +9,7 @@ interface AppShellProps {
 
 export default function AppShell({ children }: AppShellProps) {
   const [collapsed, setCollapsed] = useState(
-    () => sessionStorage.getItem('sidebar_collapsed') === 'true'
+    () => sessionStorage.getItem('sidebar_collapsed') !== 'false'
   );
   const [mobileOpen, setMobileOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);

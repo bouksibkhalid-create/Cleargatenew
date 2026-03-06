@@ -47,9 +47,9 @@ export default function Sidebar({ collapsed, onToggle, onClose }: SidebarProps) 
         collapsed ? 'w-[60px]' : 'w-[260px]'
       }`}
     >
-      {/* Header */}
-      <div className={`flex items-center h-16 px-4 border-b border-slate-200 dark:border-slate-700 ${collapsed ? 'justify-center' : 'justify-between'}`}>
-        <Link to="/dashboard" className="flex items-center gap-2 min-w-0" onClick={handleNavClick}>
+      {/* Header + collapse toggle */}
+      <div className={`flex items-center h-16 px-4 border-b border-slate-200 dark:border-slate-700 ${collapsed ? 'flex-col justify-center gap-1 py-2' : 'justify-between'}`}>
+        <Link to="/check" className="flex items-center gap-2 min-w-0" onClick={handleNavClick}>
           <div className="w-8 h-8 rounded-lg bg-[#9E59EF] flex items-center justify-center flex-shrink-0">
             <Shield className="w-4 h-4 text-white" />
           </div>
@@ -59,7 +59,7 @@ export default function Sidebar({ collapsed, onToggle, onClose }: SidebarProps) 
         </Link>
         <button
           onClick={onToggle}
-          className={`text-slate-400 dark:text-slate-500 hover:text-slate-700 dark:hover:text-white transition-colors p-1 rounded min-w-[24px] min-h-[24px] ${collapsed ? 'hidden' : ''}`}
+          className="text-slate-400 dark:text-slate-500 hover:text-slate-700 dark:hover:text-white transition-colors p-1 rounded min-w-[24px] min-h-[24px]"
           aria-label={collapsed ? t('sidebar.expandSidebar') : t('sidebar.collapseSidebar')}
         >
           {collapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
@@ -119,13 +119,6 @@ export default function Sidebar({ collapsed, onToggle, onClose }: SidebarProps) 
             <div className="w-8 h-8 rounded-full bg-[#9E59EF] flex items-center justify-center text-white text-xs font-bold">
               K
             </div>
-            <button
-              onClick={onToggle}
-              className="text-slate-400 dark:text-slate-500 hover:text-slate-700 dark:hover:text-white transition-colors p-1 min-w-[24px] min-h-[24px]"
-              aria-label={t('sidebar.expandSidebar')}
-            >
-              <ChevronRight className="w-4 h-4" />
-            </button>
           </div>
         ) : (
           <div className="flex flex-col gap-2">

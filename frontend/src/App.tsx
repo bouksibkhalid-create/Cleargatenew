@@ -25,7 +25,7 @@ function AppRoutes({ showLanding, onDismissLanding }: { showLanding: boolean; on
 
   const handleAccessDemo = useCallback(() => {
     onDismissLanding();
-    navigate('/dashboard', { replace: true });
+    navigate('/check', { replace: true });
   }, [navigate, onDismissLanding]);
 
   const handleSearch = useCallback((name: string) => {
@@ -40,7 +40,7 @@ function AppRoutes({ showLanding, onDismissLanding }: { showLanding: boolean; on
   return (
     <AppShell>
       <Routes>
-        <Route path="/" element={<Navigate to="/dashboard" replace />} />
+        <Route path="/" element={<Navigate to="/check" replace />} />
         <Route path="/dashboard" element={<DashboardPage />} />
         <Route path="/check" element={<NewCheckPage />} />
         <Route path="/check/:entityId" element={<EntityProfileView source="check" />} />
@@ -48,7 +48,7 @@ function AppRoutes({ showLanding, onDismissLanding }: { showLanding: boolean; on
         <Route path="/reports/:entityId" element={<EntityProfileView source="reports" />} />
         <Route path="/timeline" element={<TimelinePage />} />
         <Route path="/sources" element={<SourcesPage />} />
-        <Route path="*" element={<Navigate to="/dashboard" replace />} />
+        <Route path="*" element={<Navigate to="/check" replace />} />
       </Routes>
     </AppShell>
   );

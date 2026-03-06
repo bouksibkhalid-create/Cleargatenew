@@ -64,7 +64,7 @@ export default function ProfileTabs({ profile, activeTab, onTabChange }: Profile
             <TabTriggerWithBadge
               id="osint-profile"
               icon={Globe}
-              label="OSINT Profile"
+              label="Intelligence Profile"
               variant="neutral"
             />
           )}

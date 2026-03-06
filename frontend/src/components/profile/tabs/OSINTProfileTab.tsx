@@ -26,10 +26,10 @@ export default function OSINTProfileTab({ profile }: OSINTProfileTabProps) {
       <div className="bg-white dark:bg-[#1A1F2E] rounded-xl border border-slate-200 dark:border-white/10 p-8 text-center">
         <Globe className="w-10 h-10 text-slate-400 dark:text-gray-500 mx-auto mb-4" />
         <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-2">
-          {t('osintProfile.noData', 'No OSINT Data Available')}
+          {t('osintProfile.noData', 'No Intelligence Data Available')}
         </h3>
         <p className="text-sm text-slate-500 dark:text-gray-400 max-w-md mx-auto">
-          {t('osintProfile.noDataDesc', 'OSINT profiling is only available for entities not found on sanctions lists.')}
+          {t('osintProfile.noDataDesc', 'Intelligence profiling is only available for entities not found on sanctions lists.')}
         </p>
       </div>
     );
@@ -50,7 +50,7 @@ export default function OSINTProfileTab({ profile }: OSINTProfileTabProps) {
         <div className="flex items-center gap-3 mb-3">
           <Scale className={`w-5 h-5 ${riskStyle.icon}`} />
           <h3 className={`text-sm font-semibold uppercase tracking-wider ${riskStyle.text}`}>
-            {t('osintProfile.riskAssessment', 'OSINT Risk Assessment')}: {risk.toUpperCase()}
+            {t('osintProfile.riskAssessment', 'Risk Assessment')}: {risk.toUpperCase()}
           </h3>
         </div>
         {profile.osint_risk_rationale && (

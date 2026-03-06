@@ -84,7 +84,7 @@ class CoverPage(Flowable):
             (str(d.stats.red_flags_count), "Red Flags identifiés"),
             (f"{d.stats.entities_analyzed}+", "Entités analysées"),
             (str(d.stats.risk_axes), "Axes de risque"),
-            ("360°", "Couverture OSINT"),
+            ("360°", "Couverture Intelligence"),
         ]
         stat_spacing = (W - 2 * LM) / 4
         for i, (value, label) in enumerate(stats):

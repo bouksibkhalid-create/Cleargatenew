@@ -138,7 +138,7 @@ export default function IntelligencePanel({ isOpen, onClose, entity }: Intellige
                                 active={activeTab === 'osint'}
                                 onClick={() => setActiveTab('osint')}
                                 icon={Search}
-                                label="OSINT & Web"
+                                label="Intelligence & Web"
                             />
                             <TabButton
                                 active={activeTab === 'timeline'}

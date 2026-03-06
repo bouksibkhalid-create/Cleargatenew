@@ -1,7 +1,7 @@
-"""OSINT Profile Page — Due diligence summary for non-sanctioned entities.
+"""Intelligence Profile Page — Due diligence summary for non-sanctioned entities.
 
 Displays: NOT SANCTIONED banner, biography, adverse media summary,
-OSINT risk assessment, and list of sources investigated.
+risk assessment, and list of sources investigated.
 """
 
 from typing import List
@@ -16,12 +16,12 @@ from ..components.section_header import SectionHeader
 
 
 def build_osint_profile_flowables(data: ReportData) -> List:
-    """Build flowables for the OSINT Profile page. Only for non-sanctioned entities."""
+    """Build flowables for the Intelligence Profile page. Only for non-sanctioned entities."""
     lang = data.language
     elements: List = []
 
     elements.append(SectionHeader(
-        "Profil OSINT — Due Diligence" if lang == "fr" else "OSINT Profile — Due Diligence"
+        "Profil Intelligence — Due Diligence" if lang == "fr" else "Intelligence Profile — Due Diligence"
     ))
     elements.append(Spacer(1, 12))
 
@@ -89,7 +89,7 @@ def build_osint_profile_flowables(data: ReportData) -> List:
         risk_label = {"low": "FAIBLE", "medium": "MOYEN", "high": "ÉLEVÉ"}.get(risk, "FAIBLE")
 
     elements.append(Paragraph(
-        "Évaluation du risque OSINT" if lang == "fr" else "OSINT Risk Assessment",
+        "Évaluation du risque" if lang == "fr" else "Risk Assessment",
         sub_style,
     ))
     elements.append(Paragraph(f"<b>{risk_label}</b>", ParagraphStyle(

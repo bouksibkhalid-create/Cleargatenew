@@ -1,6 +1,6 @@
 /**
- * OSINT Tab - Automated Web Research Tools
- * Provides Google Dork generator and public records links
+ * Intelligence Tab - Automated Web Research Tools
+ * Provides advanced search query generator and public records links
  */
 
 import { useState } from 'react';
@@ -24,7 +24,7 @@ interface OsintTabProps {
     entity: UnifiedEntity;
 }
 
-// Google Dork templates for different search types
+// Advanced search query templates for different search types
 const DORK_TEMPLATES = {
     general: (name: string) => `"${name}"`,
     news: (name: string) => `"${name}" (news OR article OR report)`,
@@ -100,9 +100,9 @@ export default function OsintTab({ entity }: OsintTabProps) {
                 <div className="flex items-start gap-3">
                     <AlertCircle className="w-5 h-5 text-purple-600 mt-0.5 shrink-0" />
                     <div className="text-sm">
-                        <p className="font-semibold text-purple-900">Automated OSINT Research</p>
+                        <p className="font-semibold text-purple-900">Automated Intelligence Research</p>
                         <p className="text-purple-700 mt-1">
-                            Use these tools to conduct open-source intelligence gathering on <strong>{entity.name}</strong>.
+                            Use these tools to conduct in-depth research on <strong>{entity.name}</strong>.
                             Click to search or copy the query for manual use.
                         </p>
                     </div>
@@ -113,10 +113,10 @@ export default function OsintTab({ entity }: OsintTabProps) {
             <div>
                 <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center gap-2">
                     <Search className="w-5 h-5 text-purple-600" />
-                    Google Dork Generator
+                    Advanced Search Queries
                 </h3>
                 <p className="text-sm text-gray-600 mb-4">
-                    Pre-configured search queries optimized for finding specific types of information.
+                    Pre-configured queries optimized for finding specific types of information.
                 </p>
 
                 <div className="grid gap-3">

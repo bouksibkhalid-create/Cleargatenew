@@ -1,4 +1,4 @@
-// OSINT Loader Types
+// Intelligence Loader Types
 
 export type SearchPhase =
     | 'idle'

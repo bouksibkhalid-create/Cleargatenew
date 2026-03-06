@@ -127,12 +127,12 @@ def _build_red_flags(profile: EntityProfile) -> List[RedFlag]:
             continue
         flags.append(RedFlag(
             id=idx,
-            title=dr.get("title", "Dorking Finding"),
+            title=dr.get("title", "Web Research Finding"),
             severity="MEDIUM",
             impact="MEDIUM",
             probability="MEDIUM",
             description=dr.get("flag_reason", dr.get("snippet", "")),
-            sources=[dr.get("domain", "Google Dorking")],
+            sources=[dr.get("domain", "Internet Research")],
         ))
         idx += 1
 
@@ -349,9 +349,9 @@ def _build_shadow_zones(profile: EntityProfile) -> List[str]:
     if "offshore" in profile.sources_failed:
         zones.append("Offshore leaks database was unreachable — offshore connections not verified.")
     if "dorking" in profile.sources_failed:
-        zones.append("Google dorking was unavailable — deep web findings may be incomplete.")
+        zones.append("Advanced internet research was unavailable — deep web findings may be incomplete.")
     if "osint" in profile.sources_failed:
-        zones.append("OSINT collection partially failed — some intelligence sources not covered.")
+        zones.append("Intelligence collection partially failed — some sources not covered.")
     if not profile.ai_summary:
         zones.append("AI analysis was not available — narrative sections use template-based assessment.")
     if profile.entity.entity_type == "individual" and not profile.entity.country:

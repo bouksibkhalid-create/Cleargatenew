@@ -160,7 +160,7 @@ class OSINTSynthesisService:
         except Exception as exc:
             logger.error("osint_synthesis_failed", error=str(exc))
             result = self._fallback(lang)
-            result.error = f"OSINT synthesis failed: {str(exc)}"
+            result.error = f"Intelligence synthesis failed: {str(exc)}"
             return result
 
     async def _call_claude(

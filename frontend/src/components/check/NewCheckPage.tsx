@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Search, Clock, ArrowRight } from 'lucide-react';
+import { Search } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router-dom';
 import SearchSection from '../search/SearchSection';
@@ -10,24 +10,15 @@ import EntityProfilePage from '../profile/EntityProfilePage';
 import BreadcrumbBar from './BreadcrumbBar';
 import PageHeader from '../common/PageHeader';
 import { useSearch } from '../../hooks/useSearch';
-import { supabase } from '../../lib/supabase';
 import { activityLogger } from '../../services/activityLogger';
 import { saveEntity, getSavedEntityByName, toggleMonitoring } from '../../services/savedEntitiesService';
 import type { PreSearchData } from '../../types/profile';
-
-interface RecentSearch {
-  id: string;
-  query: string;
-  entity_name: string | null;
-  searched_at: string;
-}
 
 export default function NewCheckPage() {
   const { t } = useTranslation();
   const { data, rawData, isLoading, error, search, reset } = useSearch();
   const [searchParams, setSearchParams] = useSearchParams();
   const [currentQuery, setCurrentQuery] = useState('');
-  const [recentSearches, setRecentSearches] = useState<RecentSearch[]>([]);
   const [view, setView] = useState<'search' | 'loading' | 'results' | 'profile'>('search');
   const [profileTarget, setProfileTarget] = useState<{ name: string; entityType: string; country?: string; preSearchData?: PreSearchData } | null>(null);
   const [isSaved, setIsSaved] = useState(false);
@@ -47,23 +38,6 @@ export default function NewCheckPage() {
       handleSearch(q.trim());
     }
   }, [searchParams]);
-
-  // Load recent searches
-  useEffect(() => {
-    async function loadRecent() {
-      try {
-        const { data: rows } = await supabase
-          .from('cg_search_history')
-          .select('id, query, entity_name, searched_at')
-          .order('searched_at', { ascending: false })
-          .limit(5);
-        setRecentSearches((rows || []) as RecentSearch[]);
-      } catch {
-        // ignore
-      }
-    }
-    loadRecent();
-  }, []);
 
   // Track search completion — auto-navigate to profile for non-sanctioned entities
   useEffect(() => {
@@ -196,17 +170,6 @@ export default function NewCheckPage() {
     }
   };
 
-  function formatTimeAgo(dateStr: string) {
-    const diff = Date.now() - new Date(dateStr).getTime();
-    const mins = Math.floor(diff / 60000);
-    if (mins < 60) return `${mins} min ago`;
-    const hrs = Math.floor(mins / 60);
-    if (hrs < 24) return `${hrs}h ago`;
-    const days = Math.floor(hrs / 24);
-    if (days === 1) return 'yesterday';
-    return `${days} days ago`;
-  }
-
   // Profile view with breadcrumb
   if (view === 'profile' && profileTarget) {
     return (
@@ -244,30 +207,6 @@ export default function NewCheckPage() {
 
         <div className="max-w-2xl mx-auto mt-8">
           <SearchSection onSearch={handleSearch} isLoading={isLoading} />
-
-          {recentSearches.length > 0 && (
-            <div className="mt-8">
-              <div className="flex items-center gap-2 mb-3">
-                <Clock className="w-4 h-4 text-slate-400 dark:text-slate-500" />
-                <span className="text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider">{t('check.recentSearches')}</span>
-              </div>
-              <div className="space-y-1">
-                {recentSearches.map((rs) => (
-                  <button
-                    key={rs.id}
-                    onClick={() => handleSearch(rs.query)}
-                    className="flex items-center justify-between w-full px-4 py-3 text-left rounded-lg hover:bg-white dark:hover:bg-slate-800 border border-transparent hover:border-slate-200 dark:hover:border-slate-700 hover:shadow-sm transition-all group min-h-[36px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2563eb]"
-                  >
-                    <div>
-                      <span className="text-sm font-medium text-slate-900 dark:text-slate-100">{rs.entity_name || rs.query}</span>
-                      <span className="text-xs text-slate-400 dark:text-slate-500 ml-3">{formatTimeAgo(rs.searched_at)}</span>
-                    </div>
-                    <ArrowRight className="w-4 h-4 text-slate-400 dark:text-slate-500 opacity-0 group-hover:opacity-100 transition-opacity" />
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
         </div>
       </div>
     );

@@ -1,26 +1,8 @@
 import { Search, Eye, FileText, Users, BarChart3, Bell, Briefcase } from 'lucide-react';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Cell } from 'recharts';
 import { useTranslation } from 'react-i18next';
 import CgCard from '../common/CgCard';
 import PageHeader from '../common/PageHeader';
 import { useDashboardStats } from '../../hooks/useDashboardStats';
-import { Link } from 'react-router-dom';
-
-const RISK_COLORS: Record<string, string> = {
-  LOW: '#10B981',
-  MEDIUM: '#F59E0B',
-  HIGH: '#EF4444',
-  CRITICAL: '#DC2626',
-  UNKNOWN: '#6B7280',
-};
-
-const EVENT_ICONS: Record<string, { icon: typeof Search; color: string }> = {
-  search: { icon: Search, color: '#3B82F6' },
-  report_download: { icon: FileText, color: '#8B5CF6' },
-  entity_saved: { icon: FileText, color: '#10B981' },
-  monitoring_enabled: { icon: Eye, color: '#9E59EF' },
-  monitoring_disabled: { icon: Eye, color: '#6B7280' },
-};
 
 const DEMO_TEAM = [
   {
@@ -50,38 +32,9 @@ const SOURCE_HEALTH = [
   { name: 'OpenSanctions', status: 'healthy' },
 ];
 
-// Map DB event titles to i18n keys
-const EVENT_TITLE_MAP: Record<string, string> = {
-  search: 'timeline.searched',
-  report_download: 'timeline.reportDownloaded',
-  entity_saved: 'timeline.savedEntity',
-  monitoring_enabled: 'timeline.monitoringEnabled',
-  monitoring_disabled: 'timeline.monitoringDisabled',
-};
-
 export default function DashboardPage() {
   const { t } = useTranslation();
-  const { stats, recentActivity, riskDistribution, loading } = useDashboardStats();
-
-  function formatTimeAgo(dateStr: string) {
-    const diff = Date.now() - new Date(dateStr).getTime();
-    const mins = Math.floor(diff / 60000);
-    if (mins < 60) return t('common.minAgo', { count: mins });
-    const hrs = Math.floor(mins / 60);
-    if (hrs < 24) return t('common.hAgo', { count: hrs });
-    const days = Math.floor(hrs / 24);
-    return t('common.dAgo', { count: days });
-  }
-
-  function translateEventTitle(ev: { event_type: string; entity_name: string | null; title: string }) {
-    const key = EVENT_TITLE_MAP[ev.event_type];
-    if (key && ev.entity_name) return t(key, { name: ev.entity_name });
-    return ev.title;
-  }
-
-  const chartData = Object.entries(riskDistribution)
-    .filter(([, v]) => v > 0)
-    .map(([key, value]) => ({ name: key, count: value }));
+  const { stats, loading } = useDashboardStats();
 
   const metricCards = [
     { icon: Search, label: t('dashboard.searchesThisMonth'), value: stats.searchesThisMonth, color: '#3B82F6' },
@@ -111,55 +64,6 @@ export default function DashboardPage() {
         ))}
       </div>
 
-      {/* Risk Distribution + Recent Activity */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-        <CgCard title={t('dashboard.riskDistribution')} subtitle={t('dashboard.riskDistributionSub')}>
-          {chartData.length > 0 ? (
-            <ResponsiveContainer width="100%" height={200}>
-              <BarChart data={chartData} layout="vertical" margin={{ left: 20 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="currentColor" className="text-slate-200 dark:text-slate-700" />
-                <XAxis type="number" tick={{ fontSize: 12 }} className="[&_text]:fill-slate-400 dark:[&_text]:fill-slate-500" />
-                <YAxis type="category" dataKey="name" tick={{ fontSize: 12 }} width={70} className="[&_text]:fill-slate-500 dark:[&_text]:fill-slate-400" />
-                <Bar dataKey="count" radius={[0, 4, 4, 0]} barSize={20}>
-                  {chartData.map((entry) => (
-                    <Cell key={entry.name} fill={RISK_COLORS[entry.name] || '#6B7280'} />
-                  ))}
-                </Bar>
-              </BarChart>
-            </ResponsiveContainer>
-          ) : (
-            <div className="text-sm text-slate-400 dark:text-slate-500 text-center py-8">{t('dashboard.noSavedEntities')}</div>
-          )}
-        </CgCard>
-
-        <CgCard
-          title={t('dashboard.recentActivity')}
-          subtitle={t('dashboard.latestEvents')}
-          action={<Link to="/timeline" className="text-xs text-[#9E59EF] hover:underline font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2563eb] rounded">{t('dashboard.viewAll')}</Link>}
-        >
-          {recentActivity.length > 0 ? (
-            <div className="space-y-3 max-h-[200px] overflow-y-auto">
-              {recentActivity.map((ev) => {
-                const cfg = EVENT_ICONS[ev.event_type] || EVENT_ICONS.search;
-                const Icon = cfg.icon;
-                return (
-                  <div key={ev.id} className="flex items-start gap-3">
-                    <div className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: `${cfg.color}15` }}>
-                      <Icon className="w-3.5 h-3.5" style={{ color: cfg.color }} />
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <div className="text-sm text-slate-900 dark:text-slate-100 truncate">{translateEventTitle(ev)}</div>
-                      <div className="text-[11px] text-slate-400 dark:text-slate-500">{formatTimeAgo(ev.created_at)}</div>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          ) : (
-            <div className="text-sm text-slate-400 dark:text-slate-500 text-center py-8">{t('dashboard.noActivity')}</div>
-          )}
-        </CgCard>
-      </div>
 
       {/* Source Health */}
       <CgCard title={t('dashboard.sourceHealth')} subtitle={t('dashboard.sourceHealthSub')} className="mb-6">

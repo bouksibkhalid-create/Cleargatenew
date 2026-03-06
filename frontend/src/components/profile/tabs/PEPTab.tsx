@@ -1,4 +1,4 @@
-import { Crown, CheckCircle, Users } from 'lucide-react';
+import { Crown } from 'lucide-react';
 import type { EntityProfile } from '../../../types/profile';
 import StatusBanner from '../shared/StatusBanner';
 import EmptyState from '../shared/EmptyState';
@@ -55,11 +55,10 @@ export default function PEPTab({ profile }: PEPTabProps) {
             return (
               <div
                 key={cat}
-                className={`rounded-lg border p-3 text-center text-sm font-medium transition-colors ${
-                  isActive
+                className={`rounded-lg border p-3 text-center text-sm font-medium transition-colors ${isActive
                     ? 'bg-amber-500/15 border-amber-500/30 text-amber-400'
                     : 'bg-slate-50 dark:bg-white/5 border-slate-200 dark:border-white/10 text-slate-500 dark:text-gray-400'
-                }`}
+                  }`}
               >
                 {cat}
                 {isActive && <span className="ml-1 text-amber-400">●</span>}
@@ -82,19 +81,6 @@ export default function PEPTab({ profile }: PEPTabProps) {
         </div>
       )}
 
-      {/* Sources */}
-      <div className="bg-white dark:bg-[#1A1F2E] rounded-xl border border-slate-200 dark:border-white/10 p-6">
-        <div className="flex items-center gap-2 mb-4">
-          <Users className="w-4 h-4 text-slate-400 dark:text-gray-400" />
-          <p className="text-xs font-medium uppercase tracking-wider text-slate-500 dark:text-gray-500">
-            PEP Data Sources
-          </p>
-        </div>
-        <div className="flex items-center gap-2 text-sm text-slate-500 dark:text-gray-400">
-          <CheckCircle className="w-4 h-4 text-[#9E59EF] shrink-0" />
-          <span>OpenSanctions PEP Database — {profile.pep_hits} hit(s)</span>
-        </div>
-      </div>
     </div>
   );
 }

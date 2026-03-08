@@ -6,7 +6,7 @@
         },
         {
             "source": "/(.*)",
-            "destination": "/frontend/dist/index.html"
+            "destination": "/index.html"
         }
     ],
     "crons": [
@@ -15,7 +15,6 @@
             "schedule": "0 6 * * *"
         }
     ],
-    "framework": "vite",
     "buildCommand": "cd frontend && npm install --include=dev && npm run build",
     "outputDirectory": "frontend/dist"
 }

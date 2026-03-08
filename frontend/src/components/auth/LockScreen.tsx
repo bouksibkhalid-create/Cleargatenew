@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from 'react';
-import { Shield, Lock, Eye, EyeOff, ArrowRight } from 'lucide-react';
+import { Lock, Eye, EyeOff, ArrowRight } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import ThemeToggle from '../ui/ThemeToggle';
 import LanguageToggle from '../ui/LanguageToggle';
@@ -43,9 +43,7 @@ const LockScreen: React.FC<LockScreenProps> = ({ onUnlock }) => {
             <div className="lock-screen-v2-content">
                 {/* Logo */}
                 <div className="flex flex-col items-center gap-3 mb-2">
-                    <div className="w-14 h-14 rounded-2xl bg-[#9E59EF] flex items-center justify-center">
-                        <Shield className="w-7 h-7 text-white" />
-                    </div>
+                    <img src="/logo.png" alt="ClearGate" className="w-14 h-14" />
                     <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white uppercase">
                         {t('brand.name')}
                     </h1>

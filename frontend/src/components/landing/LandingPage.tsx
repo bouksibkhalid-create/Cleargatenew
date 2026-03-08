@@ -325,7 +325,7 @@ export default function LandingPage({ onAccessDemo, onSearch }: LandingPageProps
             <nav className="sticky top-0 z-50 bg-white/95 dark:bg-[#0F1419]/95 backdrop-blur-sm border-b border-slate-200 dark:border-white/10">
                 <div className="flex items-center justify-between px-6 py-4 max-w-7xl mx-auto">
                     <div className="flex items-center gap-2">
-                        <Shield className="w-6 h-6 text-[#9E59EF]" />
+                        <img src="/logo.png" alt="ClearGate" className="w-7 h-7" />
                         <span className="text-lg font-bold tracking-wide text-slate-900 dark:text-white uppercase">{t('brand.name')}</span>
                     </div>
                     <div className="flex items-center gap-3">

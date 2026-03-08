@@ -1,7 +1,7 @@
 import { useLocation, Link } from 'react-router-dom';
 import {
   LayoutDashboard, Search, FileText, Clock, Database,
-  ChevronLeft, ChevronRight, Shield, FileSearch, ClipboardList,
+  ChevronLeft, ChevronRight, FileSearch, ClipboardList,
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useReportsCount } from '../../hooks/useReportsCount';
@@ -60,9 +60,7 @@ export default function Sidebar({ collapsed, onToggle, onClose }: SidebarProps) 
       {/* Header + collapse toggle */}
       <div className={`flex items-center h-16 px-4 border-b border-slate-200 dark:border-slate-700 ${collapsed ? 'flex-col justify-center gap-1 py-2' : 'justify-between'}`}>
         <Link to="/check" className="flex items-center gap-2 min-w-0" onClick={handleNavClick}>
-          <div className="w-8 h-8 rounded-lg bg-[#9E59EF] flex items-center justify-center flex-shrink-0">
-            <Shield className="w-4 h-4 text-white" />
-          </div>
+          <img src="/logo.png" alt="ClearGate" className="w-8 h-8 flex-shrink-0" />
           {!collapsed && (
             <span className="text-sm font-bold tracking-wide text-slate-900 dark:text-white uppercase whitespace-nowrap">{t('brand.name')}</span>
           )}

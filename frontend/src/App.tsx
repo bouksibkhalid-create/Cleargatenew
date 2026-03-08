@@ -16,6 +16,13 @@ import EntityProfileView from './components/check/EntityProfileView';
 import ReportsPage from './components/reports/ReportsPage';
 import TimelinePage from './components/timeline/TimelinePage';
 import SourcesPage from './components/sources/SourcesPage';
+import TierSelection from './components/order/TierSelection';
+import ScopeConfiguration from './components/order/ScopeConfiguration';
+import OrderReview from './components/order/OrderReview';
+import OrderConfirmed from './components/order/OrderConfirmed';
+import OrdersList from './components/order/OrdersList';
+import OrderDetail from './components/order/OrderDetail';
+import { OrderProvider } from './context/OrderContext';
 
 /**
  * Inner component that lives inside BrowserRouter so it can use useNavigate.
@@ -38,19 +45,27 @@ function AppRoutes({ showLanding, onDismissLanding }: { showLanding: boolean; on
   }
 
   return (
-    <AppShell>
-      <Routes>
-        <Route path="/" element={<Navigate to="/check" replace />} />
-        <Route path="/dashboard" element={<DashboardPage />} />
-        <Route path="/check" element={<NewCheckPage />} />
-        <Route path="/check/:entityId" element={<EntityProfileView source="check" />} />
-        <Route path="/reports" element={<ReportsPage />} />
-        <Route path="/reports/:entityId" element={<EntityProfileView source="reports" />} />
-        <Route path="/timeline" element={<TimelinePage />} />
-        <Route path="/sources" element={<SourcesPage />} />
-        <Route path="*" element={<Navigate to="/check" replace />} />
-      </Routes>
-    </AppShell>
+    <OrderProvider>
+      <AppShell>
+        <Routes>
+          <Route path="/" element={<Navigate to="/check" replace />} />
+          <Route path="/dashboard" element={<DashboardPage />} />
+          <Route path="/check" element={<NewCheckPage />} />
+          <Route path="/check/:entityId" element={<EntityProfileView source="check" />} />
+          <Route path="/reports" element={<ReportsPage />} />
+          <Route path="/reports/:entityId" element={<EntityProfileView source="reports" />} />
+          <Route path="/timeline" element={<TimelinePage />} />
+          <Route path="/sources" element={<SourcesPage />} />
+          <Route path="/order/select" element={<TierSelection />} />
+          <Route path="/order/configure" element={<ScopeConfiguration />} />
+          <Route path="/order/review" element={<OrderReview />} />
+          <Route path="/order/confirmed/:orderId" element={<OrderConfirmed />} />
+          <Route path="/orders" element={<OrdersList />} />
+          <Route path="/orders/:orderId" element={<OrderDetail />} />
+          <Route path="*" element={<Navigate to="/check" replace />} />
+        </Routes>
+      </AppShell>
+    </OrderProvider>
   );
 }
 

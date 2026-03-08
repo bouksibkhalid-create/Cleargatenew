@@ -8,6 +8,7 @@ import ProfileLoadingState from './ProfileLoadingState';
 import ReportDownloadButton from '../report/ReportDownloadButton';
 import MonitorToggle from '../monitor/MonitorToggle';
 import ProfileTabs, { type ProfileTabId } from './tabs/ProfileTabs';
+import InvestigationUpsellBanner from '../order/InvestigationUpsellBanner';
 import { AlertTriangle, RotateCcw, Info } from 'lucide-react';
 import type { PreSearchData } from '../../types/profile';
 
@@ -148,6 +149,12 @@ function EntityProfileContent({
             />
           </div>
         </div>
+
+        {/* Upsell banner — Order deeper investigation */}
+        <InvestigationUpsellBanner
+          entityName={profile.entity.name}
+          entityType={profile.entity.entity_type}
+        />
 
         {/* Data source warning if any source failed */}
         {profile.sources_failed.length > 0 && (

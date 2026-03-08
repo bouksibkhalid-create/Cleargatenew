@@ -6,7 +6,10 @@
     "newCheck": "New Check",
     "reports": "Reports",
     "timeline": "Timeline",
-    "sources": "Sources"
+    "sources": "Sources",
+    "investigations": "INVESTIGATIONS",
+    "orderInvestigation": "Order",
+    "orders": "Orders"
   },
   "brand": {
     "name": "ClearGate",

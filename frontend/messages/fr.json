@@ -6,7 +6,10 @@
     "newCheck": "Nouvelle vérification",
     "reports": "Rapports",
     "timeline": "Chronologie",
-    "sources": "Sources"
+    "sources": "Sources",
+    "investigations": "INVESTIGATIONS",
+    "orderInvestigation": "Commander",
+    "orders": "Commandes"
   },
   "brand": {
     "name": "ClearGate",

@@ -1,10 +1,11 @@
 import { useLocation, Link } from 'react-router-dom';
 import {
   LayoutDashboard, Search, FileText, Clock, Database,
-  ChevronLeft, ChevronRight, Shield,
+  ChevronLeft, ChevronRight, Shield, FileSearch, ClipboardList,
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useReportsCount } from '../../hooks/useReportsCount';
+import { useOrder } from '../../context/OrderContext';
 import ThemeToggle from '../ui/ThemeToggle';
 import LanguageToggle from '../ui/LanguageToggle';
 
@@ -20,8 +21,15 @@ const NAV_SECTIONS = [
     items: [
       { icon: LayoutDashboard, labelKey: 'nav.dashboard', path: '/dashboard' },
       { icon: Search, labelKey: 'nav.newCheck', path: '/check' },
-      { icon: FileText, labelKey: 'nav.reports', path: '/reports', badge: true },
+      { icon: FileText, labelKey: 'nav.reports', path: '/reports', badge: 'reports' as const },
       { icon: Clock, labelKey: 'nav.timeline', path: '/timeline' },
+    ],
+  },
+  {
+    labelKey: 'nav.investigations',
+    items: [
+      { icon: FileSearch, labelKey: 'nav.orderInvestigation', path: '/order/select' },
+      { icon: ClipboardList, labelKey: 'nav.orders', path: '/orders', badge: 'orders' as const },
     ],
   },
   {
@@ -36,6 +44,8 @@ export default function Sidebar({ collapsed, onToggle, onClose }: SidebarProps) 
   const location = useLocation();
   const { t } = useTranslation();
   const { count: reportsCount } = useReportsCount();
+  const { orders } = useOrder();
+  const activeOrdersCount = orders.filter((o) => o.status !== 'completed').length;
 
   const handleNavClick = () => {
     if (onClose) onClose();
@@ -96,9 +106,14 @@ export default function Sidebar({ collapsed, onToggle, onClose }: SidebarProps) 
                   {!collapsed && (
                     <>
                       <span className="truncate">{t(item.labelKey)}</span>
-                      {item.badge && reportsCount > 0 && (
+                      {item.badge === 'reports' && reportsCount > 0 && (
                         <span className="ml-auto bg-[#9E59EF] text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[18px] text-center">
                           {reportsCount}
+                        </span>
+                      )}
+                      {item.badge === 'orders' && activeOrdersCount > 0 && (
+                        <span className="ml-auto bg-[#00D4AA] text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[18px] text-center">
+                          {activeOrdersCount}
                         </span>
                       )}
                     </>

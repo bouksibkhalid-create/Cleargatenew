@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Search, Eye, FileText, Users, BarChart3, Bell, Briefcase } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import CgCard from '../common/CgCard';
@@ -37,6 +38,7 @@ const SOURCE_HEALTH = [
 export default function DashboardPage() {
   const { t } = useTranslation();
   const { stats, loading } = useDashboardStats();
+  const navigate = useNavigate();
   const [savedEntities, setSavedEntities] = useState<SavedEntity[]>([]);
   const [selectedEntity, setSelectedEntity] = useState('');
 
@@ -161,7 +163,12 @@ export default function DashboardPage() {
               ))}
             </select>
             <button
-              onClick={() => alert('Deep investigation request submitted — our team will contact you within 24 hours')}
+              onClick={() => {
+                if (selectedEntity) {
+                  navigate(`/order/select?entity=${encodeURIComponent(selectedEntity)}`);
+                }
+              }}
+              disabled={!selectedEntity}
               className="flex items-center justify-center gap-2 px-4 py-2.5 bg-[#9E59EF] text-white text-sm font-semibold rounded-lg hover:bg-[#8A3FE0] transition-colors min-h-[36px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2563eb]"
             >
               <Briefcase className="w-4 h-4" />

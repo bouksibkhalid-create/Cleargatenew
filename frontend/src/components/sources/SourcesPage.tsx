@@ -1,4 +1,5 @@
-import { Database, CheckCircle, AlertTriangle, Clock, FileText } from 'lucide-react';
+import { useState } from 'react';
+import { Database, CheckCircle, AlertTriangle, Clock, FileText, ChevronUp } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import PageHeader from '../common/PageHeader';
 import CgCard from '../common/CgCard';
@@ -31,6 +32,7 @@ const SYNC_HISTORY = [
 
 export default function SourcesPage() {
   const { t, i18n } = useTranslation();
+  const [showLogs, setShowLogs] = useState(false);
   const currentLocale = i18n.language?.startsWith('fr') ? 'fr-FR' : 'en-US';
 
   const lastSyncDate = new Date('2026-03-02T03:00:00Z').toLocaleDateString(currentLocale, { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', timeZone: 'UTC' });
@@ -61,11 +63,11 @@ export default function SourcesPage() {
           </div>
           <div className="flex gap-2">
             <button
-              onClick={() => document.getElementById('sync-history')?.scrollIntoView({ behavior: 'smooth' })}
+              onClick={() => setShowLogs((v) => !v)}
               className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-medium border border-slate-200 dark:border-slate-600 text-slate-500 dark:text-slate-400 rounded-lg hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors min-h-[36px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2563eb]"
             >
-              <FileText className="w-3.5 h-3.5" />
-              {t('sources.viewSyncLogs')}
+              {showLogs ? <ChevronUp className="w-3.5 h-3.5" /> : <FileText className="w-3.5 h-3.5" />}
+              {showLogs ? 'Masquer les logs' : t('sources.viewSyncLogs')}
             </button>
           </div>
         </div>
@@ -103,8 +105,9 @@ export default function SourcesPage() {
         ))}
       </div>
 
-      {/* Sync History section label */}
-      <div id="sync-history" className="flex items-center gap-3 mb-4 scroll-mt-8">
+      {/* Sync History section — toggled by button */}
+      {showLogs && <>
+      <div className="flex items-center gap-3 mb-4">
         <div className="h-px flex-1 bg-slate-200 dark:bg-slate-700" />
         <span className="text-[10px] font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider">{t('sources.syncHistory')}</span>
         <div className="h-px flex-1 bg-slate-200 dark:bg-slate-700" />
@@ -149,6 +152,8 @@ export default function SourcesPage() {
           </table>
         </div>
       </CgCard>
+      </>
+      }
     </div>
   );
 }

@@ -172,7 +172,7 @@ const SECHIN_REPORT: InvestigationReport = {
     "Igor Sechin présente un profil de risque extrêmement élevé. Désigné sur les listes OFAC, UE et UK en lien avec la situation en Ukraine, il est identifié comme un proche associé du président russe. L'analyse révèle une chaîne de propriété s'étendant de la Russie vers la Suisse et Chypre via des entités de trading et de services maritimes. La couverture médiatique récente (47 articles, dont 12 à haute pertinence) fait état d'allégations de contournement de sanctions via des flottes de navires et des structures offshore. Le risque juridictionnel est amplifié par l'exposition à la Russie (liste noire GAFI, CPI 26) et à Chypre (sous surveillance). Recommandation : vigilance renforcée requise pour toute interaction directe ou indirecte.",
 };
 
-const GLENCORE_REPORT: InvestigationReport = {
+export const GLENCORE_REPORT: InvestigationReport = {
   completedAt: '2026-03-10T09:00:00Z',
   riskScore: 78,
   riskLevel: 'Élevé',

@@ -1,8 +1,10 @@
+import { useState, useEffect } from 'react';
 import { Search, Eye, FileText, Users, BarChart3, Bell, Briefcase } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import CgCard from '../common/CgCard';
 import PageHeader from '../common/PageHeader';
 import { useDashboardStats } from '../../hooks/useDashboardStats';
+import { fetchSavedEntities, type SavedEntity } from '../../services/savedEntitiesService';
 
 const DEMO_TEAM = [
   {
@@ -35,6 +37,14 @@ const SOURCE_HEALTH = [
 export default function DashboardPage() {
   const { t } = useTranslation();
   const { stats, loading } = useDashboardStats();
+  const [savedEntities, setSavedEntities] = useState<SavedEntity[]>([]);
+  const [selectedEntity, setSelectedEntity] = useState('');
+
+  useEffect(() => {
+    fetchSavedEntities()
+      .then(setSavedEntities)
+      .catch((e) => console.error('Failed to load saved entities:', e));
+  }, []);
 
   const metricCards = [
     { icon: Search, label: t('dashboard.searchesThisMonth'), value: stats.searchesThisMonth, color: '#3B82F6' },
@@ -106,7 +116,7 @@ export default function DashboardPage() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <CgCard
           title={t('dashboard.membersTitle')}
-          action={<span className="text-[10px] bg-slate-100 dark:bg-slate-700 text-slate-400 dark:text-slate-500 font-medium px-2 py-0.5 rounded-full">{t('dashboard.demo')}</span>}
+          action={<span className="text-xs bg-[#9E59EF] text-white font-bold px-2 py-0.5 rounded-full">{t('dashboard.demo')}</span>}
         >
           <div className="flex gap-4 mb-4">
             {DEMO_TEAM.map((m) => (
@@ -140,8 +150,15 @@ export default function DashboardPage() {
             {t('dashboard.deepInvestigationDesc')}
           </div>
           <div className="flex flex-col gap-3">
-            <select className="w-full px-3 py-2 text-sm border border-slate-200 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-[#9E59EF]/40">
+            <select
+              value={selectedEntity}
+              onChange={(e) => setSelectedEntity(e.target.value)}
+              className="w-full px-3 py-2 text-sm border border-slate-200 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-[#9E59EF]/40"
+            >
               <option value="">{t('dashboard.selectEntity')}</option>
+              {savedEntities.map((e) => (
+                <option key={e.id} value={e.entity_name}>{e.entity_name}</option>
+              ))}
             </select>
             <button
               onClick={() => alert('Deep investigation request submitted — our team will contact you within 24 hours')}

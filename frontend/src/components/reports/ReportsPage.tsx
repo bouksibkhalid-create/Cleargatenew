@@ -259,6 +259,7 @@ export default function ReportsPage() {
               <Eye className="w-4 h-4 text-slate-500 dark:text-slate-400" /> {t('reports.viewProfile')}
             </button>
             <button
+              onClick={() => { navigate(`/check?q=${encodeURIComponent(entity.entity_name)}`); setOpenMenu(null); }}
               className="w-full flex items-center gap-2 px-3 py-2 text-sm text-slate-900 dark:text-slate-100 hover:bg-slate-50 dark:hover:bg-slate-700"
             >
               <RefreshCw className="w-4 h-4 text-slate-500 dark:text-slate-400" /> {t('reports.refreshSearch')}

@@ -7,6 +7,7 @@ interface UseProfileReturn {
   loading: boolean;
   error: string | null;
   generateProfile: (request: EntityProfileRequest) => Promise<void>;
+  setProfileDirect: (profile: EntityProfile) => void;
 }
 
 export function useProfile(): UseProfileReturn {
@@ -29,5 +30,11 @@ export function useProfile(): UseProfileReturn {
     }
   }, []);
 
-  return { profile, loading, error, generateProfile };
+  const setProfileDirect = useCallback((p: EntityProfile) => {
+    setError(null);
+    setLoading(false);
+    setProfile(p);
+  }, []);
+
+  return { profile, loading, error, generateProfile, setProfileDirect };
 }

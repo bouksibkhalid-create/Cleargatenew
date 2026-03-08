@@ -20,6 +20,7 @@ export default function EntityProfileView({ source }: EntityProfileViewProps) {
   const [savedId, setSavedId] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [cachedProfile, setCachedProfile] = useState<Record<string, unknown> | null>(null);
 
   useEffect(() => {
     async function load() {
@@ -38,6 +39,10 @@ export default function EntityProfileView({ source }: EntityProfileViewProps) {
           setIsSaved(true);
           setIsMonitored(data.is_monitored || false);
           setSavedId(data.id);
+          // Use cached profile_data if available (avoids re-running the full pipeline)
+          if (data.profile_data && Object.keys(data.profile_data).length > 2) {
+            setCachedProfile(data.profile_data);
+          }
         }
       } catch (e) {
         console.error('Failed to load entity:', e);
@@ -123,6 +128,7 @@ export default function EntityProfileView({ source }: EntityProfileViewProps) {
         entityName={entityName}
         entityType={entityType}
         country={country}
+        cachedProfile={cachedProfile}
         onBack={handleBack}
       />
     </div>

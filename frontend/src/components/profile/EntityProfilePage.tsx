@@ -16,6 +16,7 @@ interface EntityProfilePageProps {
   entityType: string;
   country?: string;
   preSearchData?: PreSearchData;
+  cachedProfile?: Record<string, unknown> | null;
   onBack: () => void;
 }
 
@@ -24,12 +25,19 @@ export default function EntityProfilePage({
   entityType,
   country,
   preSearchData,
+  cachedProfile: cachedProfileData,
   onBack,
 }: EntityProfilePageProps) {
   const { i18n } = useTranslation();
-  const { profile, loading, error, generateProfile } = useProfile();
+  const { profile, loading, error, generateProfile, setProfileDirect } = useProfile();
 
   useEffect(() => {
+    // If we have a cached profile (from saved entities), use it directly
+    // instead of calling the backend API again.
+    if (cachedProfileData && Object.keys(cachedProfileData).length > 2) {
+      setProfileDirect(cachedProfileData as unknown as import('../../types/profile').EntityProfile);
+      return;
+    }
     generateProfile({
       name: entityName,
       entity_type: entityType as 'individual' | 'organization',
